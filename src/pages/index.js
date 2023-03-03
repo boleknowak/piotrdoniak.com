@@ -1,10 +1,17 @@
 import Head from 'next/head';
-import Image from 'next/image';
-import { Inter } from 'next/font/google';
+import useSWR from 'swr';
+// import Image from 'next/image';
+// import { Inter } from 'next/font/google';
 
-const inter = Inter({ subsets: ['latin'] });
+// const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
+  const fetcher = (...args) => fetch(...args).then((res) => res.json());
+
+  const { data, error } = useSWR('/api/posts', fetcher);
+  if (error) return <div>An error occured.</div>;
+  if (!data) return <div>Loading ...</div>;
+
   return (
     <>
       <Head>
@@ -15,6 +22,13 @@ export default function Home() {
       </Head>
       <main>
         <h1 className="text-4xl font-bold">Hello World!</h1>
+        {data.posts.length !== 0 && (
+          <ul>
+            {data.posts.map((post) => (
+              <li key={post.id}>{post.title}</li>
+            ))}
+          </ul>
+        )}
       </main>
     </>
   );

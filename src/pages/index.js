@@ -20,15 +20,24 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <h1 className="text-4xl font-bold">Hello World!</h1>
-        {data.posts.length !== 0 && (
-          <ul>
-            {data.posts.map((post) => (
-              <li key={post.id}>{post.title}</li>
-            ))}
-          </ul>
-        )}
+      <main className="h-screen w-screen">
+        <div className="flex items-center justify-center h-full">
+          <div>
+            <h1 className="text-4xl font-bold mb-4">Hello World!</h1>
+            <div>
+              {data.posts.length !== 0 && (
+                <ul className="space-y-4">
+                  {data.posts.map((post) => (
+                    <li key={post.id} className="bg-gray-200 rounded p-4">
+                      <div className="font-medium">{post.title}</div>
+                      <div className="text-sm italic">{post.content}</div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
       </main>
     </>
   );

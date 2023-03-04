@@ -4,14 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && prisma migrate deploy",
+    "build": "npm run format:fix && npm run lint:fix && next build && prisma migrate deploy",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint --ext .js,.cjs,.ts,.tsx .",
+    "lint:fix": "eslint --ext .js,.cjs,.ts,.tsx . --fix",
+    "format": "prettier --plugin-search-dir . --check .",
+    "format:fix": "prettier --plugin-search-dir . --write ."
   },
   "dependencies": {
     "@prisma/client": "^4.11.0",
-    "eslint": "8.35.0",
-    "eslint-config-next": "13.2.3",
     "next": "13.2.3",
     "prisma": "^4.11.0",
     "react": "18.2.0",
@@ -21,8 +22,25 @@
     "zod": "^3.20.6"
   },
   "devDependencies": {
+    "@types/node": "^18.14.6",
+    "@types/react": "^18.0.28",
+    "@typescript-eslint/eslint-plugin": "^5.53.0",
+    "@typescript-eslint/parser": "^5.53.0",
     "autoprefixer": "^10.4.13",
+    "eslint": "^8.34.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-import-resolver-typescript": "^3.5.3",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-import-no-duplicates-prefix-resolved-path": "^2.0.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "postcss": "^8.4.21",
-    "tailwindcss": "^3.2.7"
+    "prettier": "^2.8.4",
+    "prettier-plugin-tailwindcss": "^0.2.3",
+    "tslib": "^2.5.0",
+    "tsx": "^3.12.3",
+    "tailwindcss": "^3.2.7",
+    "typescript": "^4.9.5"
   }
 }

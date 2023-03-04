@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Link from 'next/link';
 import { useFetch } from '../hooks/useFetch';
 // import Image from 'next/image';
 // import { Inter } from 'next/font/google';
@@ -23,6 +24,9 @@ export default function Home() {
         <div className="flex h-full items-center justify-center">
           <div>
             <h1 className="mb-4 text-4xl font-bold">Hello World!</h1>
+            <Link href="/post">
+              <div className="text-blue-500">Go to characters</div>
+            </Link>
             <div>
               {data?.posts.length !== 0 && (
                 <ul className="space-y-4">

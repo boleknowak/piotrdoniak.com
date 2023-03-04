@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --nprogress-color: #ff9000;
+  --nprogress-height: 3px;
+}
+
+#nprogress .bar {
+  background: var(--nprogress-color) !important;
+  height: var(--nprogress-height) !important;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px var(--nprogress-color), 0 0 5px var(--nprogress-color) !important;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: var(--nprogress-color) !important;
+  border-left-color: var(--nprogress-color) !important;
+}

@@ -1,6 +1,9 @@
+import { useFetch } from '@/hooks/useFetch';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+import * as gtag from '@/lib/gtag';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useFetch } from '../hooks/useFetch';
+import { useEffect } from 'react';
 // import Image from 'next/image';
 // import { Inter } from 'next/font/google';
 
@@ -8,9 +11,27 @@ import { useFetch } from '../hooks/useFetch';
 
 export default function Home() {
   const { data, loading, error } = useFetch('/api/posts');
+  const [useGoogleAnalytics, setUseGoogleAnalytics] = useLocalStorage(
+    'useGoogleAnalytics',
+    'accepted'
+  );
+
+  useEffect(() => {
+    gtag.manageConsent(useGoogleAnalytics);
+  }, [useGoogleAnalytics]);
 
   if (error) return <div>An error occured.</div>;
   if (loading) return <div>Loading ...</div>;
+
+  const toggleUseGoogleAnalytics = (event) => {
+    if (event.target.checked) {
+      setUseGoogleAnalytics('accepted');
+    } else {
+      setUseGoogleAnalytics('rejected');
+    }
+  };
+
+  const getGoogleAnalyticsStatus = () => useGoogleAnalytics;
 
   return (
     <>
@@ -27,6 +48,17 @@ export default function Home() {
             <Link href="/post">
               <div className="text-blue-500">Go to characters</div>
             </Link>
+            <div className="mt-4">
+              <label htmlFor="useGoogleAnalytics" className="mr-2">
+                Use Google Analytics ({getGoogleAnalyticsStatus()})
+              </label>
+              <input
+                type="checkbox"
+                id="useGoogleAnalytics"
+                checked={useGoogleAnalytics === 'accepted'}
+                onChange={toggleUseGoogleAnalytics}
+              />
+            </div>
             <div>
               {data?.posts.length !== 0 && (
                 <ul className="space-y-4">

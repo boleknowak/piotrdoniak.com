@@ -6,7 +6,7 @@ export default function Characters({ data }) {
   useEffect(() => {
     gtag.event({
       action: 'view_characters',
-      category: 'Characters',
+      category: 'characters',
       label: 'View Characters',
       value: data?.results.length,
     });

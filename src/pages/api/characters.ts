@@ -1,7 +1,7 @@
 import delay from '@/lib/delay';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
-import authOptions from '@/pages/api/auth/[...nextauth]';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
 
 export default async function handle(request: NextApiRequest, response: NextApiResponse) {
   const session = await getServerSession(request, response, authOptions);

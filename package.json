@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run format:fix && npm run lint:fix && next build && prisma migrate deploy && npx prisma db push",
+    "build": "npm run format:fix && npm run lint:fix && next build && prisma migrate deploy && npx prisma db push --skip-generate",
     "start": "next start",
     "lint": "eslint --ext .js,.cjs,.ts,.tsx .",
     "lint:fix": "eslint --ext .js,.cjs,.ts,.tsx . --fix",

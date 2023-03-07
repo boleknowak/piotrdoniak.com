@@ -5,10 +5,11 @@ import Script from 'next/script';
 import * as gtag from '@/lib/gtag';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { SessionProvider } from 'next-auth/react';
 
 const TopProgressBar = dynamic(() => import('@/components/TopProgressBar'), { ssr: false });
 
-export default function App({ Component, pageProps }) {
+export default function App({ Component, pageProps: { session, ...pageProps } }) {
   const router = useRouter();
 
   useEffect(() => {
@@ -43,7 +44,9 @@ export default function App({ Component, pageProps }) {
         }}
       />
       <TopProgressBar />
-      <Component {...pageProps} />
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+      </SessionProvider>
     </>
   );
 }

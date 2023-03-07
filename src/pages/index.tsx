@@ -4,6 +4,7 @@ import * as gtag from '@/lib/gtag';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect } from 'react';
+import { useSession, signIn, signOut } from 'next-auth/react';
 // import Image from 'next/image';
 // import { Inter } from 'next/font/google';
 
@@ -15,6 +16,8 @@ export default function Home() {
     'useGoogleAnalytics',
     'accepted'
   );
+  const { data: session, status } = useSession();
+  const userEmail = session?.user.email;
 
   useEffect(() => {
     gtag.manageConsent(useGoogleAnalytics);
@@ -58,6 +61,17 @@ export default function Home() {
                 checked={useGoogleAnalytics === 'accepted'}
                 onChange={toggleUseGoogleAnalytics}
               />
+            </div>
+            <div>
+              {status === 'unauthenticated' && (
+                <button onClick={() => signIn('google')}>Sign in</button>
+              )}
+              {status === 'authenticated' && (
+                <div>
+                  <p>Signed in as {userEmail}</p>
+                  <button onClick={() => signOut()}>Sign out</button>
+                </div>
+              )}
             </div>
             <div>
               {data?.posts.length !== 0 && (

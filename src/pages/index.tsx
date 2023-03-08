@@ -10,14 +10,6 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 
 // const inter = Inter({ subsets: ['latin'] });
 
-const getSiteMeta = async () =>
-  Promise.resolve({
-    meta: {
-      title: 'this is my website title',
-      description: 'this is my website description',
-    },
-  });
-
 export default function Home({ siteMeta }) {
   const { data, loading, error } = useFetch('/api/posts');
   const [useGoogleAnalytics, setUseGoogleAnalytics] = useLocalStorage(
@@ -32,7 +24,6 @@ export default function Home({ siteMeta }) {
   }, [useGoogleAnalytics]);
 
   if (error) return <div>An error occured.</div>;
-  // if (loading) return <div>Loading ...</div>;
 
   const toggleUseGoogleAnalytics = (event) => {
     if (event.target.checked) {
@@ -49,6 +40,9 @@ export default function Home({ siteMeta }) {
       <Head>
         <title>{siteMeta?.title}</title>
         <meta name="description" content={siteMeta?.description} />
+        <meta property="og:title" content={siteMeta?.title} />
+        <meta property="og:description" content={siteMeta?.description} />
+        <meta property="og:type" content="website" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <main className="h-screen w-screen">
@@ -104,19 +98,14 @@ export default function Home({ siteMeta }) {
   );
 }
 export const getServerSideProps = async () => {
-  let siteTitle = null;
-
-  const response = await getSiteMeta(); // any async promise here.
-
-  siteTitle = response.meta.title;
-
-  if (!siteTitle) {
-    return {
-      notFound: true,
-    };
-  }
+  const meta = {
+    title: `Strona Główna - Piotr Doniak`,
+    description: `To jest moja strona główna!`,
+  };
 
   return {
-    props: { siteMeta: response.meta }, // will be passed to the page component as props
+    props: {
+      siteMeta: meta,
+    },
   };
 };

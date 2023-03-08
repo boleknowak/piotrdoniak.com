@@ -19,13 +19,13 @@ export default function Test({ siteMeta, post }) {
 }
 
 export async function getStaticProps() {
-  const meta = {
-    title: 'this is my website title',
-    description: 'this is my website description',
-  };
-
   const post = {
     id: 1,
+  };
+
+  const meta = {
+    title: `this is my #${post.id} test title`,
+    description: `this is my #${post.id} test description`,
   };
 
   return {

@@ -10,12 +10,7 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 
 // const inter = Inter({ subsets: ['latin'] });
 
-const getSiteTitle = async () =>
-  Promise.resolve({
-    siteTitle: 'this is my website title',
-  });
-
-export default function Home({ siteTitle }) {
+export default function Home({ siteMeta }) {
   const { data, loading, error } = useFetch('/api/posts');
   const [useGoogleAnalytics, setUseGoogleAnalytics] = useLocalStorage(
     'useGoogleAnalytics',
@@ -29,7 +24,6 @@ export default function Home({ siteTitle }) {
   }, [useGoogleAnalytics]);
 
   if (error) return <div>An error occured.</div>;
-  if (loading) return <div>Loading ...</div>;
 
   const toggleUseGoogleAnalytics = (event) => {
     if (event.target.checked) {
@@ -44,51 +38,59 @@ export default function Home({ siteTitle }) {
   return (
     <>
       <Head>
-        <title>{siteTitle}</title>
-        <meta name="description" content="Portfolio" />
+        <title>{siteMeta?.title}</title>
+        <meta name="description" content={siteMeta?.description} />
+        <meta property="og:title" content={siteMeta?.title} />
+        <meta property="og:description" content={siteMeta?.description} />
+        <meta property="og:type" content="website" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <main className="h-screen w-screen">
         <div className="flex h-full items-center justify-center">
           <div>
-            <h1 className="mb-4 text-4xl font-bold">Hello World!</h1>
-            <Link href="/characters">
-              <div className="text-blue-500">Go to characters</div>
-            </Link>
-            <div className="mt-4">
-              <label htmlFor="useGoogleAnalytics" className="mr-2">
-                Use Google Analytics ({getGoogleAnalyticsStatus()})
-              </label>
-              <input
-                type="checkbox"
-                id="useGoogleAnalytics"
-                checked={useGoogleAnalytics === 'accepted'}
-                onChange={toggleUseGoogleAnalytics}
-              />
-            </div>
-            <div>
-              {status === 'unauthenticated' && (
-                <button onClick={() => signIn('google')}>Sign in</button>
-              )}
-              {status === 'authenticated' && (
-                <div>
-                  <p>Signed in as {userEmail}</p>
-                  <button onClick={() => signOut()}>Sign out</button>
+            {loading && <div>Loading ...</div>}
+            {!loading && (
+              <div>
+                <h1 className="mb-4 text-4xl font-bold">Hello World!</h1>
+                <Link href="/characters">
+                  <div className="text-blue-500">Go to characters</div>
+                </Link>
+                <div className="mt-4">
+                  <label htmlFor="useGoogleAnalytics" className="mr-2">
+                    Use Google Analytics ({getGoogleAnalyticsStatus()})
+                  </label>
+                  <input
+                    type="checkbox"
+                    id="useGoogleAnalytics"
+                    checked={useGoogleAnalytics === 'accepted'}
+                    onChange={toggleUseGoogleAnalytics}
+                  />
                 </div>
-              )}
-            </div>
-            <div>
-              {data?.posts.length !== 0 && (
-                <ul className="space-y-4">
-                  {data?.posts.map((post) => (
-                    <li key={post.id} className="rounded bg-gray-200 p-4">
-                      <div className="font-medium">{post.title}</div>
-                      <div className="text-sm italic">{post.content}</div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+                <div>
+                  {status === 'unauthenticated' && (
+                    <button onClick={() => signIn('google')}>Sign in</button>
+                  )}
+                  {status === 'authenticated' && (
+                    <div>
+                      <p>Signed in as {userEmail}</p>
+                      <button onClick={() => signOut()}>Sign out</button>
+                    </div>
+                  )}
+                </div>
+                <div>
+                  {data?.posts.length !== 0 && (
+                    <ul className="space-y-4">
+                      {data?.posts.map((post) => (
+                        <li key={post.id} className="rounded bg-gray-200 p-4">
+                          <div className="font-medium">{post.title}</div>
+                          <div className="text-sm italic">{post.content}</div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </main>
@@ -96,19 +98,14 @@ export default function Home({ siteTitle }) {
   );
 }
 export const getServerSideProps = async () => {
-  let siteTitle = null;
-
-  const response = await getSiteTitle(); // any async promise here.
-
-  siteTitle = response.siteTitle;
-
-  if (!siteTitle) {
-    return {
-      notFound: true,
-    };
-  }
+  const meta = {
+    title: `Strona Główna - Piotr Doniak`,
+    description: `To jest moja strona główna!`,
+  };
 
   return {
-    props: { siteTitle }, // will be passed to the page component as props
+    props: {
+      siteMeta: meta,
+    },
   };
 };

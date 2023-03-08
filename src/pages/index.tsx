@@ -10,7 +10,12 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 
 // const inter = Inter({ subsets: ['latin'] });
 
-export default function Home() {
+const getSiteTitle = async () =>
+  Promise.resolve({
+    siteTitle: 'this is my website title',
+  });
+
+export default function Home({ siteTitle }) {
   const { data, loading, error } = useFetch('/api/posts');
   const [useGoogleAnalytics, setUseGoogleAnalytics] = useLocalStorage(
     'useGoogleAnalytics',
@@ -39,7 +44,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Piotr Doniak</title>
+        <title>{siteTitle}</title>
         <meta name="description" content="Portfolio" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
@@ -90,3 +95,20 @@ export default function Home() {
     </>
   );
 }
+export const getServerSideProps = async () => {
+  let siteTitle = null;
+
+  const response = await getSiteTitle(); // any async promise here.
+
+  siteTitle = response.siteTitle;
+
+  if (!siteTitle) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: { siteTitle }, // will be passed to the page component as props
+  };
+};

@@ -3,8 +3,8 @@ import Link from 'next/link';
 import Characters from '@/components/Characters';
 import { useFetch } from '@/hooks/useFetch';
 import absoluteUrl from 'next-absolute-url';
-import { authOptions } from '@/pages/api/auth/[...nextauth]';
-import { getServerSession } from 'next-auth/next';
+// import { authOptions } from '@/pages/api/auth/[...nextauth]';
+// import { getServerSession } from 'next-auth/next';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 
@@ -19,7 +19,7 @@ export default function Post({ serverData }) {
 
   if (loading) return <div>Loading ...</div>;
   if (error) return <div>An error occured.</div>;
-  if (!session) return <div>Not logged in.</div>;
+  // if (!session) return <div>Not logged in.</div>;
   if (serverData?.error) return <div>An error occured: {serverData?.error}</div>;
 
   return (
@@ -54,16 +54,16 @@ export default function Post({ serverData }) {
 }
 
 export async function getServerSideProps(context) {
-  const session = await getServerSession(context.req, context.res, authOptions);
+  // const session = await getServerSession(context.req, context.res, authOptions);
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    };
-  }
+  // if (!session) {
+  //   return {
+  //     redirect: {
+  //       destination: '/',
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
   const { origin } = absoluteUrl(context.req);
   const serverData = await fetch(`${origin}/api/characters`, {

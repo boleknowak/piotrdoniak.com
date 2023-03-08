@@ -1,38 +1,37 @@
 import Head from 'next/head';
 
-export default function Test({ title }) {
+export default function Test({ siteMeta, post }) {
   return (
     <>
       <Head>
-        <title>Test - {title}</title>
-        <meta
-          name="description"
-          content="Add a shopping cart to your site in minutes. Works with any site builder, CMS, and framework. 20 000+ merchants trust our e-commerce solution for their website. Join them!"
-        />
-        <meta
-          property="og:title"
-          content="Add a Shopping Cart to Any Website in Minutes - Snipcart"
-        />
-        <meta
-          property="og:description"
-          content="Add a shopping cart to your site in minutes. Works with any site builder, CMS, and framework. 20 000+ merchants trust our e-commerce solution for their website. Join them!"
-        />
-        <meta property="og:url" content="https://snipcart.com/" />
+        <title>{siteMeta?.title}</title>
+        <meta name="description" content={siteMeta?.description} />
+        <meta property="og:title" content={siteMeta?.title} />
+        <meta property="og:description" content={siteMeta?.description} />
         <meta property="og:type" content="website" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <main>
-        <h1>Test</h1>
+        <h1>Test #{post.id}</h1>
       </main>
     </>
   );
 }
 
 export async function getStaticProps() {
-  const title = 'Test';
+  const meta = {
+    title: 'this is my website title',
+    description: 'this is my website description',
+  };
+
+  const post = {
+    id: 1,
+  };
 
   return {
     props: {
-      title: `Product ${title}`,
+      siteMeta: meta,
+      post,
     },
   };
 }

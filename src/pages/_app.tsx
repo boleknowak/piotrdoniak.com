@@ -3,10 +3,9 @@ import dynamic from 'next/dynamic';
 import 'nprogress/nprogress.css';
 import Script from 'next/script';
 import * as gtag from '@/lib/gtag';
-import { Suspense, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { SessionProvider } from 'next-auth/react';
-import Head from 'next/head';
 
 const TopProgressBar = dynamic(() => import('@/components/TopProgressBar'), { ssr: false });
 
@@ -45,16 +44,9 @@ export default function App({ Component, pageProps: { session, ...pageProps } })
         }}
       />
       <TopProgressBar />
-      <Suspense>
-        <Head>
-          <title>{pageProps?.title}</title>
-          <meta name="description" content={pageProps?.description} />
-          <meta property="og:title" content={pageProps?.title} />
-        </Head>
-        <SessionProvider session={session}>
-          <Component {...pageProps} />
-        </SessionProvider>
-      </Suspense>
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+      </SessionProvider>
     </>
   );
 }

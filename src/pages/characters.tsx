@@ -28,7 +28,6 @@ export default function Post({ serverData }) {
         <title>Characters - Piotr Doniak</title>
         <meta name="description" content={`First character: ${serverData?.data.results[0].name}`} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="mx-auto max-w-xl">
         <div className="mt-10 mb-10 w-full px-4">

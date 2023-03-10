@@ -17,9 +17,7 @@ export default function Post({ serverData }) {
     setIsLoadingPage(false);
   }, []);
 
-  if (loading) return <div>Loading ...</div>;
   if (error) return <div>An error occured.</div>;
-  if (!session) return <div>Not logged in.</div>;
   if (serverData?.error) return <div>An error occured: {serverData?.error}</div>;
 
   return (

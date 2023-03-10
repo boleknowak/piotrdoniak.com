@@ -81,10 +81,12 @@ export default function Home({ siteMeta }) {
                   {data?.posts.length !== 0 && (
                     <ul className="space-y-4">
                       {data?.posts.map((post) => (
-                        <li key={post.id} className="rounded bg-gray-200 p-4">
-                          <div className="font-medium">{post.title}</div>
-                          <div className="text-sm italic">{post.content}</div>
-                        </li>
+                        <Link href={`/post/${post.id}`} key={post.id}>
+                          <li key={post.id} className="rounded bg-gray-200 p-4">
+                            <div className="font-medium">{post.title}</div>
+                            <div className="text-sm italic">{post.content}</div>
+                          </li>
+                        </Link>
                       ))}
                     </ul>
                   )}

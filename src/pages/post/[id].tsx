@@ -11,7 +11,7 @@ export default function Post({ siteMeta, post }) {
     <>
       <Head>
         <title>{siteMeta?.title}</title>
-        <meta name="description" content={siteMeta?.content} />
+        <meta name="description" content={siteMeta?.description} />
         <meta property="og:title" content={siteMeta?.title} />
         <meta property="og:description" content={siteMeta?.description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

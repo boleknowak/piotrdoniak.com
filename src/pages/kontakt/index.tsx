@@ -9,6 +9,7 @@ const sofia = Sofia({ subsets: ['latin'], weight: '400' });
 export default function Contact({ siteMeta }) {
   const socials = [
     {
+      id: 1,
       name: 'LinkedIn',
       text: 'Piotr Doniak',
       icon: faLinkedin,
@@ -16,6 +17,7 @@ export default function Contact({ siteMeta }) {
       url: 'https://www.linkedin.com/in/piotrdoniak/?utm_source=piotrdoniak.com&utm_medium=portfolio&utm_campaign=kontakt',
     },
     {
+      id: 2,
       name: 'GitHub',
       text: 'boleknowak',
       icon: faGithub,
@@ -23,6 +25,7 @@ export default function Contact({ siteMeta }) {
       url: 'https://github.com/boleknowak/?utm_source=piotrdoniak.com&utm_medium=portfolio&utm_campaign=kontakt',
     },
     {
+      id: 3,
       name: 'Instagram',
       text: 'piotrdoniak',
       icon: faInstagram,
@@ -67,7 +70,7 @@ export default function Contact({ siteMeta }) {
                 <div className="mb-2 font-bold">Social Media</div>
                 <div className="grid grid-cols-3 gap-4">
                   {socials.map((social) => (
-                    <Social social={social} />
+                    <Social key={social.id} social={social} />
                   ))}
                 </div>
               </div>

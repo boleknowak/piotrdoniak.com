@@ -1,39 +1,12 @@
 import Layout from '@/components/Layout';
 import { Sofia } from 'next/font/google';
 import Head from 'next/head';
-import { faGithub, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import Social from '@/components/Social';
+import { socials } from '@/lib/socials';
 
 const sofia = Sofia({ subsets: ['latin'], weight: '400' });
 
 export default function Contact({ siteMeta }) {
-  const socials = [
-    {
-      id: 1,
-      name: 'LinkedIn',
-      text: 'Piotr Doniak',
-      icon: faLinkedin,
-      color: '#0a66c2',
-      url: 'https://www.linkedin.com/in/piotrdoniak/?utm_source=piotrdoniak.com&utm_medium=portfolio&utm_campaign=kontakt',
-    },
-    {
-      id: 2,
-      name: 'GitHub',
-      text: 'boleknowak',
-      icon: faGithub,
-      color: '#333',
-      url: 'https://github.com/boleknowak/?utm_source=piotrdoniak.com&utm_medium=portfolio&utm_campaign=kontakt',
-    },
-    {
-      id: 3,
-      name: 'Instagram',
-      text: 'piotrdoniak',
-      icon: faInstagram,
-      color: '#e1306c',
-      url: 'https://www.instagram.com/piotrdoniak/?utm_source=piotrdoniak.com&utm_medium=portfolio&utm_campaign=kontakt',
-    },
-  ];
-
   return (
     <>
       <Head>
@@ -53,7 +26,7 @@ export default function Contact({ siteMeta }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Layout>
-        <div className="mb-20 mt-6 flex h-full w-full items-center justify-center md:mt-0">
+        <div className="flex mb-20 mt-6 h-full w-full items-center justify-center md:mt-0">
           <div>
             <div className="w-full max-w-2xl text-[#43403C]">
               <h1 className="mb-4 text-2xl font-bold">Kontakt</h1>
@@ -70,7 +43,7 @@ export default function Contact({ siteMeta }) {
                 <div className="mb-2 font-bold">Social Media</div>
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
                   {socials.map((social) => (
-                    <Social key={social.id} social={social} />
+                    <Social key={social.id} social={social} source="kontakt" />
                   ))}
                 </div>
               </div>

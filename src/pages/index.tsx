@@ -1,9 +1,9 @@
 // import { useFetch } from '@/hooks/useFetch';
-// import { useLocalStorage } from '@/hooks/useLocalStorage';
-// import * as gtag from '@/lib/gtag';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+import * as gtag from '@/lib/gtag';
 import Head from 'next/head';
 // import Link from 'next/link';
-// import { useEffect } from 'react';
+import { useEffect } from 'react';
 // import { useSession, signIn, signOut } from 'next-auth/react';
 import Layout from '@/components/Layout';
 import { Sofia } from 'next/font/google';
@@ -13,16 +13,16 @@ const sofia = Sofia({ subsets: ['latin'], weight: '400' });
 
 export default function Home({ siteMeta }) {
   // const { data, loading, error } = useFetch('/api/posts');
-  // const [useGoogleAnalytics, setUseGoogleAnalytics] = useLocalStorage(
-  //   'useGoogleAnalytics',
-  //   'accepted'
-  // );
+  const [useGoogleAnalytics /* , setUseGoogleAnalytics */] = useLocalStorage(
+    'useGoogleAnalytics',
+    'accepted'
+  );
   // const { data: session, status } = useSession();
   // const userEmail = session?.user.email;
 
-  // useEffect(() => {
-  //   gtag.manageConsent(useGoogleAnalytics);
-  // }, [useGoogleAnalytics]);
+  useEffect(() => {
+    gtag.manageConsent(useGoogleAnalytics);
+  }, [useGoogleAnalytics]);
 
   // if (error) return <div>An error occured.</div>;
 

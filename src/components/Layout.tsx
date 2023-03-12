@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAddressCard, faEnvelope, faFolder } from '@fortawesome/free-regular-svg-icons';
 import { faBars, faX } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
+import Footer from '@/components/Menu/Footer';
 
 const caveat = Caveat({ subsets: ['latin'] });
 
@@ -38,7 +39,7 @@ export default function Layout({ children }) {
 
   return (
     <div className="flex flex-col xl:flex-row">
-      <header className="block border-b border-yellow-400 bg-yellow-200 xl:hidden">
+      <header className="block border border-yellow-500 bg-yellow-50 xl:hidden">
         <div className="flex flex-row items-center justify-between">
           <div>
             <Link href="/" className="ml-2 block p-2">
@@ -51,7 +52,7 @@ export default function Layout({ children }) {
             <button
               type="button"
               onClick={toggleMenu}
-              className="mr-2 block h-10 w-10 rounded-md hover:bg-gray-100"
+              className="mr-2 block h-10 w-10 rounded-md hover:bg-yellow-100"
             >
               {!menuOpen && <FontAwesomeIcon icon={faBars} size="xl" className="w-6" />}
               {menuOpen && <FontAwesomeIcon icon={faX} size="xl" className="w-6" />}
@@ -68,25 +69,36 @@ export default function Layout({ children }) {
                 </Item>
               ))}
             </div>
+            <div className="mt-4">
+              <hr />
+              <div className="mt-4">
+                <Footer />
+              </div>
+            </div>
           </div>
         )}
       </header>
       <aside className="sticky top-0 hidden h-screen xl:block">
         <div className="m-2 hidden h-[98%] w-72 rounded border border-yellow-500 bg-yellow-50 xl:block">
-          <div className="p-4">
-            <Link href="/">
-              <div className="text-3xl font-bold">
-                <span className={caveat.className}>Piotr Doniak</span>
+          <div className="items-between flex h-full flex-col">
+            <div className="p-4">
+              <Link href="/">
+                <div className="text-3xl font-bold">
+                  <span className={caveat.className}>Piotr Doniak</span>
+                </div>
+              </Link>
+              <div className="mt-6 space-y-1">
+                {menu.map((item) => (
+                  <Item key={item.id} href={item.href}>
+                    <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-4" />
+                    <div>{item.name}</div>
+                  </Item>
+                ))}
               </div>
-            </Link>
-            <div className="mt-6 space-y-1">
-              {menu.map((item) => (
-                <Item key={item.id} href={item.href}>
-                  <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-4" />
-                  <div>{item.name}</div>
-                </Item>
-              ))}
             </div>
+          </div>
+          <div className="mx-4 -mt-12">
+            <Footer />
           </div>
         </div>
       </aside>

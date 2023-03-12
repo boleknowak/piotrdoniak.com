@@ -1,4 +1,4 @@
-import { EnvelopeSimple, FolderOpen, House } from '@phosphor-icons/react';
+// import { EnvelopeSimple, FolderOpen, House } from '@phosphor-icons/react';
 import { Caveat } from 'next/font/google';
 import Link from 'next/link';
 import Item from '@/components/Menu/Item';
@@ -18,15 +18,15 @@ export default function Layout({ children }) {
             </Link>
             <div className="mt-6 space-y-1">
               <Item href="/">
-                <House weight="regular" size={20} />
+                {/* <House weight="regular" size={20} /> */}
                 <div>Strona Główna</div>
               </Item>
               <Item href="/projekty">
-                <FolderOpen weight="regular" size={20} />
+                {/* <FolderOpen weight="regular" size={20} /> */}
                 <div>Projekty</div>
               </Item>
               <Item href="/kontakt">
-                <EnvelopeSimple weight="regular" size={20} />
+                {/* <EnvelopeSimple weight="regular" size={20} /> */}
                 <div>Kontakt</div>
               </Item>
             </div>

@@ -19,15 +19,15 @@ export default function Layout({ children }) {
             </Link>
             <div className="mt-6 space-y-1">
               <Item href="/">
-                <FontAwesomeIcon icon={faAddressCard} size="lg" />
-                <div>Strona Główna</div>
+                <FontAwesomeIcon icon={faAddressCard} size="lg" fixedWidth />
+                <div>O mnie</div>
               </Item>
               <Item href="/projekty">
-                <FontAwesomeIcon icon={faFolder} size="lg" />
+                <FontAwesomeIcon icon={faFolder} size="lg" fixedWidth />
                 <div>Projekty</div>
               </Item>
               <Item href="/kontakt">
-                <FontAwesomeIcon icon={faEnvelope} size="lg" />
+                <FontAwesomeIcon icon={faEnvelope} size="lg" fixedWidth />
                 <div>Kontakt</div>
               </Item>
             </div>

@@ -10,7 +10,8 @@
     "lint:fix": "eslint --ext .js,.cjs,.ts,.tsx . --fix",
     "format": "prettier --plugin-search-dir . --check .",
     "format:fix": "prettier --plugin-search-dir . --write .",
-    "sitemap:generate": "next-sitemap"
+    "sitemap:generate": "next-sitemap",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.5",

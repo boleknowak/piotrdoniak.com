@@ -53,22 +53,22 @@ export default function Contact({ siteMeta }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Layout>
-        <div className="mb-20 flex h-full w-full items-center justify-center">
+        <div className="mb-20 mt-6 flex h-full w-full items-center justify-center md:mt-0">
           <div>
             <div className="w-full max-w-2xl text-[#43403C]">
               <h1 className="mb-4 text-2xl font-bold">Kontakt</h1>
               <div>
                 <p>
                   Doszedłem do wniosku, że najlepszym sposobem na kontakt jest rozmowa z
-                  człowiekiem, <br />a nie z robotem. Dlatego, jeśli masz pytania, sugestie, lub
-                  chcesz po prostu o <span className="italic">czymś</span> porozmawiać, napisz do
-                  mnie! Odpowiem na każdą wiadomość, ręcznie - bez udziału robotów{' '}
+                  człowiekiem, a nie z robotem. Dlatego, jeśli masz pytania, sugestie, lub chcesz po
+                  prostu o <span className="italic">czymś</span> porozmawiać, napisz do mnie!
+                  Odpowiem na każdą wiadomość, ręcznie - bez udziału robotów{' '}
                   <span className={sofia.className}>;)</span>
                 </p>
               </div>
               <div className="mt-10">
                 <div className="mb-2 font-bold">Social Media</div>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
                   {socials.map((social) => (
                     <Social key={social.id} social={social} />
                   ))}

@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 export default function Project({ project, ...props }) {
   return (
-    <a href={project.url} target="_blank" className="block" {...props}>
+    <a href={project.url} target="_blank" className="project-item block" {...props}>
       <div className="flex transform flex-row items-start space-x-4 rounded border border-gray-200 bg-white p-4 transition duration-300 hover:scale-105 hover:bg-gray-100">
         <Image
           src={project.image}

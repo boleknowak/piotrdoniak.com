@@ -1,7 +1,8 @@
-// import { EnvelopeSimple, FolderOpen, House } from '@phosphor-icons/react';
 import { Caveat } from 'next/font/google';
 import Link from 'next/link';
 import Item from '@/components/Menu/Item';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAddressCard, faEnvelope, faFolder } from '@fortawesome/free-regular-svg-icons';
 
 const caveat = Caveat({ subsets: ['latin'] });
 
@@ -18,15 +19,15 @@ export default function Layout({ children }) {
             </Link>
             <div className="mt-6 space-y-1">
               <Item href="/">
-                {/* <House weight="regular" size={20} /> */}
+                <FontAwesomeIcon icon={faAddressCard} size="lg" />
                 <div>Strona Główna</div>
               </Item>
               <Item href="/projekty">
-                {/* <FolderOpen weight="regular" size={20} /> */}
+                <FontAwesomeIcon icon={faFolder} size="lg" />
                 <div>Projekty</div>
               </Item>
               <Item href="/kontakt">
-                {/* <EnvelopeSimple weight="regular" size={20} /> */}
+                <FontAwesomeIcon icon={faEnvelope} size="lg" />
                 <div>Kontakt</div>
               </Item>
             </div>

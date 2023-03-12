@@ -1,10 +1,10 @@
-import { useFetch } from '@/hooks/useFetch';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
-import * as gtag from '@/lib/gtag';
+// import { useFetch } from '@/hooks/useFetch';
+// import { useLocalStorage } from '@/hooks/useLocalStorage';
+// import * as gtag from '@/lib/gtag';
 import Head from 'next/head';
-import Link from 'next/link';
-import { useEffect } from 'react';
-import { useSession, signIn, signOut } from 'next-auth/react';
+// import Link from 'next/link';
+// import { useEffect } from 'react';
+// import { useSession, signIn, signOut } from 'next-auth/react';
 import Layout from '@/components/Layout';
 import { Sofia } from 'next/font/google';
 import Image from 'next/image';
@@ -12,29 +12,29 @@ import Image from 'next/image';
 const sofia = Sofia({ subsets: ['latin'], weight: '400' });
 
 export default function Home({ siteMeta }) {
-  const { data, loading, error } = useFetch('/api/posts');
-  const [useGoogleAnalytics, setUseGoogleAnalytics] = useLocalStorage(
-    'useGoogleAnalytics',
-    'accepted'
-  );
-  const { data: session, status } = useSession();
-  const userEmail = session?.user.email;
+  // const { data, loading, error } = useFetch('/api/posts');
+  // const [useGoogleAnalytics, setUseGoogleAnalytics] = useLocalStorage(
+  //   'useGoogleAnalytics',
+  //   'accepted'
+  // );
+  // const { data: session, status } = useSession();
+  // const userEmail = session?.user.email;
 
-  useEffect(() => {
-    gtag.manageConsent(useGoogleAnalytics);
-  }, [useGoogleAnalytics]);
+  // useEffect(() => {
+  //   gtag.manageConsent(useGoogleAnalytics);
+  // }, [useGoogleAnalytics]);
 
-  if (error) return <div>An error occured.</div>;
+  // if (error) return <div>An error occured.</div>;
 
-  const toggleUseGoogleAnalytics = (event) => {
-    if (event.target.checked) {
-      setUseGoogleAnalytics('accepted');
-    } else {
-      setUseGoogleAnalytics('rejected');
-    }
-  };
+  // const toggleUseGoogleAnalytics = (event) => {
+  //   if (event.target.checked) {
+  //     setUseGoogleAnalytics('accepted');
+  //   } else {
+  //     setUseGoogleAnalytics('rejected');
+  //   }
+  // };
 
-  const getGoogleAnalyticsStatus = () => useGoogleAnalytics;
+  // const getGoogleAnalyticsStatus = () => useGoogleAnalytics;
 
   return (
     <>
@@ -86,7 +86,7 @@ export default function Home({ siteMeta }) {
                 </p>
               </div>
             </div>
-            {loading && false && <div>Loading ...</div>}
+            {/* {loading && false && <div>Loading ...</div>}
             {!loading && false && (
               <div>
                 <Link href="/characters">
@@ -129,7 +129,7 @@ export default function Home({ siteMeta }) {
                   )}
                 </div>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </Layout>

@@ -8,9 +8,9 @@ export default function Document() {
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="manifest" href="/site.webmanifest" />
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#ff9000" />
-        <meta name="msapplication-TileColor" content="#ff9000" />
-        <meta name="theme-color" content="#ff9000" />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#FEFCE8" />
+        <meta name="msapplication-TileColor" content="#FEFCE8" />
+        <meta name="theme-color" content="#FEFCE8" />
       </Head>
       <body className="bg-white">
         <Main />

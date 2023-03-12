@@ -5,10 +5,11 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
-// import Image from 'next/image';
-// import { Inter } from 'next/font/google';
+import Layout from '@/components/Layout';
+import { Sofia } from 'next/font/google';
+import Image from 'next/image';
 
-// const inter = Inter({ subsets: ['latin'] });
+const sofia = Sofia({ subsets: ['latin'], weight: '400' });
 
 export default function Home({ siteMeta }) {
   const { data, loading, error } = useFetch('/api/posts');
@@ -42,16 +43,52 @@ export default function Home({ siteMeta }) {
         <meta name="description" content={siteMeta?.description} />
         <meta property="og:title" content={siteMeta?.title} />
         <meta property="og:description" content={siteMeta?.description} />
+        <meta property="og:image" content={siteMeta?.image} />
+        <meta property="og:url" content={siteMeta?.url} />
         <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta property="twitter:domain" content="piotrdoniak.com" />
+        <meta property="twitter:url" content={siteMeta?.url} />
+        <meta name="twitter:title" content={siteMeta?.title} />
+        <meta name="twitter:description" content={siteMeta?.description} />
+        <meta name="twitter:image" content={siteMeta?.image} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <main className="h-screen w-screen">
-        <div className="flex h-full items-center justify-center">
+      <Layout>
+        <div className="flex h-full w-full items-center justify-center">
           <div>
-            {loading && <div>Loading ...</div>}
-            {!loading && (
+            <div className="w-full max-w-2xl text-[#43403C]">
+              <Image
+                src="/images/homepage.png"
+                alt="Hero"
+                width={600}
+                height={286}
+                className="mb-10 rounded-lg"
+              />
+              <h1 className="mb-4 text-2xl font-bold">Cześć!</h1>
+              <div className="space-y-4 leading-6 tracking-wide">
+                <p>
+                  To ja, Piotrek — student e-marketingu. Swoją przygodę zacząłem od programowania,
+                  <br />a obecnie zależy mi na{' '}
+                  <span className="underline decoration-dotted underline-offset-4" title="Poznań">
+                    POZ
+                  </span>
+                  naniu się ze światem marketingu.
+                </p>
+                <p>
+                  Zdobywanie wiedzy uważam za możliwość rozwoju, a dzięki temu coraz szybciej i
+                  lepiej wykonuję zadania.
+                </p>
+                <p>
+                  Zapraszam Cię do zapoznania się z moimi projektami oraz wpisami na blogu
+                  {` `}
+                  <span className={sofia.className}>:)</span>
+                </p>
+              </div>
+            </div>
+            {loading && false && <div>Loading ...</div>}
+            {!loading && false && (
               <div>
-                <h1 className="mb-4 text-4xl font-bold">Hello World!</h1>
                 <Link href="/characters">
                   <div className="text-blue-500">Go to characters</div>
                 </Link>
@@ -95,14 +132,17 @@ export default function Home({ siteMeta }) {
             )}
           </div>
         </div>
-      </main>
+      </Layout>
     </>
   );
 }
+
 export const getServerSideProps = async () => {
   const meta = {
-    title: `Strona Główna - Piotr Doniak`,
-    description: `To jest moja strona główna!`,
+    title: 'Piotr Doniak',
+    description: `Jestem Piotr i lubię marketing oraz programowanie. Sprawdź moje projekty i bloga, aby dowiedzieć się o mnie więcej.`,
+    image: 'https://piotrdoniak.com/images/brand/me.png',
+    url: 'https://piotrdoniak.com',
   };
 
   return {

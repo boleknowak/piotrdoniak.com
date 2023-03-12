@@ -39,7 +39,7 @@ export default function Projects({ siteMeta }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Layout>
-        <div className="flex mb-20 mt-6 h-full w-full items-center justify-center md:mt-0">
+        <div className="mb-20 mt-6 flex h-full w-full items-center justify-center md:mt-0">
           <div>
             <div className="w-full max-w-2xl text-[#43403C]">
               <h1 className="mb-4 text-2xl font-bold">Projekty</h1>

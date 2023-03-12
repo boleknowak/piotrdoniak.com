@@ -16,6 +16,7 @@ module.exports = {
     '/_error.html',
     '/characters/*',
     '/characters',
+    '/count',
     '/posts-sitemap.xml',
   ],
   robotsTxtOptions: {

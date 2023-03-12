@@ -3,6 +3,8 @@ erDiagram
 	posts {
 		Int id PK  "autoincrement()"
 		String title
+		String slug  "nullable"
+		String full_slug  "nullable"
 		String content  "nullable"
 		DateTime createdAt  "now()"
 		DateTime updatedAt
@@ -45,7 +47,7 @@ erDiagram
 		String token
 		DateTime expires
 	}
-	accounts }o--|| User : user
-	sessions }o--|| User : user
+	accounts }o--|| users : user
+	sessions }o--|| users : user
 
 ```

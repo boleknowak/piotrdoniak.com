@@ -3,8 +3,20 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Item from '@/components/Menu/Item';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAddressCard } from '@fortawesome/free-regular-svg-icons';
-import { faBars, faPersonThroughWindow, faSignOut, faX } from '@fortawesome/free-solid-svg-icons';
+import {
+  faAddressCard,
+  faCalendar,
+  faComment,
+  faEnvelope,
+  faFileLines,
+} from '@fortawesome/free-regular-svg-icons';
+import {
+  faBars,
+  faPersonThroughWindow,
+  faRss,
+  faSignOut,
+  faX,
+} from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { UserInterface } from '@/interfaces/UserInterface';
@@ -30,17 +42,78 @@ export default function PanelLayout({ children }) {
 
   const menu = [
     {
-      id: 1,
+      id: 'wyjdz',
       name: 'Wyjdź z panelu',
+      type: 'element',
       href: '/',
       icon: faPersonThroughWindow,
+      subtext: null,
       authorizedRoute: true,
     },
     {
-      id: 2,
-      name: 'Główna panelu',
+      id: 'category-1',
+      name: 'Ogólne',
+      type: 'category',
+      authorizedRoute: true,
+    },
+    {
+      id: 'strona-glowna',
+      name: 'Informacje',
+      type: 'element',
       href: '/panel',
       icon: faAddressCard,
+      subtext: null,
+      authorizedRoute: true,
+    },
+    {
+      id: 'kalendarz',
+      name: 'Kalendarz',
+      type: 'element',
+      href: '/panel/kalendarz',
+      icon: faCalendar,
+      subtext: null,
+      authorizedRoute: true,
+    },
+    {
+      id: 'wiadomosci',
+      name: 'Wiadomości',
+      type: 'element',
+      href: '/panel/wiadomosci',
+      icon: faEnvelope,
+      subtext: '2',
+      authorizedRoute: true,
+    },
+    {
+      id: 'category-2',
+      name: 'Treść',
+      type: 'category',
+      authorizedRoute: true,
+    },
+    {
+      id: 'wpisy',
+      name: 'Wpisy',
+      type: 'element',
+      href: '/panel/wpisy',
+      icon: faComment,
+      subtext: null,
+      authorizedRoute: true,
+    },
+    {
+      id: 'newsletter',
+      name: 'Newsletter',
+      type: 'element',
+      href: '/panel/newsletter',
+      icon: faRss,
+      subtext: null,
+      authorizedRoute: true,
+    },
+    {
+      id: 'ustawienia',
+      name: 'Ustawienia',
+      type: 'element',
+      href: '/panel/ustawienia',
+      icon: faFileLines,
+      subtext: null,
       authorizedRoute: true,
     },
   ];
@@ -83,10 +156,17 @@ export default function PanelLayout({ children }) {
               {menu.map((item) => (
                 <div key={`nav-${item.id}`}>
                   {isAuthed && isAuthorized && item.authorizedRoute && (
-                    <Item href={item.href} onClick={toggleMenu}>
-                      <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-5" />
-                      <div>{item.name}</div>
-                    </Item>
+                    <div>
+                      {item.type === 'category' && (
+                        <div className="mt-6 mb-3 ml-2 text-xs text-gray-500">{item.name}</div>
+                      )}
+                      {item.type !== 'category' && (
+                        <Item href={item.href} subtext={item.subtext} onClick={toggleMenu}>
+                          <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-5" />
+                          <div>{item.name}</div>
+                        </Item>
+                      )}
+                    </div>
                   )}
                 </div>
               ))}
@@ -120,47 +200,64 @@ export default function PanelLayout({ children }) {
         )}
       </header>
       <aside className="sticky top-0 hidden h-screen xl:block">
-        <div className="m-2 hidden h-[98%] w-72 rounded border border-yellow-500 bg-yellow-50 xl:block">
-          <div className="items-between flex h-full flex-col">
-            <div className="p-4">
+        <div className="min-h-96 m-2 hidden h-[98%] max-h-screen w-72 overflow-y-auto rounded border border-yellow-500 bg-yellow-50 xl:block">
+          <div className="items-between flex h-full flex-grow flex-col">
+            <div className="mb-32 h-full p-4">
               <Link href="/">
                 <div className="text-3xl font-bold">
                   <span className={caveat.className}>Panel</span>
                 </div>
               </Link>
-              <div className="mt-6 space-y-1">
-                {menu.map((item) => (
-                  <div key={`side-${item.id}`}>
-                    {isAuthed && isAuthorized && item.authorizedRoute && (
-                      <Item href={item.href}>
-                        <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-5" />
-                        <div>{item.name}</div>
-                      </Item>
-                    )}
-                  </div>
-                ))}
+              <div className="mt-6">
+                <div className="space-y-1">
+                  {menu.map((item) => (
+                    <div key={`side-${item.id}`}>
+                      {isAuthed && isAuthorized && item.authorizedRoute && (
+                        <div>
+                          {item.type === 'category' && (
+                            <div className="mt-6 mb-3 ml-2 text-xs text-gray-500">{item.name}</div>
+                          )}
+                          {item.type !== 'category' && (
+                            <Item href={item.href} subtext={item.subtext}>
+                              <FontAwesomeIcon
+                                icon={item.icon}
+                                size="lg"
+                                fixedWidth
+                                className="w-5"
+                              />
+                              <div>{item.name}</div>
+                            </Item>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-          <div className="mx-4 -mt-14">
-            <div>
-              {isAuthed && (
-                <div className="flex flex-row items-center justify-between">
-                  <div className="flex flex-row items-center space-x-2">
-                    <Image
-                      src={user.image}
-                      width={32}
-                      height={32}
-                      className="rounded-full"
-                      alt="Avatar"
-                    />
-                    <div className="text-sm">{user.name}</div>
+            <div className="mx-4 mt-10 pb-2">
+              <div>
+                {isAuthed && (
+                  <div className="flex flex-row items-center justify-between">
+                    <div className="flex flex-row items-center space-x-2 bg-yellow-50">
+                      <Image
+                        src={user.image}
+                        width={32}
+                        height={32}
+                        className="rounded-full"
+                        alt="Avatar"
+                      />
+                      <div className="text-sm">{user.name}</div>
+                    </div>
+                    <button
+                      onClick={() => logout()}
+                      className="h-10 w-10 rounded-md bg-yellow-50 hover:bg-white"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} size="lg" fixedWidth className="w-5" />
+                    </button>
                   </div>
-                  <button onClick={() => logout()} className="h-10 w-10 rounded-md hover:bg-white">
-                    <FontAwesomeIcon icon={faSignOut} size="lg" fixedWidth className="w-5" />
-                  </button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>

@@ -1,5 +1,7 @@
 import NProgress from 'nprogress';
 
+// https://github.com/rstacruz/nprogress
+
 let timer: string | number | NodeJS.Timeout;
 let loadingState: 'loading' | 'finished';
 const delay = 250;

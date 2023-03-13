@@ -39,7 +39,7 @@ export default function Layout({ children }) {
 
   return (
     <div className="flex flex-col xl:flex-row">
-      <header className="block border border-yellow-500 bg-yellow-50 xl:hidden">
+      <header className="block border-b border-yellow-500 bg-yellow-50 xl:hidden">
         <div className="flex flex-row items-center justify-between">
           <div>
             <Link href="/" className="ml-2 block p-2">
@@ -52,10 +52,10 @@ export default function Layout({ children }) {
             <button
               type="button"
               onClick={toggleMenu}
-              className="mr-2 block h-10 w-10 rounded-md hover:bg-yellow-100"
+              className="mr-2 block h-12 w-12 rounded-md hover:bg-yellow-100"
             >
-              {!menuOpen && <FontAwesomeIcon icon={faBars} size="xl" className="w-6" />}
-              {menuOpen && <FontAwesomeIcon icon={faX} size="xl" className="w-6" />}
+              {!menuOpen && <FontAwesomeIcon icon={faBars} size="lg" fixedWidth className="w-5" />}
+              {menuOpen && <FontAwesomeIcon icon={faX} size="lg" fixedWidth className="w-5" />}
             </button>
           </div>
         </div>
@@ -64,7 +64,7 @@ export default function Layout({ children }) {
             <div className="mt-2 space-y-1">
               {menu.map((item) => (
                 <Item key={item.id} href={item.href} onClick={toggleMenu}>
-                  <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-4" />
+                  <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-5" />
                   <div>{item.name}</div>
                 </Item>
               ))}
@@ -90,7 +90,7 @@ export default function Layout({ children }) {
               <div className="mt-6 space-y-1">
                 {menu.map((item) => (
                   <Item key={item.id} href={item.href}>
-                    <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-4" />
+                    <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-5" />
                     <div>{item.name}</div>
                   </Item>
                 ))}

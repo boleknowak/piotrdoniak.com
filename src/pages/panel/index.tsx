@@ -1,11 +1,12 @@
 import PanelLayout from '@/components/Layouts/PanelLayout';
+import LoadingPage from '@/components/LoadingPage';
 import { UserInterface } from '@/interfaces/UserInterface';
 import { useSession } from 'next-auth/react';
 
 export default function PanelIndex() {
   const { data: session, status: authed } = useSession();
 
-  if (authed === 'loading') return <div>Loading...</div>;
+  if (authed === 'loading') return <LoadingPage />;
 
   const user = session?.user as UserInterface;
 

@@ -6,10 +6,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAddressCard } from '@fortawesome/free-regular-svg-icons';
 import { faBars, faPersonThroughWindow, faSignOut, faX } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
-import Footer from '@/components/Menu/Footer';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { UserInterface } from '@/interfaces/UserInterface';
 import Unauthorized from '../Unauthorized';
+import LoadingPage from '../LoadingPage';
 
 const caveat = Caveat({ subsets: ['latin'] });
 
@@ -17,10 +17,10 @@ export default function PanelLayout({ children }) {
   const { data: session, status: authed } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  if (authed === 'loading') return <div>Loading...</div>;
+  if (authed === 'loading') return <LoadingPage />;
   if (authed === 'unauthenticated') {
     signIn('google');
-    return <div>Redirecting...</div>;
+    return <LoadingPage />;
   }
 
   const user = session?.user as UserInterface;
@@ -81,16 +81,39 @@ export default function PanelLayout({ children }) {
           <div className="mx-4 mb-4">
             <div className="mt-2 space-y-1">
               {menu.map((item) => (
-                <Item key={item.id} href={item.href} onClick={toggleMenu}>
-                  <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-5" />
-                  <div>{item.name}</div>
-                </Item>
+                <div key={`nav-${item.id}`}>
+                  {isAuthed && isAuthorized && item.authorizedRoute && (
+                    <Item href={item.href} onClick={toggleMenu}>
+                      <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-5" />
+                      <div>{item.name}</div>
+                    </Item>
+                  )}
+                </div>
               ))}
             </div>
             <div className="mt-4">
               <hr />
               <div className="mt-4">
-                <Footer />
+                {isAuthed && (
+                  <div className="flex flex-row items-center justify-between">
+                    <div className="flex flex-row items-center space-x-2">
+                      <Image
+                        src={user.image}
+                        width={32}
+                        height={32}
+                        className="rounded-full"
+                        alt="Avatar"
+                      />
+                      <div className="text-sm">{user.name}</div>
+                    </div>
+                    <button
+                      onClick={() => logout()}
+                      className="h-10 w-10 rounded-md hover:bg-white"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} size="lg" fixedWidth className="w-5" />
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -107,9 +130,9 @@ export default function PanelLayout({ children }) {
               </Link>
               <div className="mt-6 space-y-1">
                 {menu.map((item) => (
-                  <div>
+                  <div key={`side-${item.id}`}>
                     {isAuthed && isAuthorized && item.authorizedRoute && (
-                      <Item key={item.id} href={item.href}>
+                      <Item href={item.href}>
                         <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-5" />
                         <div>{item.name}</div>
                       </Item>

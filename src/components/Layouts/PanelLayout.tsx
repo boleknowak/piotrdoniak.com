@@ -133,7 +133,7 @@ export default function PanelLayout({ children }) {
       <header className="block border-b border-yellow-500 bg-yellow-50 xl:hidden">
         <div className="flex flex-row items-center justify-between">
           <div>
-            <Link href="/" className="ml-2 block p-2">
+            <Link href="/panel" className="ml-2 block p-2">
               <div className="text-3xl font-bold">
                 <span className={caveat.className}>Panel</span>
               </div>
@@ -203,7 +203,7 @@ export default function PanelLayout({ children }) {
         <div className="min-h-96 m-2 hidden h-[98%] max-h-screen w-72 overflow-y-auto rounded border border-yellow-500 bg-yellow-50 xl:block">
           <div className="items-between flex h-full flex-grow flex-col">
             <div className="mb-32 h-full p-4">
-              <Link href="/">
+              <Link href="/panel">
                 <div className="text-3xl font-bold">
                   <span className={caveat.className}>Panel</span>
                 </div>

@@ -1,4 +1,4 @@
-import Layout from '@/components/Layout';
+import Layout from '@/components/Layouts/Layout';
 import { Sofia } from 'next/font/google';
 import Head from 'next/head';
 import Social from '@/components/Social';

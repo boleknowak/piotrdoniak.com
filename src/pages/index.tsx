@@ -4,8 +4,7 @@ import * as gtag from '@/lib/gtag';
 import Head from 'next/head';
 // import Link from 'next/link';
 import { useEffect } from 'react';
-// import { useSession, signIn, signOut } from 'next-auth/react';
-import Layout from '@/components/Layout';
+import Layout from '@/components/Layouts/Layout';
 import { Sofia } from 'next/font/google';
 import Image from 'next/image';
 
@@ -17,8 +16,6 @@ export default function Home({ siteMeta }) {
     'useGoogleAnalytics',
     'accepted'
   );
-  // const { data: session, status } = useSession();
-  // const userEmail = session?.user.email;
 
   useEffect(() => {
     gtag.manageConsent(useGoogleAnalytics);

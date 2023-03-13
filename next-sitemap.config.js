@@ -18,6 +18,8 @@ module.exports = {
     '/characters',
     '/count',
     '/posts-sitemap.xml',
+    '/panel',
+    '/panel/*',
   ],
   robotsTxtOptions: {
     additionalSitemaps: [`${APP_URL}/posts-sitemap.xml`],

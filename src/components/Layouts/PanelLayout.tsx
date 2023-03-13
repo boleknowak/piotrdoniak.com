@@ -144,6 +144,7 @@ export default function PanelLayout({ children }) {
               type="button"
               onClick={toggleMenu}
               className="mr-2 block h-12 w-12 rounded-md hover:bg-yellow-100"
+              aria-label="Rozwiń menu"
             >
               {!menuOpen && <FontAwesomeIcon icon={faBars} size="lg" fixedWidth className="w-5" />}
               {menuOpen && <FontAwesomeIcon icon={faX} size="lg" fixedWidth className="w-5" />}

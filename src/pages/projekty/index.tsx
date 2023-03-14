@@ -1,4 +1,4 @@
-import Layout from '@/components/Layout';
+import Layout from '@/components/Layouts/Layout';
 import Project from '@/components/Project';
 import Head from 'next/head';
 

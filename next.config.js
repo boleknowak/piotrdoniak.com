@@ -2,7 +2,15 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['localhost', 'rickandmortyapi.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+        port: '',
+        pathname: '**',
+      },
+    ],
+    // domains: ['localhost', 'rickandmortyapi.com', '*.googleusercontent.com'],
   },
 };
 

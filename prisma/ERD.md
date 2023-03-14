@@ -3,11 +3,11 @@ erDiagram
 	posts {
 		Int id PK  "autoincrement()"
 		String title
-		String slug  "nullable"
-		String full_slug  "nullable"
 		String content  "nullable"
 		DateTime createdAt  "now()"
 		DateTime updatedAt
+		String full_slug  "nullable"
+		String slug  "nullable"
 	}
 	accounts {
 		String id PK  "cuid()"
@@ -39,6 +39,7 @@ erDiagram
 		String email  "nullable"
 		DateTime email_verified  "nullable"
 		String image  "nullable"
+		Boolean is_authorized
 		DateTime created_at  "now()"
 		DateTime updated_at  "nullable"
 	}

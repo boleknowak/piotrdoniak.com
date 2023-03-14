@@ -18,18 +18,21 @@ export default function Layout({ children }) {
       name: 'O mnie',
       href: '/',
       icon: faAddressCard,
+      subtext: null,
     },
     {
       id: 2,
       name: 'Projekty',
       href: '/projekty',
       icon: faFolder,
+      subtext: null,
     },
     {
       id: 3,
       name: 'Kontakt',
       href: '/kontakt',
       icon: faEnvelope,
+      subtext: null,
     },
   ];
 
@@ -53,6 +56,7 @@ export default function Layout({ children }) {
               type="button"
               onClick={toggleMenu}
               className="mr-2 block h-12 w-12 rounded-md hover:bg-yellow-100"
+              aria-label="Rozwiń menu"
             >
               {!menuOpen && <FontAwesomeIcon icon={faBars} size="lg" fixedWidth className="w-5" />}
               {menuOpen && <FontAwesomeIcon icon={faX} size="lg" fixedWidth className="w-5" />}
@@ -63,7 +67,7 @@ export default function Layout({ children }) {
           <div className="mx-4 mb-4">
             <div className="mt-2 space-y-1">
               {menu.map((item) => (
-                <Item key={item.id} href={item.href} onClick={toggleMenu}>
+                <Item key={item.id} href={item.href} onClick={toggleMenu} subtext={item.subtext}>
                   <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-5" />
                   <div>{item.name}</div>
                 </Item>
@@ -89,7 +93,7 @@ export default function Layout({ children }) {
               </Link>
               <div className="mt-6 space-y-1">
                 {menu.map((item) => (
-                  <Item key={item.id} href={item.href}>
+                  <Item key={item.id} href={item.href} subtext={item.subtext}>
                     <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-5" />
                     <div>{item.name}</div>
                   </Item>

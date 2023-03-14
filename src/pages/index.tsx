@@ -2,10 +2,8 @@
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import * as gtag from '@/lib/gtag';
 import Head from 'next/head';
-// import Link from 'next/link';
 import { useEffect } from 'react';
-// import { useSession, signIn, signOut } from 'next-auth/react';
-import Layout from '@/components/Layout';
+import Layout from '@/components/Layouts/Layout';
 import { Sofia } from 'next/font/google';
 import Image from 'next/image';
 
@@ -17,8 +15,6 @@ export default function Home({ siteMeta }) {
     'useGoogleAnalytics',
     'accepted'
   );
-  // const { data: session, status } = useSession();
-  // const userEmail = session?.user.email;
 
   useEffect(() => {
     gtag.manageConsent(useGoogleAnalytics);
@@ -89,9 +85,6 @@ export default function Home({ siteMeta }) {
             {/* {loading && false && <div>Loading ...</div>}
             {!loading && false && (
               <div>
-                <Link href="/characters">
-                  <div className="text-blue-500">Go to characters</div>
-                </Link>
                 <div className="mt-4">
                   <label htmlFor="useGoogleAnalytics" className="mr-2">
                     Use Google Analytics ({getGoogleAnalyticsStatus()})
@@ -102,31 +95,6 @@ export default function Home({ siteMeta }) {
                     checked={useGoogleAnalytics === 'accepted'}
                     onChange={toggleUseGoogleAnalytics}
                   />
-                </div>
-                <div>
-                  {status === 'unauthenticated' && (
-                    <button onClick={() => signIn('google')}>Sign in</button>
-                  )}
-                  {status === 'authenticated' && (
-                    <div>
-                      <p>Signed in as {userEmail}</p>
-                      <button onClick={() => signOut()}>Sign out</button>
-                    </div>
-                  )}
-                </div>
-                <div>
-                  {data?.posts.length !== 0 && (
-                    <ul className="space-y-4">
-                      {data?.posts.map((post) => (
-                        <Link href={`/post/${post.id}`} key={post.id}>
-                          <li key={post.id} className="rounded bg-gray-200 p-4">
-                            <div className="font-medium">{post.title}</div>
-                            <div className="text-sm italic">{post.content}</div>
-                          </li>
-                        </Link>
-                      ))}
-                    </ul>
-                  )}
                 </div>
               </div>
             )} */}

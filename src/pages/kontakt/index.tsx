@@ -1,4 +1,4 @@
-import Layout from '@/components/Layout';
+import Layout from '@/components/Layouts/Layout';
 import { Sofia } from 'next/font/google';
 import Head from 'next/head';
 import Social from '@/components/Social';
@@ -99,7 +99,7 @@ export default function Contact({ siteMeta }) {
                     <div>
                       <button
                         type="submit"
-                        className="rounded-md bg-yellow-500 px-4 py-2 text-sm font-bold uppercase tracking-wide text-white hover:bg-yellow-600"
+                        className="rounded-md bg-yellow-500 px-4 py-2 text-sm font-bold uppercase tracking-wide text-black hover:bg-yellow-600"
                       >
                         Wyślij
                       </button>

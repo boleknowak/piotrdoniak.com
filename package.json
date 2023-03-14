@@ -4,14 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run format:fix && npm run lint:fix && prisma migrate deploy && npx prisma db push --skip-generate && next build && npm run sitemap:generate",
+    "build": "npm run typecheck && npm run format:fix && npm run lint:fix && prisma migrate deploy && npx prisma db push --skip-generate && next build && npm run sitemap:generate",
     "start": "next start",
     "lint": "eslint --ext .js,.cjs,.ts,.tsx .",
     "lint:fix": "eslint --ext .js,.cjs,.ts,.tsx . --fix",
     "format": "prettier --plugin-search-dir . --check .",
     "format:fix": "prettier --plugin-search-dir . --write .",
     "sitemap:generate": "next-sitemap",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run lint && npm run format"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
@@ -32,6 +33,7 @@
     "react-dom": "18.2.0",
     "react-query": "^3.39.3",
     "react-spinners": "^0.13.8",
+    "react-toastify": "^9.1.1",
     "sharp": "^0.31.3",
     "swr": "^2.1.0",
     "zod": "^3.21.4"

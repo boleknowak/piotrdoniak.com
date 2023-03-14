@@ -6,6 +6,8 @@ import * as gtag from '@/lib/gtag';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { SessionProvider } from 'next-auth/react';
+import 'react-toastify/dist/ReactToastify.css';
+import { Slide, ToastContainer } from 'react-toastify';
 
 const TopProgressBar = dynamic(() => import('@/components/TopProgressBar'), { ssr: false });
 
@@ -46,6 +48,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } })
       <TopProgressBar />
       <SessionProvider session={session}>
         <Component {...pageProps} />
+        <ToastContainer position="bottom-center" theme="dark" transition={Slide} />
       </SessionProvider>
     </>
   );

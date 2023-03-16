@@ -20,7 +20,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
   }
 
   // TODO: Add pagination
-  const messages = await prisma.contact.findMany({
+  const messages = await prisma.contactMessages.findMany({
     orderBy: {
       createdAt: 'desc',
     },

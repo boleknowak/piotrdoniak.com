@@ -8,9 +8,25 @@ import { useEffect, useState } from 'react';
 import Avatar from 'boring-avatars';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle, faClock, faEye, faFolderOpen } from '@fortawesome/free-regular-svg-icons';
-import { faFolderClosed, faLeftLong } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheckCircle,
+  faClock,
+  faEye,
+  faFolderOpen,
+  faPenToSquare,
+} from '@fortawesome/free-regular-svg-icons';
+import {
+  faFolderClosed,
+  faLeftLong,
+  faClock as faClockSolid,
+  faEnvelope,
+  faCheck,
+  faTrash,
+  faEnvelopeCircleCheck,
+} from '@fortawesome/free-solid-svg-icons';
 import Date from '@/components/Date';
+import Badge from '@/components/Elements/Badge';
+import { useRouter } from 'next/router';
 
 export default function PanelMessages() {
   const [messages, setMessages] = useState([]);
@@ -26,6 +42,7 @@ export default function PanelMessages() {
   });
   const [showMessages, setShowMessages] = useLocalStorage('showMessages', 'all');
   const { data: session, status: authed } = useSession();
+  const router = useRouter();
   const messagesData = getMessages({ onlyCount: false });
 
   useEffect(() => {
@@ -42,14 +59,24 @@ export default function PanelMessages() {
       } else {
         setFilteredMessages(messages);
       }
+
+      if (router.query.id) {
+        const id = parseInt(router.query.id as string, 10);
+        const forceSelectedMessage = messages.find((message) => message.id === id);
+        if (forceSelectedMessage) {
+          setSelectedMessage(forceSelectedMessage);
+        }
+      }
     }
   }, [messages, showMessages]);
 
   useEffect(() => {
     if (selectedMessage.id === undefined) return;
 
+    router.push(`/panel/wiadomosci?id=${selectedMessage.id}`, undefined, { shallow: true });
+
     console.log('selectedMessage', selectedMessage);
-    // TODO: Update message status to 'VIEWED'
+    // TODO: Update message status to 'VIEWED' if it's 'PENDING'
   }, [selectedMessage]);
 
   if (authed === 'loading' || messagesData.loading || isLoading) return <LoadingPage />;
@@ -82,6 +109,14 @@ export default function PanelMessages() {
     const lastName = nameArray[1];
 
     return `${firstName} ${lastName.charAt(0)}.`;
+  };
+
+  const markAsCompleted = (id: number) => {
+    console.log('markAsCompleted', id);
+  };
+
+  const removeMessage = (id: number) => {
+    console.log('removeMessage', id);
   };
 
   return (
@@ -121,6 +156,12 @@ export default function PanelMessages() {
           <div className="flex w-full flex-grow flex-row space-x-4">
             <div className="contact-height w-96 space-y-2">
               <div className="font-bold uppercase">Lista</div>
+              {filteredMessages.length === 0 && (
+                <div className="mx-auto pt-20 text-center">
+                  <FontAwesomeIcon icon={faEnvelopeCircleCheck} size="2xl" className="w-12" />
+                  <div className="mt-1 text-lg font-medium">Coś cicho, za cicho...</div>
+                </div>
+              )}
               {filteredMessages.length !== 0 && (
                 <div className="space-y-4">
                   {filteredMessages.map((message) => (
@@ -165,6 +206,13 @@ export default function PanelMessages() {
                           {message.status === 'VIEWED' && (
                             <FontAwesomeIcon icon={faEye} size="lg" className="w-5 text-blue-600" />
                           )}
+                          {message.status === 'DRAFT' && (
+                            <FontAwesomeIcon
+                              icon={faPenToSquare}
+                              size="lg"
+                              className="w-5 text-purple-600"
+                            />
+                          )}
                         </div>
                       </div>
                     </button>
@@ -192,8 +240,21 @@ export default function PanelMessages() {
                     />
                     <div>
                       <div className="font-bold">{selectedMessage.name}</div>
-                      <div className="text-xs text-gray-500">
-                        <Date dateString={selectedMessage.createdAt} />
+                      <div className="flex mt-1 flex-row items-center space-x-2">
+                        <Badge
+                          variant="outlined-gray"
+                          additionalClasses="flex flex-row items-center space-x-1"
+                        >
+                          <FontAwesomeIcon icon={faClockSolid} size="sm" className="-ml-1 w-3" />
+                          <Date dateString={selectedMessage.createdAt} />
+                        </Badge>
+                        <Badge
+                          variant="outlined-gray"
+                          additionalClasses="flex flex-row items-center space-x-1"
+                        >
+                          <FontAwesomeIcon icon={faEnvelope} size="sm" className="-ml-1 w-3" />
+                          <div>{selectedMessage.email}</div>
+                        </Badge>
                       </div>
                     </div>
                   </div>
@@ -201,6 +262,24 @@ export default function PanelMessages() {
                     {selectedMessage.message.split('\n').map((line) => (
                       <div key={line}>{line}</div>
                     ))}
+                  </div>
+                  <div className="flex mt-4 flex-row items-center space-x-4">
+                    <button
+                      type="button"
+                      className="flex flex-row items-center space-x-2 rounded-md border border-yellow-300 bg-yellow-300 px-3 py-2 text-sm"
+                      onClick={() => markAsCompleted(selectedMessage.id)}
+                    >
+                      <FontAwesomeIcon icon={faCheck} size="lg" className="w-5" />
+                      <div>Oznacz jako zakończone</div>
+                    </button>
+                    <button
+                      type="button"
+                      className="flex flex-row items-center space-x-2 rounded-md border border-red-500 px-3 py-2 text-sm text-red-500"
+                      onClick={() => removeMessage(selectedMessage.id)}
+                    >
+                      <FontAwesomeIcon icon={faTrash} size="lg" className="w-5" />
+                      <div>Usuń na zawsze</div>
+                    </button>
                   </div>
                 </div>
               )}

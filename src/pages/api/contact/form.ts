@@ -20,11 +20,21 @@ export default async function handle(request: NextApiRequest, response: NextApiR
   try {
     const validatedData = schema.parse(body);
 
-    await prisma.contact.create({
+    const contact = await prisma.contact.upsert({
+      where: { email: validatedData.email },
+      update: {},
+      create: {
+        name: validatedData.name,
+        email: validatedData.email,
+      },
+    });
+
+    await prisma.contactMessages.create({
       data: {
         name: validatedData.name,
         email: validatedData.email,
         message: validatedData.message,
+        contactId: contact.id,
       },
     });
 

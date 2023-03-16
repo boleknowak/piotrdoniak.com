@@ -19,7 +19,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
     return response.status(403).json({ error: 'forbidden' });
   }
 
-  const count = await prisma.contact.count({
+  const count = await prisma.contactMessages.count({
     where: {
       status: {
         not: 'CLOSED',

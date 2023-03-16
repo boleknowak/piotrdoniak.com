@@ -75,6 +75,7 @@ export default function PanelMessages() {
 
     router.push(`/panel/wiadomosci?id=${selectedMessage.id}`, undefined, { shallow: true });
 
+    // eslint-disable-next-line no-console
     console.log('selectedMessage', selectedMessage);
     // TODO: Update message status to 'VIEWED' if it's 'PENDING'
   }, [selectedMessage]);
@@ -112,10 +113,12 @@ export default function PanelMessages() {
   };
 
   const markAsCompleted = (id: number) => {
+    // eslint-disable-next-line no-console
     console.log('markAsCompleted', id);
   };
 
   const removeMessage = (id: number) => {
+    // eslint-disable-next-line no-console
     console.log('removeMessage', id);
   };
 
@@ -240,7 +243,7 @@ export default function PanelMessages() {
                     />
                     <div>
                       <div className="font-bold">{selectedMessage.name}</div>
-                      <div className="flex mt-1 flex-row items-center space-x-2">
+                      <div className="mt-1 flex flex-row items-center space-x-2">
                         <Badge
                           variant="outlined-gray"
                           additionalClasses="flex flex-row items-center space-x-1"
@@ -263,7 +266,7 @@ export default function PanelMessages() {
                       <div key={line}>{line}</div>
                     ))}
                   </div>
-                  <div className="flex mt-4 flex-row items-center space-x-4">
+                  <div className="mt-4 flex flex-row items-center space-x-4">
                     <button
                       type="button"
                       className="flex flex-row items-center space-x-2 rounded-md border border-yellow-300 bg-yellow-300 px-3 py-2 text-sm"

@@ -1,4 +1,4 @@
-import '@/styles/globals.css';
+import '@/styles/globals.scss';
 import dynamic from 'next/dynamic';
 import 'nprogress/nprogress.css';
 import Script from 'next/script';

@@ -9,6 +9,25 @@ erDiagram
 		String full_slug  "nullable"
 		String slug  "nullable"
 	}
+	contacts {
+		Int id PK  "autoincrement()"
+		String name
+		String email
+		String avatar  "nullable"
+		DateTime createdAt  "now()"
+		DateTime updatedAt
+	}
+	contact_messages {
+		Int id PK  "autoincrement()"
+		String name
+		String email
+		String message
+		String draft_reply  "nullable"
+		ContactStatus status "PENDING"
+		DateTime createdAt  "now()"
+		DateTime updatedAt
+		Int contact_id  "nullable"
+	}
 	accounts {
 		String id PK  "cuid()"
 		String user_id
@@ -48,6 +67,14 @@ erDiagram
 		String token
 		DateTime expires
 	}
+	ContactStatus {
+		value PENDING
+		value VIEWED
+		value DRAFT
+		value CLOSED
+	}
+	contact_messages }o--|| contacts : contact
+	contact_messages }o--|| undefined : "enum:status"
 	accounts }o--|| users : user
 	sessions }o--|| users : user
 

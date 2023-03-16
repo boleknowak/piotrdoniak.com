@@ -3,10 +3,80 @@ import { Sofia } from 'next/font/google';
 import Head from 'next/head';
 import Social from '@/components/Social';
 import { socials } from '@/lib/socials';
+import { toast } from 'react-toastify';
+import { useState } from 'react';
+import { BarLoader } from 'react-spinners';
+
+const ERROR_TYPES = {
+  too_small: 'Za krótkie (min. 2 znaki)',
+  too_big: 'Za długie',
+  invalid_string: 'Niepoprawny adres email',
+  invalid_type: 'Coś poszło nie tak',
+};
+
+interface ContactFields {
+  name: string;
+  email: string;
+  message: string;
+}
 
 const sofia = Sofia({ subsets: ['latin'], weight: '400' });
 
 export default function Contact({ siteMeta }) {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState({
+    name: '',
+    email: '',
+    message: '',
+  });
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const data = {
+      name: name.trim(),
+      email: email.trim(),
+      message: message.trim(),
+    } as ContactFields;
+
+    setErrors({
+      name: '',
+      email: '',
+      message: '',
+    });
+
+    const response = await fetch('/api/contact/form', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    setIsSubmitting(false);
+    if (result.error) {
+      if (!result.issues || result.issues?.length === 0) {
+        toast(result.error, { autoClose: 3000, type: 'error' });
+      } else {
+        result.issues.forEach((issue: { name: never; code: never }) => {
+          setErrors((prev) => ({ ...prev, [issue.name]: issue.code }));
+        });
+      }
+    } else {
+      toast(result.message, { autoClose: 3000, type: 'success' });
+
+      setName('');
+      setEmail('');
+      setMessage('');
+    }
+  };
+
   return (
     <>
       <Head>
@@ -50,7 +120,7 @@ export default function Contact({ siteMeta }) {
               <div className="mt-10">
                 <div className="mb-2 font-bold">Formularz</div>
                 <div>
-                  <form className="space-y-4">
+                  <form className="space-y-4" onSubmit={handleSubmit}>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1">
                         <label htmlFor="name" className="block text-sm font-medium text-gray-700">
@@ -62,8 +132,17 @@ export default function Contact({ siteMeta }) {
                             name="name"
                             id="name"
                             placeholder="np. Piotr"
-                            className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className={`block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
+                              errors.name ? 'border-red-500' : ''
+                            }`}
                           />
+                          {errors.name && (
+                            <div className="text-sm font-medium text-red-500">
+                              {ERROR_TYPES[errors.name]}
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="space-y-1">
@@ -76,8 +155,17 @@ export default function Contact({ siteMeta }) {
                             name="email"
                             id="email"
                             placeholder="np. piotr@przykladowy.pl"
-                            className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className={`block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
+                              errors.email ? 'border-red-500' : ''
+                            }`}
                           />
+                          {errors.email && (
+                            <div className="text-sm font-medium text-red-500">
+                              {ERROR_TYPES[errors.email]}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -92,16 +180,33 @@ export default function Contact({ siteMeta }) {
                           rows={4}
                           cols={50}
                           placeholder="Aa"
-                          className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
+                          value={message}
+                          onChange={(e) => setMessage(e.target.value)}
+                          className={`block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
+                            errors.message ? 'border-red-500' : ''
+                          }`}
                         ></textarea>
+                        {errors.message && (
+                          <div className="text-sm font-medium text-red-500">
+                            {ERROR_TYPES[errors.message]}
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div>
                       <button
                         type="submit"
-                        className="rounded-md bg-yellow-500 px-4 py-2 text-sm font-bold uppercase tracking-wide text-black hover:bg-yellow-600"
+                        disabled={isSubmitting}
+                        className={`h-10 w-24 rounded-md bg-yellow-500 text-sm font-bold uppercase tracking-wide text-black hover:bg-yellow-600 ${
+                          isSubmitting ? 'cursor-not-allowed bg-opacity-75' : ''
+                        }`}
                       >
-                        Wyślij
+                        {!isSubmitting && <span>Wyślij</span>}
+                        {isSubmitting && (
+                          <div className="ml-4">
+                            <BarLoader color="#212121" width={64} aria-label="Wysyłanie..." />
+                          </div>
+                        )}
                       </button>
                     </div>
                   </form>

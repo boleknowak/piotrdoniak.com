@@ -20,6 +20,7 @@ import {
 import { useState } from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { UserInterface } from '@/interfaces/UserInterface';
+import getMessages from '@/lib/getMessages';
 import Unauthorized from '../Unauthorized';
 import LoadingPage from '../LoadingPage';
 
@@ -80,7 +81,7 @@ export default function PanelLayout({ children }) {
       type: 'element',
       href: '/panel/wiadomosci',
       icon: faEnvelope,
-      subtext: '2',
+      subtext: null,
       authorizedRoute: true,
     },
     {
@@ -117,6 +118,18 @@ export default function PanelLayout({ children }) {
       authorizedRoute: true,
     },
   ];
+
+  const messages = getMessages({ onlyCount: true });
+
+  if (messages.data) {
+    menu.map((item) => {
+      if (item.id === 'wiadomosci') {
+        item.subtext = messages.data.count || null;
+      }
+
+      return item;
+    });
+  }
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);

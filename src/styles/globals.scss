@@ -20,3 +20,8 @@
   border-top-color: var(--nprogress-color) !important;
   border-left-color: var(--nprogress-color) !important;
 }
+
+.contact-height {
+  height: calc(100vh - 130px);
+  overflow-y: auto;
+}

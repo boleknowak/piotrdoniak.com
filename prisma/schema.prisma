@@ -12,6 +12,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ContactStatus {
+  PENDING
+  VIEWED
+  DRAFT
+  CLOSED
+}
+
 model Post {
   id        Int      @id @default(autoincrement())
   title     String
@@ -22,6 +29,35 @@ model Post {
   slug      String?  @unique
 
   @@map("posts")
+}
+
+model Contact {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ContactMessages ContactMessages[]
+
+  @@map("contacts")
+}
+
+model ContactMessages {
+  id         Int           @id @default(autoincrement())
+  name       String
+  email      String
+  message    String
+  draftReply String?       @map("draft_reply")
+  status     ContactStatus @default(PENDING)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  contactId Int?     @map("contact_id")
+  contact   Contact? @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@map("contact_messages")
 }
 
 model Account {

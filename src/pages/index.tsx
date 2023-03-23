@@ -60,6 +60,9 @@ export default function Home({ siteMeta }) {
                 width={600}
                 height={286}
                 className="mb-10 rounded-lg"
+                quality={80}
+                placeholder="blur"
+                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5mhHgAHXgJzdoLBFwAAAABJRU5ErkJggg=="
               />
               <h1 className="mb-4 text-2xl font-bold">Cześć!</h1>
               <div className="space-y-4 leading-6 tracking-wide">

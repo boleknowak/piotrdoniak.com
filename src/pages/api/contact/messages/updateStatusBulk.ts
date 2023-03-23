@@ -46,9 +46,11 @@ export default async function handle(request: NextApiRequest, response: NextApiR
         break;
     }
 
-    await prisma.contactMessage.update({
+    await prisma.contactMessage.updateMany({
       where: {
-        id: body.id,
+        id: {
+          in: body.ids,
+        },
       },
       data: {
         status,

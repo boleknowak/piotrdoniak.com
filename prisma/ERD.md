@@ -13,20 +13,18 @@ erDiagram
 		Int id PK  "autoincrement()"
 		String name
 		String email
-		String avatar  "nullable"
 		DateTime createdAt  "now()"
 		DateTime updatedAt
+		String avatar  "nullable"
+		String draftReply  "nullable"
 	}
 	contact_messages {
 		Int id PK  "autoincrement()"
-		String name
-		String email
 		String message
-		String draft_reply  "nullable"
-		ContactStatus status "PENDING"
 		DateTime createdAt  "now()"
 		DateTime updatedAt
-		Int contact_id  "nullable"
+		ContactMessageStatus status "PENDING"
+		Int contactId FK
 	}
 	accounts {
 		String id PK  "cuid()"
@@ -58,19 +56,18 @@ erDiagram
 		String email  "nullable"
 		DateTime email_verified  "nullable"
 		String image  "nullable"
-		Boolean is_authorized
 		DateTime created_at  "now()"
 		DateTime updated_at  "nullable"
+		Boolean is_authorized
 	}
 	verification_tokens {
 		String identifier
 		String token
 		DateTime expires
 	}
-	ContactStatus {
+	ContactMessageStatus {
 		value PENDING
 		value VIEWED
-		value DRAFT
 		value CLOSED
 	}
 	contact_messages }o--|| contacts : contact

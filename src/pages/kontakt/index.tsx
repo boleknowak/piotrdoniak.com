@@ -4,8 +4,10 @@ import Head from 'next/head';
 import Social from '@/components/Social';
 import { socials } from '@/lib/socials';
 import { toast } from 'react-toastify';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BarLoader } from 'react-spinners';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+import Avatar from '@/components/Elements/Avatar';
 
 const ERROR_TYPES = {
   too_small: 'Za krótkie (min. 2 znaki)',
@@ -27,11 +29,23 @@ export default function Contact({ siteMeta }) {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [returningEmail, setReturningEmail] = useLocalStorage('remail', null);
+  const [returningName, setReturningName] = useLocalStorage('rname', null);
   const [errors, setErrors] = useState({
     name: '',
     email: '',
     message: '',
   });
+
+  useEffect(() => {
+    if (returningEmail) {
+      setEmail(returningEmail);
+    }
+
+    if (returningName) {
+      setName(returningName);
+    }
+  }, [returningEmail, returningName]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -42,6 +56,14 @@ export default function Contact({ siteMeta }) {
       email: email.trim(),
       message: message.trim(),
     } as ContactFields;
+
+    if (returningEmail) {
+      data.email = returningEmail;
+    }
+
+    if (returningName) {
+      data.name = returningName;
+    }
 
     setErrors({
       name: '',
@@ -69,6 +91,9 @@ export default function Contact({ siteMeta }) {
         });
       }
     } else {
+      setReturningEmail(data.email);
+      setReturningName(data.name);
+
       toast(result.message, { autoClose: 3000, type: 'success' });
 
       setName('');
@@ -121,54 +146,85 @@ export default function Contact({ siteMeta }) {
                 <div className="mb-2 font-bold">Formularz</div>
                 <div>
                   <form className="space-y-4" onSubmit={handleSubmit}>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-1">
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                          Twoja nazwa <span className="text-red-500">*</span>
-                        </label>
+                    {returningEmail && returningName && (
+                      <div className="flex flex-row items-start space-x-4 rounded-md bg-gray-100 p-4">
+                        <Avatar alt={returningEmail} size={40} />
                         <div>
-                          <input
-                            type="text"
-                            name="name"
-                            id="name"
-                            placeholder="np. Piotr"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className={`block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
-                              errors.name ? 'border-red-500' : ''
-                            }`}
-                          />
-                          {errors.name && (
-                            <div className="text-sm font-medium text-red-500">
-                              {ERROR_TYPES[errors.name]}
-                            </div>
-                          )}
+                          <span className="font-medium">Chcesz coś dodać, {returningName}?</span>
+                          <br />
+                          <span className="text-sm text-gray-500">
+                            Nie musisz ponownie podawać swojego adresu email! 😎
+                          </span>
+                          <div>
+                            <button
+                              type="button"
+                              className="text-sm text-blue-500 hover:underline"
+                              onClick={() => {
+                                setReturningEmail(null);
+                                setReturningName(null);
+                                setEmail('');
+                                setName('');
+                              }}
+                            >
+                              To nie ja!
+                            </button>
+                          </div>
                         </div>
                       </div>
-                      <div className="space-y-1">
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                          Adres email <span className="text-red-500">*</span>
-                        </label>
-                        <div>
-                          <input
-                            type="email"
-                            name="email"
-                            id="email"
-                            placeholder="np. piotr@przykladowy.pl"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className={`block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
-                              errors.email ? 'border-red-500' : ''
-                            }`}
-                          />
-                          {errors.email && (
-                            <div className="text-sm font-medium text-red-500">
-                              {ERROR_TYPES[errors.email]}
-                            </div>
-                          )}
+                    )}
+                    {!(returningName && returningEmail) && (
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                            Twoja nazwa <span className="text-red-500">*</span>
+                          </label>
+                          <div>
+                            <input
+                              type="text"
+                              name="name"
+                              id="name"
+                              placeholder="np. Piotr"
+                              value={name}
+                              onChange={(e) => setName(e.target.value)}
+                              className={`block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
+                                errors.name ? 'border-red-500' : ''
+                              }`}
+                            />
+                            {errors.name && (
+                              <div className="text-sm font-medium text-red-500">
+                                {ERROR_TYPES[errors.name]}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="space-y-1">
+                          <label
+                            htmlFor="email"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Adres email <span className="text-red-500">*</span>
+                          </label>
+                          <div>
+                            <input
+                              type="email"
+                              name="email"
+                              id="email"
+                              placeholder="np. piotr@przykladowy.pl"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              className={`block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
+                                errors.email ? 'border-red-500' : ''
+                              }`}
+                            />
+                            {errors.email && (
+                              <div className="text-sm font-medium text-red-500">
+                                {ERROR_TYPES[errors.email]}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                     <div className="space-y-1">
                       <label htmlFor="message" className="block text-sm font-medium text-gray-700">
                         Wiadomość <span className="text-red-500">*</span>

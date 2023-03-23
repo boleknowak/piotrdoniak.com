@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+}
+
 :root {
   --nprogress-color: #ff9000;
   --nprogress-height: 3px;

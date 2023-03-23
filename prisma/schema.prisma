@@ -39,12 +39,12 @@ model Contact {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  ContactMessages ContactMessages[]
+  ContactMessage ContactMessage[]
 
   @@map("contacts")
 }
 
-model ContactMessages {
+model ContactMessage {
   id         Int           @id @default(autoincrement())
   name       String
   email      String

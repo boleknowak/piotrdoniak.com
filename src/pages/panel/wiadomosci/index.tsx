@@ -12,6 +12,7 @@ import {
   faCheckCircle,
   faClock,
   faEye,
+  faFloppyDisk,
   faFolderOpen,
   faPenToSquare,
 } from '@fortawesome/free-regular-svg-icons';
@@ -27,16 +28,23 @@ import {
 import Date from '@/components/Date';
 import Badge from '@/components/Elements/Badge';
 import { useRouter } from 'next/router';
+import { toast } from 'react-toastify';
+import StatusBadge from '@/components/Elements/StatusBadge';
 
 export default function PanelMessages() {
   const [messages, setMessages] = useState([]);
+  const [draftMessage, setDraftMessage] = useState('');
   const [filteredMessages, setFilteredMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState({
     id: undefined,
     name: undefined,
     email: undefined,
     message: undefined,
+    draftReply: undefined,
     status: undefined,
     createdAt: undefined,
   });
@@ -53,7 +61,7 @@ export default function PanelMessages() {
   }, [messagesData.data]);
 
   useEffect(() => {
-    if (messages.length !== 0) {
+    if (messages?.length !== 0) {
       if (showMessages === 'closed') {
         setFilteredMessages(messages.filter((message) => message.status !== 'CLOSED'));
       } else {
@@ -62,7 +70,7 @@ export default function PanelMessages() {
 
       if (router.query.id) {
         const id = parseInt(router.query.id as string, 10);
-        const forceSelectedMessage = messages.find((message) => message.id === id);
+        const forceSelectedMessage = messages?.find((message) => message.id === id);
         if (forceSelectedMessage) {
           setSelectedMessage(forceSelectedMessage);
         }
@@ -70,14 +78,44 @@ export default function PanelMessages() {
     }
   }, [messages, showMessages]);
 
+  const updateStatus = async (id: number, status: string, notify = true) => {
+    if (status === 'closed') setIsClosing(true);
+
+    const response = await fetch('/api/contact/messages/updateStatus', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id,
+        status,
+      }),
+    });
+
+    const result = await response.json();
+    if (status === 'closed') setIsClosing(false);
+
+    if (result.error) {
+      toast(result.error, { autoClose: 3000, type: 'error' });
+    }
+
+    if (notify) {
+      if (!result.error) {
+        toast(result.message, { autoClose: 3000, type: 'success' });
+      }
+    }
+  };
+
   useEffect(() => {
     if (selectedMessage.id === undefined) return;
 
     router.push(`/panel/wiadomosci?id=${selectedMessage.id}`, undefined, { shallow: true });
 
-    // eslint-disable-next-line no-console
-    console.log('selectedMessage', selectedMessage);
-    // TODO: Update message status to 'VIEWED' if it's 'PENDING'
+    setDraftMessage(selectedMessage.draftReply || '');
+
+    if (selectedMessage.status === 'PENDING') {
+      updateStatus(selectedMessage.id, 'viewed', false);
+    }
   }, [selectedMessage]);
 
   if (authed === 'loading' || messagesData.loading || isLoading) return <LoadingPage />;
@@ -112,14 +150,53 @@ export default function PanelMessages() {
     return `${firstName} ${lastName.charAt(0)}.`;
   };
 
-  const markAsCompleted = (id: number) => {
-    // eslint-disable-next-line no-console
-    console.log('markAsCompleted', id);
+  const deleteMessage = async (id: number) => {
+    // TODO: Add confirmation
+    // eslint-disable-next-line no-restricted-globals, no-alert
+    if (!confirm('Czy na pewno chcesz usunąć tą wiadomość?')) return;
+
+    setIsDeleting(true);
+    const response = await fetch('/api/contact/messages/remove', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id,
+      }),
+    });
+
+    const result = await response.json();
+
+    setIsDeleting(false);
+    if (result.error) {
+      toast(result.error, { autoClose: 3000, type: 'error' });
+    } else {
+      toast(result.message, { autoClose: 3000, type: 'success' });
+    }
   };
 
-  const removeMessage = (id: number) => {
-    // eslint-disable-next-line no-console
-    console.log('removeMessage', id);
+  const updateDraftMessage = async (id: number) => {
+    setIsSaving(true);
+    const response = await fetch('/api/contact/messages/updateDraft', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id,
+        draftReply: draftMessage,
+      }),
+    });
+
+    const result = await response.json();
+
+    setIsSaving(false);
+    if (result.error) {
+      toast(result.error, { autoClose: 3000, type: 'error' });
+    } else {
+      toast(result.message, { autoClose: 3000, type: 'success' });
+    }
   };
 
   return (
@@ -159,19 +236,19 @@ export default function PanelMessages() {
           <div className="flex w-full flex-grow flex-row space-x-4">
             <div className="contact-height w-96 space-y-2">
               <div className="font-bold uppercase">Lista</div>
-              {filteredMessages.length === 0 && (
+              {filteredMessages?.length === 0 && (
                 <div className="mx-auto pt-20 text-center">
                   <FontAwesomeIcon icon={faEnvelopeCircleCheck} size="2xl" className="w-12" />
                   <div className="mt-1 text-lg font-medium">Coś cicho, za cicho...</div>
                 </div>
               )}
-              {filteredMessages.length !== 0 && (
+              {filteredMessages?.length !== 0 && (
                 <div className="space-y-4">
-                  {filteredMessages.map((message) => (
+                  {filteredMessages?.map((message) => (
                     <button
                       type="button"
                       key={message.id}
-                      className={`block w-full rounded-lg bg-gray-100 p-4 text-left ${
+                      className={`block w-full rounded-lg bg-gray-100 p-4 text-left hover:bg-yellow-50 ${
                         selectedMessage.id === message.id && '!bg-yellow-50'
                       }`}
                       onClick={() => setSelectedMessage(message)}
@@ -258,6 +335,7 @@ export default function PanelMessages() {
                           <FontAwesomeIcon icon={faEnvelope} size="sm" className="-ml-1 w-3" />
                           <div>{selectedMessage.email}</div>
                         </Badge>
+                        <StatusBadge status={selectedMessage.status} />
                       </div>
                     </div>
                   </div>
@@ -266,19 +344,49 @@ export default function PanelMessages() {
                       <div key={line}>{line}</div>
                     ))}
                   </div>
+                  <div className="mt-4">
+                    <hr />
+                    <div className="mt-2 mb-1 font-medium">Szkic odpowiedzi</div>
+                    <textarea
+                      name="draft_reply"
+                      id="draft_reply"
+                      rows={4}
+                      cols={50}
+                      disabled={selectedMessage.status === 'CLOSED'}
+                      value={draftMessage}
+                      onChange={(e) => setDraftMessage(e.target.value)}
+                      className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
+                      placeholder="Szkic Twojej odpowiedzi..."
+                    ></textarea>
+                  </div>
                   <div className="mt-4 flex flex-row items-center space-x-4">
+                    {selectedMessage.status !== 'CLOSED' && (
+                      <button
+                        type="button"
+                        disabled={isSaving}
+                        className="flex flex-row items-center space-x-2 rounded-md border border-green-400 bg-green-400 px-3 py-2 text-sm"
+                        onClick={() => updateDraftMessage(selectedMessage.id)}
+                      >
+                        <FontAwesomeIcon icon={faFloppyDisk} size="lg" className="w-5" />
+                        <div>Zapisz szkic</div>
+                      </button>
+                    )}
+                    {selectedMessage.status !== 'CLOSED' && (
+                      <button
+                        type="button"
+                        disabled={isClosing}
+                        className="flex flex-row items-center space-x-2 rounded-md border border-yellow-300 bg-yellow-300 px-3 py-2 text-sm"
+                        onClick={() => updateStatus(selectedMessage.id, 'closed')}
+                      >
+                        <FontAwesomeIcon icon={faCheck} size="lg" className="w-5" />
+                        <div>Oznacz jako zakończone</div>
+                      </button>
+                    )}
                     <button
                       type="button"
-                      className="flex flex-row items-center space-x-2 rounded-md border border-yellow-300 bg-yellow-300 px-3 py-2 text-sm"
-                      onClick={() => markAsCompleted(selectedMessage.id)}
-                    >
-                      <FontAwesomeIcon icon={faCheck} size="lg" className="w-5" />
-                      <div>Oznacz jako zakończone</div>
-                    </button>
-                    <button
-                      type="button"
+                      disabled={isDeleting}
                       className="flex flex-row items-center space-x-2 rounded-md border border-red-500 px-3 py-2 text-sm text-red-500"
-                      onClick={() => removeMessage(selectedMessage.id)}
+                      onClick={() => deleteMessage(selectedMessage.id)}
                     >
                       <FontAwesomeIcon icon={faTrash} size="lg" className="w-5" />
                       <div>Usuń na zawsze</div>

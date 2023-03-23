@@ -13,7 +13,8 @@
     "sitemap:generate": "next-sitemap",
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck && npm run lint && npm run format",
-    "prisma:deploy": "npx prisma migrate deploy && npx prisma db push"
+    "prisma:deploy": "npx prisma migrate deploy && npx prisma db push",
+    "prisma:migration": "npx prisma migrate dev --create-only --name"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.3.0",

@@ -11,6 +11,10 @@ const schema = z.object({
 });
 
 export default async function handle(request: NextApiRequest, response: NextApiResponse) {
+  if (request.method !== 'POST') {
+    return response.status(405).json({ error: 'method_not_allowed' });
+  }
+
   const { body } = request;
 
   if (!body) {
@@ -29,12 +33,16 @@ export default async function handle(request: NextApiRequest, response: NextApiR
       },
     });
 
-    await prisma.contactMessages.create({
+    await prisma.contactMessage.create({
       data: {
         name: validatedData.name,
         email: validatedData.email,
         message: validatedData.message,
-        contactId: contact.id,
+        contact: {
+          connect: {
+            id: contact.id,
+          },
+        },
       },
     });
 

@@ -6,7 +6,13 @@ import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faEye, faFloppyDisk, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
+import {
+  faCheckSquare,
+  faClock,
+  faEye,
+  faFloppyDisk,
+  faPenToSquare,
+} from '@fortawesome/free-regular-svg-icons';
 import {
   faLeftLong,
   faClock as faClockSolid,
@@ -321,10 +327,18 @@ export default function PanelMessages() {
                     <div className="mt-4 space-y-2">
                       {selectedContact.messages.map((message) => (
                         <div key={message.id} className="mt-4 rounded-md bg-white p-4">
-                          <div className="mb-1 text-xs text-gray-500">
+                          <div className="mb-1 flex flex-row items-center space-x-2 text-xs text-gray-500">
                             <Date dateString={message.createdAt} withTime={true} />
+                            <div>•</div>
+                            <button
+                              type="button"
+                              className="block hover:text-green-600"
+                              onClick={() => updateStatus([message.id], 'closed')}
+                            >
+                              <FontAwesomeIcon icon={faCheckSquare} size="sm" className="w-3" />
+                            </button>
                           </div>
-                          {message.message.split('\n').map((line) => (
+                          {message.message.split('\n').map((line: string) => (
                             <div key={line}>{line}</div>
                           ))}
                         </div>

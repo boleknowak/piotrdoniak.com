@@ -1,10 +1,9 @@
-import { ContactMessageStatus, PrismaClient } from '@prisma/client';
+import { ContactMessageStatus } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { UserInterface } from '@/interfaces/UserInterface';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/db';
 
 interface ContactSchema {
   id: number;

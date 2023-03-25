@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/db';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { z } from 'zod';
-
-const prisma = new PrismaClient();
 
 const schema = z.object({
   name: z.string().min(2).max(50),

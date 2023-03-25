@@ -1,10 +1,8 @@
 import { UserInterface } from '@/interfaces/UserInterface';
-import { PrismaClient } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/db';
 
 export default async function handle(request: NextApiRequest, response: NextApiResponse) {
   const session = await getServerSession(request, response, authOptions);

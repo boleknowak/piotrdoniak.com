@@ -150,7 +150,7 @@ export default function Contact({ siteMeta }) {
                       <div className="flex flex-row items-start space-x-4 rounded-md bg-gray-100 p-4">
                         <Avatar alt={returningEmail} size={40} />
                         <div>
-                          <span className="font-medium">Chcesz coś dodać, {returningName}?</span>
+                          <span className="font-medium">Chcesz coś dopisać, {returningName}?</span>
                           <br />
                           <span className="text-sm text-gray-500">
                             Nie musisz ponownie podawać swojego adresu email! 😎

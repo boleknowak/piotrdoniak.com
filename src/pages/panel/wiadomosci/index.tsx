@@ -44,10 +44,12 @@ export default function PanelMessages() {
   const messagesData = getMessages({ onlyCount: false });
 
   useEffect(() => {
-    if (messagesData.data) {
+    if (messagesData.data?.error) {
+      toast(messagesData.data.error, { autoClose: 3000, type: 'error' });
+    } else if (messagesData.data) {
       setContacts(messagesData.data.data);
-      setIsLoading(false);
     }
+    setIsLoading(false);
   }, [messagesData.data]);
 
   useEffect(() => {
@@ -102,7 +104,7 @@ export default function PanelMessages() {
     const selectedMessage = selectedContact.messages.filter(
       (message) => message.status === 'PENDING'
     );
-    if (selectedMessage) {
+    if (selectedMessage.length > 0) {
       updateStatus(
         selectedMessage.map((m) => m.id),
         'viewed',
@@ -319,6 +321,9 @@ export default function PanelMessages() {
                     <div className="mt-4 space-y-2">
                       {selectedContact.messages.map((message) => (
                         <div key={message.id} className="mt-4 rounded-md bg-white p-4">
+                          <div className="mb-1 text-xs text-gray-500">
+                            <Date dateString={message.createdAt} withTime={true} />
+                          </div>
                           {message.message.split('\n').map((line) => (
                             <div key={line}>{line}</div>
                           ))}

@@ -1,4 +1,4 @@
-import { PrismaClient, ContactStatus } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
@@ -30,13 +30,12 @@ export default async function handle(request: NextApiRequest, response: NextApiR
   }
 
   try {
-    await prisma.contactMessage.update({
+    await prisma.contact.update({
       where: {
         id: body.id,
       },
       data: {
         draftReply: body.draftReply,
-        status: body.draftReply ? ContactStatus.DRAFT : ContactStatus.VIEWED,
       },
     });
 

@@ -60,7 +60,11 @@ export default function Home({ siteMeta }) {
                 width={600}
                 height={286}
                 className="mb-10 rounded-lg"
+                quality={80}
+                placeholder="blur"
+                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mPcUg8AAe0BNUeV1/kAAAAASUVORK5CYII="
               />
+              {/* https://png-pixel.com/ b4b4b4 */}
               <h1 className="mb-4 text-2xl font-bold">Cześć!</h1>
               <div className="space-y-4 leading-6 tracking-wide">
                 <p>

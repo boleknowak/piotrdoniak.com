@@ -23,7 +23,7 @@ import {
 import Date from '@/components/Date';
 import Badge from '@/components/Elements/Badge';
 import { useRouter } from 'next/router';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import StatusBadge from '@/components/Elements/StatusBadge';
 import Avatar from '@/components/Elements/Avatar';
 
@@ -51,7 +51,7 @@ export default function PanelMessages() {
 
   useEffect(() => {
     if (messagesData.data?.error) {
-      toast(messagesData.data.error, { autoClose: 3000, type: 'error' });
+      toast.error(messagesData.data.error);
     } else if (messagesData.data) {
       setContacts(messagesData.data.data);
     }
@@ -73,7 +73,10 @@ export default function PanelMessages() {
   }, [contacts]);
 
   const updateStatus = async (ids: Array<number>, status: string, notify = true) => {
-    if (status === 'closed') setIsClosing(true);
+    if (status === 'closed') {
+      setIsClosing(true);
+      toast.loading('Zamykanie wiadomości...');
+    }
 
     const response = await fetch('/api/contact/messages/updateStatusBulk', {
       method: 'POST',
@@ -87,16 +90,17 @@ export default function PanelMessages() {
     });
 
     const result = await response.json();
-    if (status === 'closed') setIsClosing(false);
-
-    if (result.error) {
-      toast(result.error, { autoClose: 3000, type: 'error' });
+    if (status === 'closed') {
+      setIsClosing(false);
+      toast.dismiss();
     }
 
-    if (notify) {
-      if (!result.error) {
-        toast(result.message, { autoClose: 3000, type: 'success' });
-      }
+    if (result.error) {
+      toast.error(result.error);
+    }
+
+    if (notify && !result.error) {
+      toast.success(result.message);
     }
   };
 
@@ -137,6 +141,8 @@ export default function PanelMessages() {
 
   const updateDraftReply = async (id: number) => {
     setIsSaving(true);
+    toast.loading('Zapisywanie...');
+
     const response = await fetch('/api/contact/messages/updateDraft', {
       method: 'POST',
       headers: {
@@ -151,10 +157,12 @@ export default function PanelMessages() {
     const result = await response.json();
 
     setIsSaving(false);
+    toast.dismiss();
+
     if (result.error) {
-      toast(result.error, { autoClose: 3000, type: 'error' });
+      toast.error(result.error);
     } else {
-      toast(result.message, { autoClose: 3000, type: 'success' });
+      toast.success(result.message);
     }
   };
 

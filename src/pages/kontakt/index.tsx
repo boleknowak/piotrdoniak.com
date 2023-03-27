@@ -3,11 +3,12 @@ import { Sofia } from 'next/font/google';
 import Head from 'next/head';
 import Social from '@/components/Social';
 import { socials } from '@/lib/socials';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
 import { BarLoader } from 'react-spinners';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import Avatar from '@/components/Elements/Avatar';
+import delay from '@/lib/delay';
 
 const ERROR_TYPES = {
   too_small: 'Za krótkie (min. 2 znaki)',
@@ -50,6 +51,7 @@ export default function Contact({ siteMeta }) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
+    toast.loading('Wysyłanie...');
 
     const data = {
       name: name.trim(),
@@ -81,10 +83,13 @@ export default function Contact({ siteMeta }) {
 
     const result = await response.json();
 
+    await delay(500);
+    toast.dismiss();
     setIsSubmitting(false);
+
     if (result.error) {
       if (!result.issues || result.issues?.length === 0) {
-        toast(result.error, { autoClose: 3000, type: 'error' });
+        toast.error(result.error);
       } else {
         result.issues.forEach((issue: { name: never; code: never }) => {
           setErrors((prev) => ({ ...prev, [issue.name]: issue.code }));
@@ -94,7 +99,7 @@ export default function Contact({ siteMeta }) {
       setReturningEmail(data.email);
       setReturningName(data.name);
 
-      toast(result.message, { autoClose: 3000, type: 'success' });
+      toast.success(`${result.message} 🔥`);
 
       setName('');
       setEmail('');
@@ -127,10 +132,10 @@ export default function Contact({ siteMeta }) {
               <h1 className="mb-4 text-2xl font-bold">Kontakt</h1>
               <div>
                 <p>
-                  Doszedłem do wniosku, że najlepszym sposobem na kontakt jest rozmowa z
-                  człowiekiem, a nie z robotem. Dlatego, jeśli masz pytania, sugestie, lub chcesz po
-                  prostu o <span className="italic">czymś</span> porozmawiać, napisz do mnie!
-                  Odpowiem na każdą wiadomość, ręcznie - bez udziału robotów{' '}
+                  Najlepszym sposobem na kontakt jest rozmowa z człowiekiem, a nie z robotem.
+                  Dlatego, jeśli masz pytania, sugestie, lub chcesz po prostu o{' '}
+                  <span className="italic">czymś</span> porozmawiać, napisz do mnie! Odpowiem na
+                  każdą wiadomość, ręcznie - bez udziału robotów{' '}
                   <span className={sofia.className}>;)</span>
                 </p>
               </div>

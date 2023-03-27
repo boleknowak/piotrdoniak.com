@@ -2,7 +2,15 @@ import { Caveat } from 'next/font/google';
 import Link from 'next/link';
 import Item from '@/components/Menu/Item';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAddressCard, faEnvelope, faFolder } from '@fortawesome/free-regular-svg-icons';
+import {
+  faAddressCard,
+  // faChartBar,
+  faEnvelope,
+  // faFloppyDisk,
+  faFolder,
+  // faKeyboard,
+  // faLightbulb,
+} from '@fortawesome/free-regular-svg-icons';
 import { faBars, faX } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import Footer from '@/components/Menu/Footer';
@@ -14,26 +22,66 @@ export default function Layout({ children }) {
 
   const menu = [
     {
-      id: 1,
+      id: 'o-mnie',
       name: 'O mnie',
       href: '/',
       icon: faAddressCard,
       subtext: null,
+      type: 'element',
     },
     {
-      id: 2,
+      id: 'projekty',
       name: 'Projekty',
       href: '/projekty',
       icon: faFolder,
       subtext: null,
+      type: 'element',
     },
     {
-      id: 3,
+      id: 'kontakt',
       name: 'Kontakt',
       href: '/kontakt',
       icon: faEnvelope,
       subtext: null,
+      type: 'element',
     },
+    // {
+    //   id: 'separator-1',
+    //   name: 'Kącik wiedzy', // Moje myśli, Mój świat, Kącik wiedzy
+    //   type: 'category',
+    // },
+    // {
+    //   id: 'marketing',
+    //   name: 'Marketing',
+    //   href: '/marketing',
+    //   icon: faChartBar,
+    //   subtext: null,
+    //   type: 'element',
+    // },
+    // {
+    //   id: 'kreatywnosc',
+    //   name: 'Kreatywność',
+    //   href: '/kreatywnosc',
+    //   icon: faLightbulb,
+    //   subtext: null,
+    //   type: 'element',
+    // },
+    // {
+    //   id: 'programowanie',
+    //   name: 'Programowanie',
+    //   href: '/programowanie',
+    //   icon: faKeyboard,
+    //   subtext: null,
+    //   type: 'element',
+    // },
+    // {
+    //   id: 'narzedzia',
+    //   name: 'Narzędzia',
+    //   href: '/narzedzia',
+    //   icon: faFloppyDisk,
+    //   subtext: null,
+    //   type: 'element',
+    // },
   ];
 
   const toggleMenu = () => {
@@ -67,10 +115,22 @@ export default function Layout({ children }) {
           <div className="mx-4 mb-4">
             <div className="mt-2 space-y-1">
               {menu.map((item) => (
-                <Item key={item.id} href={item.href} onClick={toggleMenu} subtext={item.subtext}>
-                  <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-5" />
-                  <div>{item.name}</div>
-                </Item>
+                <div>
+                  {item.type === 'category' && (
+                    <div className="mt-6 mb-3 ml-2 text-xs text-gray-500">{item.name}</div>
+                  )}
+                  {item.type !== 'category' && (
+                    <Item
+                      key={item.id}
+                      href={item.href}
+                      onClick={toggleMenu}
+                      subtext={item.subtext}
+                    >
+                      <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-5" />
+                      <div>{item.name}</div>
+                    </Item>
+                  )}
+                </div>
               ))}
             </div>
             <div className="mt-4">
@@ -93,10 +153,17 @@ export default function Layout({ children }) {
               </Link>
               <div className="mt-6 space-y-1">
                 {menu.map((item) => (
-                  <Item key={item.id} href={item.href} subtext={item.subtext}>
-                    <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-5" />
-                    <div>{item.name}</div>
-                  </Item>
+                  <div>
+                    {item.type === 'category' && (
+                      <div className="mt-6 mb-3 ml-2 text-xs text-gray-500">{item.name}</div>
+                    )}
+                    {item.type !== 'category' && (
+                      <Item key={item.id} href={item.href} subtext={item.subtext}>
+                        <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-5" />
+                        <div>{item.name}</div>
+                      </Item>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>

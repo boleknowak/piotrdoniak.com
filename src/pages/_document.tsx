@@ -1,6 +1,19 @@
 import { Html, Head, Main, NextScript } from 'next/document';
 
 export default function Document() {
+  const schema = {
+    '@context': 'https://schema.org/',
+    '@type': 'Person',
+    name: 'Piotr Doniak',
+    url: 'http://piotrdoniak.com/',
+    image: 'https://piotrdoniak.com/images/brand/me.png',
+    sameAs: [
+      'https://www.linkedin.com/in/piotrdoniak/',
+      'https://www.instagram.com/piotrdoniak/',
+      'https://piotrdoniak.com',
+    ],
+  };
+
   return (
     <Html lang="pl">
       <Head>
@@ -11,6 +24,10 @@ export default function Document() {
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#FEFCE8" />
         <meta name="msapplication-TileColor" content="#FEFCE8" />
         <meta name="theme-color" content="#FEFCE8" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
       </Head>
       <body className="bg-white">
         <Main />

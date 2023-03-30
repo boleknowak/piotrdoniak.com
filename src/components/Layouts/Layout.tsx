@@ -115,7 +115,7 @@ export default function Layout({ children }) {
           <div className="mx-4 mb-4">
             <div className="mt-2 space-y-1">
               {menu.map((item) => (
-                <div>
+                <div key={`nav-${item.id}`}>
                   {item.type === 'category' && (
                     <div className="mt-6 mb-3 ml-2 text-xs text-gray-500">{item.name}</div>
                   )}
@@ -153,7 +153,7 @@ export default function Layout({ children }) {
               </Link>
               <div className="mt-6 space-y-1">
                 {menu.map((item) => (
-                  <div>
+                  <div key={`side-${item.id}`}>
                     {item.type === 'category' && (
                       <div className="mt-6 mb-3 ml-2 text-xs text-gray-500">{item.name}</div>
                     )}

@@ -19,12 +19,7 @@
 <details>
   <summary>Table of Contents</summary>
   <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
+    <li><a href="#about-the-project">About The Project</a></li>
     <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
@@ -52,6 +47,7 @@ Overall, this portfolio/blog page project represents my commitment to showcasing
 [![Vercel][Vercel]][Vercel-url]
 [![Next][Next.js]][Next-url]
 [![Tailwind][Tailwind]][Tailwind-url]
+[![Prisma][Prisma]][Prisma-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -61,8 +57,6 @@ Overall, this portfolio/blog page project represents my commitment to showcasing
 ## **Getting Started**
 
 You can clone this repository and run it locally. To get a local copy up and running follow these simple steps.
-
-<br />
 
 ### **Setup your environment**
 
@@ -229,3 +223,5 @@ Piotr Doniak - [hello@piotrdoniak.com](mailto:hello@piotrdoniak.com)
 [Vercel-url]: https://vercel.com/
 [Tailwind]: https://img.shields.io/badge/Tailwind-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white
 [Tailwind-url]: https://tailwindcss.com/
+[Prisma]: https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white
+[Prisma-url]: https://www.prisma.io/

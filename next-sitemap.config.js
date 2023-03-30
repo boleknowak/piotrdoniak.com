@@ -23,6 +23,12 @@ module.exports = {
   ],
   robotsTxtOptions: {
     additionalSitemaps: [`${APP_URL}/posts-sitemap.xml`],
+    policies: [
+      {
+        userAgent: '*',
+        disallow: '',
+      },
+    ],
   },
   transform: async (config, path) => ({
     loc: path,

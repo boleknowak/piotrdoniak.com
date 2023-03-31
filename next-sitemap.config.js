@@ -22,7 +22,7 @@ module.exports = {
     '/panel/*',
   ],
   robotsTxtOptions: {
-    additionalSitemaps: [`${APP_URL}/posts-sitemap.xml`],
+    // additionalSitemaps: [`${APP_URL}/posts-sitemap.xml`],
     policies: [
       {
         userAgent: '*',

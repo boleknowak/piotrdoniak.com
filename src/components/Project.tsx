@@ -7,6 +7,7 @@ export default function Project({ project, ...props }) {
         <Image
           src={project.image}
           alt={project.title}
+          title={project.title}
           width={64}
           height={64}
           className="rounded-md"

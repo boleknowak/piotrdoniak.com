@@ -37,6 +37,7 @@ export default function Home({ siteMeta }) {
       <Head>
         <title>{siteMeta?.title}</title>
         <meta name="description" content={siteMeta?.description} />
+        <meta name="robots" content="index, follow" />
         <meta property="og:title" content={siteMeta?.title} />
         <meta property="og:description" content={siteMeta?.description} />
         <meta property="og:image" content={siteMeta?.image} />
@@ -49,6 +50,7 @@ export default function Home({ siteMeta }) {
         <meta name="twitter:description" content={siteMeta?.description} />
         <meta name="twitter:image" content={siteMeta?.image} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="canonical" href={siteMeta?.url} />
       </Head>
       <Layout>
         <div className="flex h-full w-full items-center justify-center">
@@ -56,7 +58,8 @@ export default function Home({ siteMeta }) {
             <div className="w-full max-w-2xl text-[#43403C]">
               <Image
                 src="/images/homepage.png"
-                alt="Hero"
+                alt="To ja, Piotrek"
+                title="To ja, Piotrek"
                 width={600}
                 height={286}
                 className="mb-10 rounded-lg"
@@ -111,7 +114,7 @@ export default function Home({ siteMeta }) {
 
 export const getServerSideProps = async () => {
   const meta = {
-    title: 'Piotr Doniak',
+    title: 'Poznaj mnie - Piotr Doniak',
     description: `Jestem Piotr i lubię marketing oraz programowanie. Sprawdź moje projekty i bloga, aby dowiedzieć się o mnie więcej.`,
     image: 'https://piotrdoniak.com/images/brand/me.png',
     url: 'https://piotrdoniak.com',

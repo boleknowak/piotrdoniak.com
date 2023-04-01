@@ -7,11 +7,7 @@ export default function Document() {
     name: 'Piotr Doniak',
     url: 'http://piotrdoniak.com/',
     image: 'https://piotrdoniak.com/images/brand/me.png',
-    sameAs: [
-      'https://www.linkedin.com/in/piotrdoniak/',
-      'https://www.instagram.com/piotrdoniak/',
-      'https://piotrdoniak.com',
-    ],
+    sameAs: ['https://www.linkedin.com/in/piotrdoniak/', 'https://www.instagram.com/piotrdoniak/'],
   };
 
   return (

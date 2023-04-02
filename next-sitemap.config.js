@@ -30,11 +30,20 @@ module.exports = {
       },
     ],
   },
-  transform: async (config, path) => ({
-    loc: path,
-    changefreq: config.changefreq,
-    priority: config.priority,
-    lastmod: config.autoLastmod ? new Date().toISOString() : undefined,
-    alternateRefs: config.alternateRefs ?? [],
-  }),
+  transform: async (config, path) => {
+    let priority = 0.7;
+    if (path === '/') {
+      priority = 1;
+    } else {
+      priority = config.priority;
+    }
+
+    return {
+      loc: path,
+      changefreq: config.changefreq,
+      priority,
+      lastmod: config.autoLastmod ? new Date().toISOString() : undefined,
+      alternateRefs: config.alternateRefs ?? [],
+    };
+  },
 };

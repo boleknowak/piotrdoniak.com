@@ -1,11 +1,11 @@
 // import { useFetch } from '@/hooks/useFetch';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import * as gtag from '@/lib/gtag';
-import Head from 'next/head';
 import { useEffect } from 'react';
 import Layout from '@/components/Layouts/Layout';
 import { Sofia } from 'next/font/google';
 import Image from 'next/image';
+import SeoTags from '@/components/SeoTags';
 
 const sofia = Sofia({ subsets: ['latin'], weight: '400' });
 
@@ -34,24 +34,7 @@ export default function Home({ siteMeta }) {
 
   return (
     <>
-      <Head>
-        <title>{siteMeta?.title}</title>
-        <meta name="description" content={siteMeta?.description} />
-        <meta name="robots" content="index, follow" />
-        <meta property="og:title" content={siteMeta?.title} />
-        <meta property="og:description" content={siteMeta?.description} />
-        <meta property="og:image" content={siteMeta?.image} />
-        <meta property="og:url" content={siteMeta?.url} />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary" />
-        <meta property="twitter:domain" content="piotrdoniak.com" />
-        <meta property="twitter:url" content={siteMeta?.url} />
-        <meta name="twitter:title" content={siteMeta?.title} />
-        <meta name="twitter:description" content={siteMeta?.description} />
-        <meta name="twitter:image" content={siteMeta?.image} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="canonical" href={siteMeta?.url} />
-      </Head>
+      <SeoTags title={siteMeta?.title} />
       <Layout>
         <div className="flex h-full w-full items-center justify-center">
           <div>
@@ -115,9 +98,6 @@ export default function Home({ siteMeta }) {
 export const getServerSideProps = async () => {
   const meta = {
     title: 'Poznaj mnie - Piotr Doniak',
-    description: `Jestem Piotr i lubię marketing oraz programowanie. Sprawdź moje projekty i bloga, aby dowiedzieć się o mnie więcej.`,
-    image: 'https://piotrdoniak.com/images/brand/me.png',
-    url: 'https://piotrdoniak.com',
   };
 
   return {

@@ -5,7 +5,7 @@ export default function Document() {
     '@context': 'https://schema.org/',
     '@type': 'Person',
     name: 'Piotr Doniak',
-    url: 'http://piotrdoniak.com/',
+    url: 'https://piotrdoniak.com/',
     image: 'https://piotrdoniak.com/images/brand/me.png',
     sameAs: ['https://www.linkedin.com/in/piotrdoniak/', 'https://www.instagram.com/piotrdoniak/'],
   };

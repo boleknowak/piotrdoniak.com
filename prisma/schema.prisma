@@ -13,25 +13,30 @@ datasource db {
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  full_slug String?  @unique
-  slug      String?  @unique
+  id          Int       @id @default(autoincrement())
+  authorId    String?
+  title       String
+  slug        String?   @unique
+  full_slug   String?   @unique
+  content     String?
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  author User? @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   @@map("posts")
 }
 
 model Contact {
-  id             Int              @id @default(autoincrement())
-  name           String
-  email          String           @unique
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  avatar         String?
-  draftReply     String?
+  id         Int      @id @default(autoincrement())
+  name       String
+  email      String   @unique
+  avatar     String?
+  draftReply String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
   ContactMessage ContactMessage[]
 
   @@map("contacts")
@@ -40,11 +45,12 @@ model Contact {
 model ContactMessage {
   id        Int                  @id @default(autoincrement())
   message   String
-  createdAt DateTime             @default(now())
-  updatedAt DateTime             @updatedAt
   status    ContactMessageStatus @default(PENDING)
   contactId Int
-  contact   Contact              @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
 
   @@map("contact_messages")
 }
@@ -93,6 +99,7 @@ model User {
   is_authorized Boolean   @default(false)
   accounts      Account[]
   sessions      Session[]
+  posts         Post[]
 
   @@map("users")
 }

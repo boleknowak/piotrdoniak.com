@@ -2,29 +2,31 @@
 erDiagram
 	posts {
 		Int id PK  "autoincrement()"
+		String authorId FK  "nullable"
 		String title
+		String slug  "nullable"
+		String full_slug  "nullable"
 		String content  "nullable"
+		DateTime publishedAt  "nullable"
 		DateTime createdAt  "now()"
 		DateTime updatedAt
-		String full_slug  "nullable"
-		String slug  "nullable"
 	}
 	contacts {
 		Int id PK  "autoincrement()"
 		String name
 		String email
-		DateTime createdAt  "now()"
-		DateTime updatedAt
 		String avatar  "nullable"
 		String draftReply  "nullable"
+		DateTime createdAt  "now()"
+		DateTime updatedAt
 	}
 	contact_messages {
 		Int id PK  "autoincrement()"
 		String message
-		DateTime createdAt  "now()"
-		DateTime updatedAt
 		ContactMessageStatus status "PENDING"
 		Int contactId FK
+		DateTime createdAt  "now()"
+		DateTime updatedAt
 	}
 	accounts {
 		String id PK  "cuid()"
@@ -70,6 +72,7 @@ erDiagram
 		value VIEWED
 		value CLOSED
 	}
+	posts }o--|| users : author
 	contact_messages }o--|| contacts : contact
 	contact_messages }o--|| undefined : "enum:status"
 	accounts }o--|| users : user

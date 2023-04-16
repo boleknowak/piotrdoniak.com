@@ -6,11 +6,13 @@ import Layout from '@/components/Layouts/Layout';
 import { Sofia } from 'next/font/google';
 import Image from 'next/image';
 import SeoTags from '@/components/SeoTags';
+// import { useRouter } from 'next/router';
 
 const sofia = Sofia({ subsets: ['latin'], weight: '400' });
 
 export default function Home({ siteMeta }) {
   // const { data, loading, error } = useFetch('/api/posts');
+  // const router = useRouter();
   const [useGoogleAnalytics /* , setUseGoogleAnalytics */] = useLocalStorage(
     'useGoogleAnalytics',
     'accepted'
@@ -31,6 +33,28 @@ export default function Home({ siteMeta }) {
   // };
 
   // const getGoogleAnalyticsStatus = () => useGoogleAnalytics;
+
+  // useEffect(() => {
+  //   if (window) {
+  //     window.google.accounts.id.initialize({
+  //       client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+  //       login_uri: 'http://localhost:3000/api/auth/callback/google',
+  //       ux_mode: 'redirect',
+  //       auto_select: false,
+  //       context: 'use',
+  //     });
+
+  //     const signInButton = document.getElementById('googleSignIn');
+
+  //     window.google.accounts.id.renderButton(signInButton, {
+  //       theme: 'outline',
+  //       size: 'large',
+  //       shape: 'rectangular',
+  //       text: 'signin_with',
+  //       type: 'standard',
+  //     });
+  //   }
+  // }, [router]);
 
   return (
     <>
@@ -72,6 +96,9 @@ export default function Home({ siteMeta }) {
                 </p>
               </div>
             </div>
+            {/* <div>
+              <div id="googleSignIn" />
+            </div> */}
             {/* {loading && false && <div>Loading ...</div>}
             {!loading && false && (
               <div>
@@ -95,10 +122,12 @@ export default function Home({ siteMeta }) {
   );
 }
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async ({ res }) => {
   const meta = {
     title: 'Poznaj mnie - Piotr Doniak',
   };
+
+  res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=119');
 
   return {
     props: {

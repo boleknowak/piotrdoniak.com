@@ -1,61 +1,11 @@
-// import { useFetch } from '@/hooks/useFetch';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
-import * as gtag from '@/lib/gtag';
-import { useEffect } from 'react';
 import Layout from '@/components/Layouts/Layout';
 import { Sofia } from 'next/font/google';
 import Image from 'next/image';
 import SeoTags from '@/components/SeoTags';
-// import { useRouter } from 'next/router';
 
 const sofia = Sofia({ subsets: ['latin'], weight: '400' });
 
 export default function Home({ siteMeta }) {
-  // const { data, loading, error } = useFetch('/api/posts');
-  // const router = useRouter();
-  const [useGoogleAnalytics /* , setUseGoogleAnalytics */] = useLocalStorage(
-    'useGoogleAnalytics',
-    'accepted'
-  );
-
-  useEffect(() => {
-    gtag.manageConsent(useGoogleAnalytics);
-  }, [useGoogleAnalytics]);
-
-  // if (error) return <div>An error occured.</div>;
-
-  // const toggleUseGoogleAnalytics = (event) => {
-  //   if (event.target.checked) {
-  //     setUseGoogleAnalytics('accepted');
-  //   } else {
-  //     setUseGoogleAnalytics('rejected');
-  //   }
-  // };
-
-  // const getGoogleAnalyticsStatus = () => useGoogleAnalytics;
-
-  // useEffect(() => {
-  //   if (window) {
-  //     window.google.accounts.id.initialize({
-  //       client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-  //       login_uri: 'http://localhost:3000/api/auth/callback/google',
-  //       ux_mode: 'redirect',
-  //       auto_select: false,
-  //       context: 'use',
-  //     });
-
-  //     const signInButton = document.getElementById('googleSignIn');
-
-  //     window.google.accounts.id.renderButton(signInButton, {
-  //       theme: 'outline',
-  //       size: 'large',
-  //       shape: 'rectangular',
-  //       text: 'signin_with',
-  //       type: 'standard',
-  //     });
-  //   }
-  // }, [router]);
-
   return (
     <>
       <SeoTags title={siteMeta?.title} />
@@ -96,25 +46,6 @@ export default function Home({ siteMeta }) {
                 </p>
               </div>
             </div>
-            {/* <div>
-              <div id="googleSignIn" />
-            </div> */}
-            {/* {loading && false && <div>Loading ...</div>}
-            {!loading && false && (
-              <div>
-                <div className="mt-4">
-                  <label htmlFor="useGoogleAnalytics" className="mr-2">
-                    Use Google Analytics ({getGoogleAnalyticsStatus()})
-                  </label>
-                  <input
-                    type="checkbox"
-                    id="useGoogleAnalytics"
-                    checked={useGoogleAnalytics === 'accepted'}
-                    onChange={toggleUseGoogleAnalytics}
-                  />
-                </div>
-              </div>
-            )} */}
           </div>
         </div>
       </Layout>

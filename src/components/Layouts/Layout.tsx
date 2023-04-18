@@ -12,13 +12,20 @@ import {
   // faLightbulb,
 } from '@fortawesome/free-regular-svg-icons';
 import { faBars, faX } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Footer from '@/components/Menu/Footer';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+import * as gtag from '@/lib/gtag';
 
 const caveat = Caveat({ subsets: ['latin'] });
 
 export default function Layout({ children }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [useGoogleAnalytics] = useLocalStorage('useGoogleAnalytics', 'accepted');
+
+  useEffect(() => {
+    gtag.manageConsent(useGoogleAnalytics);
+  }, [useGoogleAnalytics]);
 
   const menu = [
     {
@@ -103,11 +110,11 @@ export default function Layout({ children }) {
             <button
               type="button"
               onClick={toggleMenu}
-              className="mr-2 block h-12 w-12 rounded-md hover:bg-yellow-100"
+              className="mr-2 flex h-12 w-12 items-center justify-center rounded-md hover:bg-yellow-100"
               aria-label="Rozwiń menu"
             >
               {!menuOpen && <FontAwesomeIcon icon={faBars} size="lg" fixedWidth className="w-5" />}
-              {menuOpen && <FontAwesomeIcon icon={faX} size="lg" fixedWidth className="w-5" />}
+              {menuOpen && <FontAwesomeIcon icon={faX} size="sm" fixedWidth className="w-4" />}
             </button>
           </div>
         </div>

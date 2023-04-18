@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/db';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { z } from 'zod';
+import { sendDiscordWebhook } from '@/lib/discord';
 
 const schema = z.object({
   name: z.string().min(2).max(50),
@@ -42,6 +43,24 @@ export default async function handle(request: NextApiRequest, response: NextApiR
           },
         },
       },
+    });
+
+    await sendDiscordWebhook({
+      webhookUrl: process.env.DISCORD_WEBHOOK_URL,
+      content: `<@143676053297037312>`,
+      embeds: [
+        {
+          title: 'Nowa wiadomość!',
+          description: validatedData.message,
+          url: 'https://piotrdoniak.com/panel/wiadomosci',
+          color: 0xfefce8,
+          author: {
+            name: validatedData.name,
+            url: `https://piotrdoniak.com/panel/wiadomosci?id=${contact.id}`,
+            icon_url: `https://api.dicebear.com/6.x/bottts/png?seed=${validatedData.email}`,
+          },
+        },
+      ],
     });
 
     return response.status(200).json({ message: 'Dziękuję, odezwę się wkrótce!' });

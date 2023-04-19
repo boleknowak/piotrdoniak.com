@@ -1,7 +1,7 @@
 import { Caveat } from 'next/font/google';
-import Link from 'next/link';
 import Image from 'next/image';
 import Item from '@/components/Menu/Item';
+import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faAddressCard,
@@ -9,6 +9,7 @@ import {
   faComment,
   faEnvelope,
   faFileLines,
+  faUser,
 } from '@fortawesome/free-regular-svg-icons';
 import {
   faBars,
@@ -117,6 +118,15 @@ export default function PanelLayout({ children }) {
       subtext: null,
       authorizedRoute: true,
     },
+    {
+      id: 'autorzy',
+      name: 'Autorzy',
+      type: 'element',
+      href: '/panel/autorzy',
+      icon: faUser,
+      subtext: null,
+      authorizedRoute: true,
+    },
   ];
 
   const messages = getMessages({ onlyCount: true });
@@ -190,16 +200,18 @@ export default function PanelLayout({ children }) {
               <div className="mt-4">
                 {isAuthed && (
                   <div className="flex flex-row items-center justify-between">
-                    <div className="flex flex-row items-center space-x-2">
-                      <Image
-                        src={user.image}
-                        width={32}
-                        height={32}
-                        className="rounded-full"
-                        alt="Avatar"
-                      />
-                      <div className="text-sm">{user.name}</div>
-                    </div>
+                    <Link href={`/panel/autorzy/${user.slug}`}>
+                      <div className="flex flex-row items-center space-x-2">
+                        <Image
+                          src={user.image}
+                          width={32}
+                          height={32}
+                          className="rounded-full"
+                          alt="Avatar"
+                        />
+                        <div className="text-sm">{user.name}</div>
+                      </div>
+                    </Link>
                     <button
                       onClick={() => logout()}
                       className="h-10 w-10 rounded-md hover:bg-white"
@@ -217,7 +229,7 @@ export default function PanelLayout({ children }) {
         <div className="min-h-96 m-2 hidden h-[98%] max-h-screen w-72 overflow-y-auto rounded border border-yellow-500 bg-yellow-50 xl:block">
           <div className="items-between flex h-full flex-grow flex-col">
             <div className="mb-32 h-full p-4">
-              <Link href="/panel">
+              <Link href="/panel" style={{ textDecoration: 'none', cursor: 'pointer' }}>
                 <div className="text-3xl font-bold">
                   <span className={caveat.className}>Panel</span>
                 </div>
@@ -253,16 +265,18 @@ export default function PanelLayout({ children }) {
               <div>
                 {isAuthed && (
                   <div className="flex flex-row items-center justify-between">
-                    <div className="flex flex-row items-center space-x-2 bg-yellow-50">
-                      <Image
-                        src={user.image}
-                        width={32}
-                        height={32}
-                        className="rounded-full"
-                        alt="Avatar"
-                      />
-                      <div className="text-sm">{user.name}</div>
-                    </div>
+                    <Link href={`/panel/autorzy/${user.slug}`}>
+                      <div className="flex flex-row items-center space-x-2 bg-yellow-50">
+                        <Image
+                          src={user.image}
+                          width={32}
+                          height={32}
+                          className="rounded-full"
+                          alt="Avatar"
+                        />
+                        <div className="text-sm">{user.name}</div>
+                      </div>
+                    </Link>
                     <button
                       onClick={() => logout()}
                       className="h-10 w-10 rounded-md bg-yellow-50 hover:bg-white"

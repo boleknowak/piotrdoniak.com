@@ -1,3 +1,6 @@
+import { CategoryInterface } from './CategoryInterface';
+import { UserInterface } from './UserInterface';
+
 export interface PostInterface {
   id: number;
   authorId: number;
@@ -7,7 +10,10 @@ export interface PostInterface {
   full_slug: string;
   content: string;
   keywords: string;
+  views: number;
   publishedAt: string;
   createdAt: string;
   updatedAt: string;
+  category: CategoryInterface;
+  author: UserInterface;
 }

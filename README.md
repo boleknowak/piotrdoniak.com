@@ -197,6 +197,7 @@ Piotr Doniak - [hello@piotrdoniak.com](mailto:hello@piotrdoniak.com)
 * [NextAuth.js](https://next-auth.js.org/)
 * [Next.js](https://nextjs.org/)
 * [Tailwind CSS](https://tailwindcss.com/)
+* [Chakra UI](https://chakra-ui.com/)
 * [Vercel](https://vercel.com/)
 * [next-sitemap](https://www.npmjs.com/package/next-sitemap)
 * [next-absolute-url](https://www.npmjs.com/package/next-absolute-url)
@@ -207,6 +208,7 @@ Piotr Doniak - [hello@piotrdoniak.com](mailto:hello@piotrdoniak.com)
 * [eslint](https://eslint.org/)
 * [prettier](https://prettier.io/)
 * [prisma-erd-generator-markdown](https://www.npmjs.com/package/prisma-erd-generator-markdown)
+* [slugify](https://www.npmjs.com/package/slugify)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

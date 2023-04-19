@@ -15,17 +15,33 @@ datasource db {
 model Post {
   id          Int       @id @default(autoincrement())
   authorId    String?
+  categoryId  Int?
   title       String
   slug        String?   @unique
   full_slug   String?   @unique
   content     String?
+  keywords    String?
   publishedAt DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  author User? @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author   User?     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  category Category? @relation(fields: [categoryId], references: [id])
 
   @@map("posts")
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String
+  slug      String?  @unique
+  position  Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  posts Post[]
+
+  @@map("categories")
 }
 
 model Contact {

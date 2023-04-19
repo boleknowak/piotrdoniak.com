@@ -3,11 +3,21 @@ erDiagram
 	posts {
 		Int id PK  "autoincrement()"
 		String authorId FK  "nullable"
+		Int categoryId FK  "nullable"
 		String title
 		String slug  "nullable"
 		String full_slug  "nullable"
 		String content  "nullable"
+		String keywords  "nullable"
 		DateTime publishedAt  "nullable"
+		DateTime createdAt  "now()"
+		DateTime updatedAt
+	}
+	categories {
+		Int id PK  "autoincrement()"
+		String name
+		String slug  "nullable"
+		Int position  "nullable"
 		DateTime createdAt  "now()"
 		DateTime updatedAt
 	}
@@ -73,6 +83,7 @@ erDiagram
 		value CLOSED
 	}
 	posts }o--|| users : author
+	posts }o--|| categories : category
 	contact_messages }o--|| contacts : contact
 	contact_messages }o--|| undefined : "enum:status"
 	accounts }o--|| users : user

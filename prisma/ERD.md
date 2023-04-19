@@ -9,6 +9,7 @@ erDiagram
 		String full_slug  "nullable"
 		String content  "nullable"
 		String keywords  "nullable"
+		Int views  "nullable"
 		DateTime publishedAt  "nullable"
 		DateTime createdAt  "now()"
 		DateTime updatedAt
@@ -65,6 +66,7 @@ erDiagram
 	users {
 		String id PK  "cuid()"
 		String name  "nullable"
+		String slug  "nullable"
 		String email  "nullable"
 		DateTime email_verified  "nullable"
 		String image  "nullable"

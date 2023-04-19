@@ -1,5 +1,5 @@
 import absoluteUrl from 'next-absolute-url';
-import Date from '@/components/Date';
+import DateComponent from '@/components/Date';
 import SeoTags from '@/components/SeoTags';
 import Layout from '@/components/Layouts/Layout';
 
@@ -13,8 +13,9 @@ export default function Post({ siteMeta, post }) {
             <div>
               <h1 className="text-2xl font-bold">{post.title}</h1>
               <div>
-                <Date dateString={post.createdAt} />
+                <DateComponent dateString={post.publishedAt} />
               </div>
+              <div>{post.views}</div>
             </div>
             <div className="mt-4 w-full max-w-2xl text-left text-[#43403C]">{post.content}</div>
           </div>

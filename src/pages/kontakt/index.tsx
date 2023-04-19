@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { BarLoader } from 'react-spinners';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import Avatar from '@/components/Elements/Avatar';
-import delay from '@/lib/delay';
+import { delay } from '@/lib/helpers';
 import SeoTags from '@/components/SeoTags';
 
 const ERROR_TYPES = {

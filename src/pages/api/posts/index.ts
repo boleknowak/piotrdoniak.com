@@ -23,6 +23,10 @@ export default async function handle(request: NextApiRequest, response: NextApiR
         const posts = await prisma.post.findMany({
           include: {
             category: true,
+            author: true,
+          },
+          orderBy: {
+            publishedAt: 'desc',
           },
         });
 

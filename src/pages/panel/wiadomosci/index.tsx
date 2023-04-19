@@ -20,12 +20,12 @@ import {
   faCheck,
   faEnvelopeCircleCheck,
 } from '@fortawesome/free-solid-svg-icons';
-import Date from '@/components/Date';
 import Badge from '@/components/Elements/Badge';
 import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
 import StatusBadge from '@/components/Elements/StatusBadge';
 import Avatar from '@/components/Elements/Avatar';
+import DateComponent from '@/components/Date';
 
 export default function PanelMessages() {
   const [contacts, setContacts] = useState([]);
@@ -272,7 +272,7 @@ export default function PanelMessages() {
                           <div>
                             <div className="font-bold">{formatName(contact.name)}</div>
                             <div className="text-xs text-gray-500">
-                              <Date dateString={contact.lastMessageCreatedAt} />
+                              <DateComponent dateString={contact.lastMessageCreatedAt} />
                             </div>
                           </div>
                         </div>
@@ -318,7 +318,7 @@ export default function PanelMessages() {
                           additionalClasses="flex flex-row items-center space-x-1"
                         >
                           <FontAwesomeIcon icon={faClockSolid} size="sm" className="-ml-1 w-3" />
-                          <Date dateString={selectedContact.createdAt} />
+                          <DateComponent dateString={selectedContact.createdAt} />
                         </Badge>
                         <Badge
                           variant="outlined-gray"
@@ -336,7 +336,7 @@ export default function PanelMessages() {
                       {selectedContact.messages.map((message) => (
                         <div key={message.id} className="mt-4 rounded-md bg-white p-4">
                           <div className="mb-1 flex flex-row items-center space-x-2 text-xs text-gray-500">
-                            <Date dateString={message.createdAt} withTime={true} />
+                            <DateComponent dateString={message.createdAt} withTime={true} />
                             <div>•</div>
                             <button
                               type="button"

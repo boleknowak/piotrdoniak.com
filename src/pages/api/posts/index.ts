@@ -20,10 +20,25 @@ export default async function handle(request: NextApiRequest, response: NextApiR
       const user = session?.user as UserInterface;
 
       if (user?.is_authorized) {
+        const { query } = request.query;
+
         const posts = await prisma.post.findMany({
+          where: {
+            keywords: {
+              contains: query as string,
+            },
+          },
           include: {
             category: true,
-            author: true,
+            author: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+                image: true,
+                is_authorized: true,
+              },
+            },
           },
           orderBy: {
             publishedAt: 'desc',

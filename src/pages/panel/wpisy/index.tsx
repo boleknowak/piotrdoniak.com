@@ -9,8 +9,10 @@ import { currentTime } from '@/lib/currentTime';
 import {
   Avatar,
   Button,
+  FormControl,
   HStack,
   IconButton,
+  Input,
   Link,
   Table,
   TableContainer,
@@ -32,7 +34,7 @@ import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { GrRefresh } from 'react-icons/gr';
-import { FaEye, FaHotjar, FaPen, FaShare } from 'react-icons/fa';
+import { FaArrowRight, FaEye, FaHotjar, FaPen, FaShare } from 'react-icons/fa';
 import NextLink from 'next/link';
 import { isAfterDate, isHot } from '@/lib/helpers';
 
@@ -40,6 +42,8 @@ export default function PanelPosts() {
   const [posts, setPosts] = useState<PostInterface[]>([]);
   const [categories, setCategories] = useState<CategoryInterface[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const { data: session, status: authed } = useSession();
   const {
     isOpen: isCategoriesModalOpened,
@@ -48,7 +52,8 @@ export default function PanelPosts() {
   } = useDisclosure();
 
   const fetchPosts = async () => {
-    const response = await fetch('/api/posts', {
+    setIsFetching(true);
+    const response = await fetch(`/api/posts?query=${searchQuery}`, {
       headers: {
         Accept: 'application/json',
       },
@@ -56,6 +61,7 @@ export default function PanelPosts() {
 
     const data = await response.json();
 
+    setIsFetching(false);
     setPosts(data.posts);
   };
 
@@ -117,10 +123,39 @@ export default function PanelPosts() {
             <Button colorScheme="yellow" variant="ghost" onClick={openCategoriesModal}>
               Kategorie
             </Button>
-            <Button colorScheme="yellow">Stwórz post</Button>
+            <Link as={NextLink} href="/panel/wpisy/nowy">
+              <Button rightIcon={<FaArrowRight />} colorScheme="yellow">
+                Stwórz post
+              </Button>
+            </Link>
           </div>
         </div>
         <div className="mt-6">
+          <div className="mb-4 flex flex-row items-center justify-end">
+            <div>
+              <FormControl>
+                <HStack>
+                  <Input
+                    placeholder="Szukaj..."
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        fetchPosts();
+                      }
+                    }}
+                  />
+                  <Button
+                    isLoading={isFetching}
+                    type="button"
+                    colorScheme="yellow"
+                    onClick={() => fetchPosts()}
+                  >
+                    Szukaj
+                  </Button>
+                </HStack>
+              </FormControl>
+            </div>
+          </div>
           {posts.length === 0 && <div>Nie ma postów.</div>}
           {posts.length > 0 && (
             <TableContainer>
@@ -137,7 +172,7 @@ export default function PanelPosts() {
                 </Thead>
                 <Tbody>
                   {posts.map((post) => (
-                    <Tr>
+                    <Tr key={post.id}>
                       <Td>{post.id}</Td>
                       <Td maxW={60}>
                         <Text fontWeight="bold" className="truncate" title={post.title}>

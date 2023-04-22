@@ -43,6 +43,16 @@ export default async function handle(request: NextApiRequest, response: NextApiR
       }
     }
 
+    if (request.query.id) {
+      const category = await prisma.category.findUnique({
+        where: {
+          slug: request.query.id as string,
+        },
+      });
+
+      return response.json({ category });
+    }
+
     const categories = await prisma.category.findMany({
       orderBy: {
         position: 'asc',

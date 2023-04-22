@@ -53,7 +53,7 @@ export default function PanelPosts() {
 
   const fetchPosts = async () => {
     setIsFetching(true);
-    const response = await fetch(`/api/posts?query=${searchQuery.toLocaleLowerCase()}`, {
+    const response = await fetch(`/api/posts/manage?query=${searchQuery.toLocaleLowerCase()}`, {
       headers: {
         Accept: 'application/json',
       },

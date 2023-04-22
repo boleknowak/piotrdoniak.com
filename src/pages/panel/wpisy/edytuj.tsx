@@ -78,7 +78,7 @@ export default function PanelPostsUpdate({ post }) {
   const handleUpdatePost = async () => {
     setIsUpdating(true);
 
-    const response = await fetch(`/api/posts/${post.id}`, {
+    const response = await fetch(`/api/posts/manage?id=${post.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ export default function PanelPostsUpdate({ post }) {
   const handleDeletePost = async () => {
     setIsDeleting(true);
 
-    const response = await fetch(`/api/posts/${post.id}`, {
+    const response = await fetch(`/api/posts/manage?id=${post.id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -294,17 +294,17 @@ export default function PanelPostsUpdate({ post }) {
 
 export async function getServerSideProps({ req, query }) {
   const { origin } = absoluteUrl(req);
-  const { post } = await fetch(`${origin}/api/posts/${query.id}`, {
+  const { posts } = await fetch(`${origin}/api/posts/manage?id=${query.id}`, {
     headers: {
       cookie: req.headers.cookie || '',
     },
   }).then((res) => res.json());
 
-  if (!post) return { notFound: true };
+  if (!posts) return { notFound: true };
 
   return {
     props: {
-      post,
+      post: posts[0],
     },
   };
 }

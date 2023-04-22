@@ -55,7 +55,7 @@ export default function Layout({ children }) {
     {
       id: 'marketing',
       name: 'Marketing',
-      href: '/marketing',
+      href: '/wiedza/marketing',
       icon: <IoMegaphoneOutline />,
       subtext: null,
       type: 'element',
@@ -63,7 +63,7 @@ export default function Layout({ children }) {
     {
       id: 'kreatywnosc',
       name: 'Kreatywność',
-      href: '/kreatywnosc',
+      href: '/wiedza/kreatywnosc',
       icon: <MdOutlineLightbulb />,
       subtext: null,
       type: 'element',
@@ -71,7 +71,7 @@ export default function Layout({ children }) {
     {
       id: 'programowanie',
       name: 'Programowanie',
-      href: '/programowanie',
+      href: '/wiedza/programowanie',
       icon: <BiCodeAlt />,
       subtext: null,
       type: 'element',
@@ -79,7 +79,7 @@ export default function Layout({ children }) {
     // {
     //   id: 'narzedzia',
     //   name: 'Narzędzia',
-    //   href: '/narzedzia',
+    //   href: '/wiedza/narzedzia',
     //   icon: faFloppyDisk,
     //   subtext: null,
     //   type: 'element',

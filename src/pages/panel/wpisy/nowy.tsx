@@ -52,7 +52,7 @@ export default function PanelPostsCreate() {
   const handleCreatePost = async () => {
     setIsCreating(true);
 
-    const response = await fetch('/api/posts', {
+    const response = await fetch('/api/posts/manage', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -86,9 +86,7 @@ export default function PanelPostsCreate() {
       setContent('');
       setPublishAt('');
 
-      setTimeout(() => {
-        router.push('/panel/wpisy');
-      }, 3000);
+      router.push('/panel/wpisy');
     }
   };
 

@@ -182,7 +182,7 @@ export default function PanelLayout({ children }) {
                   {isAuthed && isAuthorized && item.authorizedRoute && (
                     <div>
                       {item.type === 'category' && (
-                        <div className="mt-6 mb-3 ml-2 text-xs text-gray-500">{item.name}</div>
+                        <div className="mb-3 ml-2 mt-6 text-xs text-gray-500">{item.name}</div>
                       )}
                       {item.type !== 'category' && (
                         <Item href={item.href} subtext={item.subtext} onClick={toggleMenu}>
@@ -241,7 +241,7 @@ export default function PanelLayout({ children }) {
                       {isAuthed && isAuthorized && item.authorizedRoute && (
                         <div>
                           {item.type === 'category' && (
-                            <div className="mt-6 mb-3 ml-2 text-xs text-gray-500">{item.name}</div>
+                            <div className="mb-3 ml-2 mt-6 text-xs text-gray-500">{item.name}</div>
                           )}
                           {item.type !== 'category' && (
                             <Item href={item.href} subtext={item.subtext}>

@@ -176,7 +176,7 @@ export default function Contact({ siteMeta }) {
                               placeholder="np. Piotr"
                               value={name}
                               onChange={(e) => setName(e.target.value)}
-                              className={`block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
+                              className={`block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
                                 errors.name ? 'border-red-500' : ''
                               }`}
                             />
@@ -202,7 +202,7 @@ export default function Contact({ siteMeta }) {
                               placeholder="np. piotr@przykladowy.pl"
                               value={email}
                               onChange={(e) => setEmail(e.target.value)}
-                              className={`block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
+                              className={`block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
                                 errors.email ? 'border-red-500' : ''
                               }`}
                             />
@@ -228,7 +228,7 @@ export default function Contact({ siteMeta }) {
                           placeholder="Aa"
                           value={message}
                           onChange={(e) => setMessage(e.target.value)}
-                          className={`block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
+                          className={`block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
                             errors.message ? 'border-red-500' : ''
                           }`}
                         ></textarea>

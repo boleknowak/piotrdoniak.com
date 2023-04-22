@@ -11,7 +11,7 @@ export default function Unauthorized() {
         width={300}
         height={300}
         alt="To Ty!"
-        className="mt-20 mb-4"
+        className="mb-4 mt-20"
       />
       <div className="text-2xl font-bold">Hej! Jak tu wszedłeś?</div>
       <div className="text-xl">Nie ma tu jeszcze niczego przygotowanego dla Ciebie.</div>

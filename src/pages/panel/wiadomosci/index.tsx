@@ -355,7 +355,7 @@ export default function PanelMessages() {
                   )}
                   <div className="mt-4">
                     <hr />
-                    <div className="mt-2 mb-1 font-medium">Szkic odpowiedzi</div>
+                    <div className="mb-1 mt-2 font-medium">Szkic odpowiedzi</div>
                     <textarea
                       name="draft_reply"
                       id="draft_reply"
@@ -363,7 +363,7 @@ export default function PanelMessages() {
                       cols={50}
                       value={draftMessage}
                       onChange={(e) => setDraftMessage(e.target.value)}
-                      className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
+                      className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
                       placeholder="Szkic Twojej odpowiedzi..."
                     ></textarea>
                   </div>

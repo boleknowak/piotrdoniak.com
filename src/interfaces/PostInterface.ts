@@ -8,6 +8,7 @@ export interface PostInterface {
   title: string;
   slug: string;
   full_slug: string;
+  description: string;
   content: string;
   keywords: string;
   views: number;

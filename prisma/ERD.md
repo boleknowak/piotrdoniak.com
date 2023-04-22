@@ -12,6 +12,7 @@ erDiagram
 		String title
 		String slug  "nullable"
 		String full_slug  "nullable"
+		String description  "nullable"
 		String content  "nullable"
 		String keywords  "nullable"
 		Int views  "nullable"

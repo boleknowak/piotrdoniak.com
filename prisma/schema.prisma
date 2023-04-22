@@ -20,6 +20,7 @@ model Post {
   title       String
   slug        String?   @unique
   full_slug   String?   @unique
+  description String?
   content     String?
   keywords    String?
   views       Int?      @default(0)

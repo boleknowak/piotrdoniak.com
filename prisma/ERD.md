@@ -1,5 +1,10 @@
 ```mermaid
 erDiagram
+	ContactMessageStatus {
+		value PENDING
+		value VIEWED
+		value CLOSED
+	}
 	posts {
 		Int id PK  "autoincrement()"
 		String authorId FK  "nullable"
@@ -79,15 +84,10 @@ erDiagram
 		String token
 		DateTime expires
 	}
-	ContactMessageStatus {
-		value PENDING
-		value VIEWED
-		value CLOSED
-	}
 	posts }o--|| users : author
 	posts }o--|| categories : category
 	contact_messages }o--|| contacts : contact
-	contact_messages }o--|| undefined : "enum:status"
+	contact_messages }o--|| ContactMessageStatus : "enum:status"
 	accounts }o--|| users : user
 	sessions }o--|| users : user
 

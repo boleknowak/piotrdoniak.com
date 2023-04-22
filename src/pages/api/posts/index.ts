@@ -5,6 +5,8 @@ import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { getServerSession } from 'next-auth';
 import { UserInterface } from '@/interfaces/UserInterface';
+import slugify from 'slugify';
+import { makeKeywords } from '@/lib/helpers';
 import { authOptions } from '../auth/[...nextauth]';
 
 dayjs.extend(timezone);
@@ -20,50 +22,107 @@ export default async function handle(request: NextApiRequest, response: NextApiR
       const user = session?.user as UserInterface;
 
       if (user?.is_authorized) {
-        const { query } = request.query;
+        if (request.method === 'GET') {
+          const { query } = request.query;
 
-        const posts = await prisma.post.findMany({
-          where: {
-            keywords: {
-              contains: query as string,
-            },
-          },
-          include: {
-            category: true,
-            author: {
-              select: {
-                id: true,
-                name: true,
-                slug: true,
-                image: true,
-                is_authorized: true,
+          const posts = await prisma.post.findMany({
+            where: {
+              keywords: {
+                contains: query as string,
               },
             },
-          },
-          orderBy: {
-            publishedAt: 'desc',
-          },
-        });
+            include: {
+              category: true,
+              author: {
+                select: {
+                  id: true,
+                  name: true,
+                  slug: true,
+                  image: true,
+                  is_authorized: true,
+                },
+              },
+            },
+            orderBy: {
+              publishedAt: 'desc',
+            },
+          });
 
-        return response.json({ posts });
-      }
-    }
+          // console.log(process.memoryUsage().heapUsed / 1024 / 1024);
 
-    if (request.method === 'POST' && session) {
-      const user = session?.user as UserInterface;
+          return response.json({ posts });
+        }
 
-      if (user?.is_authorized) {
-        const { title, content, publishedAt } = request.body;
+        if (request.method === 'POST') {
+          const { title, categoryId, description, content, publishAt } = request.body;
+          let { slug } = request.body;
 
-        const post = await prisma.post.create({
-          data: {
+          const category = await prisma.category.findUnique({
+            where: {
+              id: Number(categoryId),
+            },
+          });
+
+          if (!category) {
+            return response.json({
+              success: false,
+              message: 'Ups! Serwer napotkał problem.',
+              error_message: 'Nie znaleziono kategorii o podanym ID.',
+            });
+          }
+
+          const fullSlug = slugify(title, {
+            lower: true,
+            locale: 'pl',
+          });
+
+          slug = slugify(slug, {
+            lower: true,
+            locale: 'pl',
+          });
+
+          const keywords = makeKeywords([
             title,
-            content,
-            publishedAt,
-          },
-        });
+            slug,
+            description,
+            user.name.toLocaleLowerCase(),
+            category.name.toLocaleLowerCase(),
+          ]);
 
-        return response.json({ post });
+          const post = await prisma.post.create({
+            data: {
+              title,
+              slug,
+              full_slug: fullSlug,
+              description,
+              content,
+              keywords,
+              publishedAt: publishAt ? new Date(publishAt) : null,
+              category: {
+                connect: {
+                  id: category.id,
+                },
+              },
+              author: {
+                connect: {
+                  id: user.id,
+                },
+              },
+            },
+          });
+
+          return response.json({
+            success: true,
+            message: 'Post został dodany.',
+            post,
+          });
+        }
+
+        return response.json({
+          status: 'error',
+          message: 'Ups! Serwer napotkał problem.',
+          error_message: 'Nieobsługiwana metoda HTTP.',
+        });
       }
     }
 

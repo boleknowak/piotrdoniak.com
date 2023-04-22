@@ -10,6 +10,7 @@ interface SeoTagsProps {
   canonicalUrl?: string;
   type?: string;
   image?: string;
+  schema?: unknown;
 }
 
 export default function SeoTags({ ...props }: SeoTagsProps) {
@@ -53,6 +54,12 @@ export default function SeoTags({ ...props }: SeoTagsProps) {
       <meta name="twitter:image" content={image} />
       <link rel="canonical" href={canonicalUrl} />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
+      {props.schema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(props.schema) }}
+        />
+      )}
     </Head>
   );
 }

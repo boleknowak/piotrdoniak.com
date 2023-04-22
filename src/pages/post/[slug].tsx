@@ -2,11 +2,55 @@ import absoluteUrl from 'next-absolute-url';
 import DateComponent from '@/components/Date';
 import SeoTags from '@/components/SeoTags';
 import Layout from '@/components/Layouts/Layout';
+import { PostInterface } from '@/interfaces/PostInterface';
 
-export default function Post({ siteMeta, post }) {
+interface Props {
+  siteMeta: {
+    title: string;
+    description: string;
+    url: string;
+  };
+  post: PostInterface;
+}
+
+export default function Post({ siteMeta, post }: Props) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    // mainEntityOfPage: {
+    //   '@type': 'WebPage',
+    //   '@id': 'https://piotrdoniak.com',
+    // },
+    headline: post.title,
+    description: post.description,
+    // image: '',
+    author: {
+      '@type': 'Person',
+      name: post.author.name,
+      url: `https://piotrdoniak.com/autorzy/${post.author.slug}`,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Piotr Doniak',
+      url: 'https://piotrdoniak.com',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://piotrdoniak.com/images/brand/me.png',
+      },
+    },
+    datePublished: post.publishedAt,
+    dateModified: post.updatedAt,
+  };
+
   return (
     <>
-      <SeoTags title={siteMeta?.title} description={siteMeta?.description} url={siteMeta?.url} />
+      <SeoTags
+        title={siteMeta?.title}
+        description={siteMeta?.description}
+        url={siteMeta?.url}
+        type="article"
+        schema={schema}
+      />
       <Layout>
         <div className="mb-20 flex h-full w-full items-start pt-4 md:pt-10">
           <div className="mx-auto w-full max-w-2xl">
@@ -17,7 +61,11 @@ export default function Post({ siteMeta, post }) {
               </div>
               <div>{post.views}</div>
             </div>
-            <div className="mt-4 w-full max-w-2xl text-left text-[#43403C]">{post.content}</div>
+            <div className="mt-4 w-full max-w-2xl text-left text-[#43403C]">
+              <article className="prose">
+                <div dangerouslySetInnerHTML={{ __html: post.content }} />
+              </article>
+            </div>
           </div>
         </div>
       </Layout>
@@ -37,14 +85,14 @@ export async function getServerSideProps({ req, params }) {
 
   const meta = {
     title: `${post.title} - Piotr Doniak`,
-    description: `${post.content.slice(0, 100)}...`,
+    description: post.description,
     url: `${origin}/post/${post.slug}`,
   };
 
   return {
     props: {
       siteMeta: meta,
-      post,
+      post: post as PostInterface,
     },
   };
 }

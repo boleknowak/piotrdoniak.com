@@ -53,7 +53,7 @@ export default function PanelPosts() {
 
   const fetchPosts = async () => {
     setIsFetching(true);
-    const response = await fetch(`/api/posts?query=${searchQuery}`, {
+    const response = await fetch(`/api/posts?query=${searchQuery.toLocaleLowerCase()}`, {
       headers: {
         Accept: 'application/json',
       },
@@ -260,12 +260,14 @@ export default function PanelPosts() {
                               icon={<FaShare />}
                             />
                           </Tooltip>
-                          <IconButton
-                            size="sm"
-                            colorScheme="yellow"
-                            aria-label="View"
-                            icon={<FaPen />}
-                          />
+                          <Link href={`/panel/wpisy/edytuj?id=${post.id}`} display="inline-block">
+                            <IconButton
+                              size="sm"
+                              colorScheme="yellow"
+                              aria-label="View"
+                              icon={<FaPen />}
+                            />
+                          </Link>
                         </HStack>
                       </Td>
                     </Tr>

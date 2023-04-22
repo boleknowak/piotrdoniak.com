@@ -27,6 +27,18 @@ export const isBeforeDate = (date: string) => {
   return now.getTime() < postDate.getTime();
 };
 
+export const makeKeywords = (input: string | string[]): string => {
+  let words: string[] = [];
+
+  if (typeof input === 'string') {
+    words = input.split(' ');
+  } else {
+    words = input.flat().filter((word) => word !== '');
+  }
+
+  return words.join(', ');
+};
+
 export const formatDistance = (date: string) =>
   formatDistanceDateFns(new Date(date), new Date(), {
     locale: pl,

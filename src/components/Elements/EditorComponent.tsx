@@ -2,7 +2,12 @@
 import { Editor } from '@tinymce/tinymce-react';
 import { useRef } from 'react';
 
-export default function EditorComponent({ onUpdate }: { onUpdate: (content: string) => void }) {
+interface Props {
+  onUpdate: (content: string) => void;
+  initValue?: string;
+}
+
+export default function EditorComponent({ onUpdate, initValue = '<p></p>' }: Props) {
   const editorRef = useRef(null);
 
   const updateContent = () => {
@@ -16,7 +21,7 @@ export default function EditorComponent({ onUpdate }: { onUpdate: (content: stri
       apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
       onInit={(evt, editor) => (editorRef.current = editor)}
       onEditorChange={updateContent}
-      initialValue="<p></p>"
+      initialValue={initValue}
       init={{
         height: 400,
         skin: 'oxide',

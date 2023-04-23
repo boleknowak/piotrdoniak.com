@@ -3,11 +3,10 @@ import { useEffect, useState } from 'react';
 import SeoTags from '@/components/SeoTags';
 import { PostInterface } from '@/interfaces/PostInterface';
 import { CategoryInterface } from '@/interfaces/CategoryInterface';
-import DateComponent from '@/components/Date';
-import { Divider, HStack, Link, Spinner } from '@chakra-ui/react';
-import NextLink from 'next/link';
+import { Divider, Spinner } from '@chakra-ui/react';
 import absoluteUrl from 'next-absolute-url';
 import { useRouter } from 'next/router';
+import PostItem from '@/components/Elements/PostItem';
 
 interface Props {
   siteMeta: {
@@ -64,29 +63,7 @@ export default function BlogPostsList({ siteMeta, category }: Props) {
                 {!isLoading && posts.length > 0 && (
                   <div className="space-y-4">
                     {posts.map((post) => (
-                      <Link
-                        as={NextLink}
-                        href={`/post/${post.slug}`}
-                        key={post.id}
-                        className="block"
-                        style={{ textDecoration: 'none' }}
-                      >
-                        <div className="transform rounded border border-gray-200 bg-white p-4 transition duration-300 hover:scale-105 hover:bg-gray-100">
-                          <div>
-                            <div className="-mt-1 text-lg font-bold">{post.title}</div>
-                            <div>{post.description}</div>
-                            <div className="mt-2 text-xs text-gray-500">
-                              <HStack spacing={1}>
-                                <DateComponent dateString={post.publishedAt} />
-                                <div>•</div>
-                                <div>{post.readingTime} min czytania</div>
-                                <div>•</div>
-                                <div>{post.author.name}</div>
-                              </HStack>
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
+                      <PostItem key={post.id} post={post} />
                     ))}
                   </div>
                 )}

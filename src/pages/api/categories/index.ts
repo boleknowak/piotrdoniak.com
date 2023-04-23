@@ -61,6 +61,11 @@ export default async function handle(request: NextApiRequest, response: NextApiR
         slug: true,
         description: true,
         position: true,
+        _count: {
+          select: {
+            posts: true,
+          },
+        },
       },
       orderBy: {
         position: 'asc',

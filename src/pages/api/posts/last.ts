@@ -11,16 +11,13 @@ export default async function handle(request: NextApiRequest, response: NextApiR
   try {
     const now = dayjs().tz('Europe/Warsaw');
     const currentTime = now.utc(true).format();
-    const { category: categoryId, all } = request.query;
 
     const selectColumns = {
       id: true,
       authorId: true,
-      // categoryId: true,
       title: true,
       slug: true,
       description: true,
-      // keywords: true,
       views: true,
       readingTime: true,
       publishedAt: true,
@@ -33,52 +30,19 @@ export default async function handle(request: NextApiRequest, response: NextApiR
       },
     };
 
-    if (all) {
-      const posts = await prisma.post.findMany({
-        where: {
-          publishedAt: {
-            lte: currentTime,
-          },
-        },
-        select: selectColumns,
-      });
-
-      return response.json({ posts });
-    }
-
-    if (!categoryId) {
-      return response.json({
-        success: false,
-        message: 'Ups! Serwer napotkał problem.',
-        error_message: 'Nie znaleziono kategorii.',
-      });
-    }
-
-    const category = await prisma.category.findUnique({
+    const post = await prisma.post.findFirst({
       where: {
-        id: Number(categoryId),
-      },
-    });
-
-    if (!category) {
-      return response.json({
-        success: false,
-        message: 'Ups! Serwer napotkał problem.',
-        error_message: 'Nie znaleziono kategorii.',
-      });
-    }
-
-    const posts = await prisma.post.findMany({
-      where: {
-        categoryId: category.id,
         publishedAt: {
           lte: currentTime,
         },
       },
+      orderBy: {
+        publishedAt: 'desc',
+      },
       select: selectColumns,
     });
 
-    return response.json({ posts });
+    return response.json({ post });
   } catch (error) {
     return response.json({
       status: 'error',

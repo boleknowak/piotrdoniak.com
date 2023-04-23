@@ -6,4 +6,7 @@ export interface CategoryInterface {
   position: number;
   createdAt: Date;
   updatedAt: Date;
+  _count?: {
+    posts?: number;
+  };
 }

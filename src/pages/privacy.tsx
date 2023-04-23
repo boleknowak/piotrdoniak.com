@@ -51,7 +51,7 @@ export default function Privacy({ siteMeta }) {
   );
 }
 
-export const getServerSideProps = async () => {
+export const getStaticProps = async () => {
   const meta = {
     title: 'Prywatność - Piotr Doniak',
   };

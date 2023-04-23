@@ -68,7 +68,7 @@ export default function BlogPageMarketing({ siteMeta }) {
   );
 }
 
-export const getServerSideProps = async ({ res }) => {
+export const getStaticProps = async () => {
   const meta = {
     title: 'Wiedza - Piotr Doniak',
     description:
@@ -76,7 +76,7 @@ export const getServerSideProps = async ({ res }) => {
     url: 'https://piotrdoniak.com/wiedza',
   };
 
-  res.setHeader('Cache-Control', 'public, s-maxage=1200, stale-while-revalidate=600');
+  // res.setHeader('Cache-Control', 'public, s-maxage=1200, stale-while-revalidate=600');
 
   return {
     props: {

@@ -222,14 +222,14 @@ export default function Contact({ siteMeta }) {
   );
 }
 
-export const getServerSideProps = async ({ res }) => {
+export const getStaticProps = async () => {
   const meta = {
     title: 'Kontakt - Piotr Doniak',
     description: `Chcesz porozmawiać? Skontaktuj się ze mną, a ja odpowiem na Twoje pytania.`,
     url: 'https://piotrdoniak.com/kontakt',
   };
 
-  res.setHeader('Cache-Control', 'public, s-maxage=1200, stale-while-revalidate=600');
+  // res.setHeader('Cache-Control', 'public, s-maxage=1200, stale-while-revalidate=600');
 
   return {
     props: {

@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  runtime: 'experimental-edge',
   // productionBrowserSourceMaps: true,
   images: {
     remotePatterns: [

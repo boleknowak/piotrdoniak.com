@@ -61,7 +61,7 @@ export default function Post({ siteMeta, post }: Props) {
               </div>
               <div>{post.views}</div>
             </div>
-            <div className="mt-4 w-full max-w-2xl text-left text-[#43403C]">
+            <div className="mt-4 w-full max-w-2xl text-left text-[#212121]">
               <article className="prose prose-p:my-2 prose-p:leading-6 prose-img:rounded-md">
                 <div dangerouslySetInnerHTML={{ __html: post.content }} />
               </article>

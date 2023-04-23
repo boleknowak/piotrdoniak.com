@@ -15,7 +15,7 @@ export default function BlogPageMarketing({ siteMeta }) {
       <Layout>
         <div className="mb-20 mt-6 flex h-full w-full items-center justify-center md:mt-0">
           <div>
-            <div className="w-full max-w-2xl text-[#43403C]">
+            <div className="w-full max-w-2xl text-[#212121]">
               <h1 className="mb-4 text-2xl font-bold">O czym chcesz przeczytać?</h1>
               <div>
                 <p>Czasem napiszę jakiś wpis. Wybierz z jakiej kategorii chcesz przeczytać.</p>

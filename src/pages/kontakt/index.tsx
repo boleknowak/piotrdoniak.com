@@ -2,13 +2,20 @@ import Layout from '@/components/Layouts/Layout';
 import { Sofia } from 'next/font/google';
 import Social from '@/components/Social';
 import { socials } from '@/lib/socials';
-import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
-import { BarLoader } from 'react-spinners';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import Avatar from '@/components/Elements/Avatar';
-import { delay } from '@/lib/helpers';
 import SeoTags from '@/components/SeoTags';
+import {
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  HStack,
+  Input,
+  Textarea,
+  useToast,
+} from '@chakra-ui/react';
 
 const ERROR_TYPES = {
   too_small: 'Za krótkie (min. 2 znaki)',
@@ -32,11 +39,8 @@ export default function Contact({ siteMeta }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [returningEmail, setReturningEmail] = useLocalStorage('remail', null);
   const [returningName, setReturningName] = useLocalStorage('rname', null);
-  const [errors, setErrors] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
+  const [errors, setErrors] = useState<ContactFields>({} as ContactFields);
+  const toast = useToast();
 
   useEffect(() => {
     if (returningEmail) {
@@ -51,7 +55,6 @@ export default function Contact({ siteMeta }) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    toast.loading('Wysyłanie...');
 
     const data = {
       name: name.trim(),
@@ -83,14 +86,10 @@ export default function Contact({ siteMeta }) {
 
     const result = await response.json();
 
-    await delay(500);
-    toast.dismiss();
     setIsSubmitting(false);
 
     if (result.error) {
-      if (!result.issues || result.issues?.length === 0) {
-        toast.error(result.error);
-      } else {
+      if (result.issues && result.issues?.length !== 0) {
         result.issues.forEach((issue: { name: never; code: never }) => {
           setErrors((prev) => ({ ...prev, [issue.name]: issue.code }));
         });
@@ -98,12 +97,18 @@ export default function Contact({ siteMeta }) {
     } else {
       setReturningEmail(data.email);
       setReturningName(data.name);
-
-      toast.success(`${result.message} 🔥`);
-
       setName('');
       setEmail('');
       setMessage('');
+    }
+
+    if (!(result.issues || result.issues?.length === 0)) {
+      toast({
+        title: result.message || result.error,
+        status: !result.error ? 'success' : 'error',
+        duration: !result.error ? 3000 : 9000,
+        isClosable: true,
+      });
     }
   };
 
@@ -113,7 +118,7 @@ export default function Contact({ siteMeta }) {
       <Layout>
         <div className="mb-20 mt-6 flex h-full w-full items-center justify-center md:mt-0">
           <div>
-            <div className="w-full max-w-2xl text-[#43403C]">
+            <div className="w-full max-w-2xl text-[#212121]">
               <h1 className="mb-4 text-2xl font-bold">Kontakt</h1>
               <div>
                 <p>
@@ -163,97 +168,48 @@ export default function Contact({ siteMeta }) {
                       </div>
                     )}
                     {!(returningName && returningEmail) && (
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-1">
-                          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                            Twoja nazwa <span className="text-red-500">*</span>
-                          </label>
-                          <div>
-                            <input
-                              type="text"
-                              name="name"
-                              id="name"
-                              placeholder="np. Piotr"
-                              value={name}
-                              onChange={(e) => setName(e.target.value)}
-                              className={`block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
-                                errors.name ? 'border-red-500' : ''
-                              }`}
-                            />
-                            {errors.name && (
-                              <div className="text-sm font-medium text-red-500">
-                                {ERROR_TYPES[errors.name]}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <div className="space-y-1">
-                          <label
-                            htmlFor="email"
-                            className="block text-sm font-medium text-gray-700"
-                          >
-                            Adres email <span className="text-red-500">*</span>
-                          </label>
-                          <div>
-                            <input
-                              type="email"
-                              name="email"
-                              id="email"
-                              placeholder="np. piotr@przykladowy.pl"
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                              className={`block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
-                                errors.email ? 'border-red-500' : ''
-                              }`}
-                            />
-                            {errors.email && (
-                              <div className="text-sm font-medium text-red-500">
-                                {ERROR_TYPES[errors.email]}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
+                      <HStack spacing={4}>
+                        <FormControl isInvalid={!!errors.name} id="name" isRequired>
+                          <FormLabel>Twoja nazwa</FormLabel>
+                          <Input
+                            type="text"
+                            name="name"
+                            id="name"
+                            placeholder="np. Piotr"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                          />
+                          <FormErrorMessage>{ERROR_TYPES[errors.name]}</FormErrorMessage>
+                        </FormControl>
+                        <FormControl isInvalid={!!errors.email} id="email" isRequired>
+                          <FormLabel>Twój email</FormLabel>
+                          <Input
+                            type="email"
+                            name="email"
+                            id="email"
+                            placeholder="np. piotr@przykladowy.pl"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                          />
+                          <FormErrorMessage>{ERROR_TYPES[errors.email]}</FormErrorMessage>
+                        </FormControl>
+                      </HStack>
                     )}
-                    <div className="space-y-1">
-                      <label htmlFor="message" className="block text-sm font-medium text-gray-700">
-                        Wiadomość <span className="text-red-500">*</span>
-                      </label>
-                      <div>
-                        <textarea
-                          id="message"
-                          name="message"
-                          rows={4}
-                          cols={50}
-                          placeholder="Aa"
-                          value={message}
-                          onChange={(e) => setMessage(e.target.value)}
-                          className={`block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
-                            errors.message ? 'border-red-500' : ''
-                          }`}
-                        ></textarea>
-                        {errors.message && (
-                          <div className="text-sm font-medium text-red-500">
-                            {ERROR_TYPES[errors.message]}
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                    <FormControl isInvalid={!!errors.message} id="message" isRequired>
+                      <FormLabel>Wiadomość</FormLabel>
+                      <Textarea
+                        name="message"
+                        id="message"
+                        placeholder="Aa"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                      />
+                      <FormErrorMessage>{ERROR_TYPES[errors.message]}</FormErrorMessage>
+                    </FormControl>
                     <div>
-                      <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className={`h-10 w-24 rounded-md bg-yellow-500 text-sm font-bold uppercase tracking-wide text-black hover:bg-yellow-600 ${
-                          isSubmitting ? 'cursor-not-allowed bg-opacity-75' : ''
-                        }`}
-                      >
-                        {!isSubmitting && <span>Wyślij</span>}
-                        {isSubmitting && (
-                          <div className="ml-4">
-                            <BarLoader color="#212121" width={64} aria-label="Wysyłanie..." />
-                          </div>
-                        )}
-                      </button>
+                      <Button type="submit" isLoading={isSubmitting} colorScheme="yellow">
+                        Wyślij
+                      </Button>
                     </div>
                   </form>
                 </div>

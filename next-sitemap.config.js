@@ -14,13 +14,12 @@ module.exports = {
     '/404.html',
     '/_error',
     '/_error.html',
-    '/count',
     '/posts-sitemap.xml',
     '/panel',
     '/panel/*',
   ],
   robotsTxtOptions: {
-    // additionalSitemaps: [`${APP_URL}/posts-sitemap.xml`],
+    additionalSitemaps: [`${APP_URL}/posts-sitemap.xml`],
     policies: [
       {
         userAgent: '*',

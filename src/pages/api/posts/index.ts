@@ -11,7 +11,33 @@ export default async function handle(request: NextApiRequest, response: NextApiR
   try {
     const now = dayjs().tz('Europe/Warsaw');
     const currentTime = now.utc(true).format();
-    const { category: categoryId } = request.query;
+    const { category: categoryId, all } = request.query;
+
+    const selectColmuns = {
+      id: true,
+      authorId: true,
+      categoryId: true,
+      title: true,
+      slug: true,
+      description: true,
+      keywords: true,
+      views: true,
+      publishedAt: true,
+      updatedAt: true,
+    };
+
+    if (all) {
+      const posts = await prisma.post.findMany({
+        where: {
+          publishedAt: {
+            lte: currentTime,
+          },
+        },
+        select: selectColmuns,
+      });
+
+      return response.json({ posts });
+    }
 
     if (!categoryId) {
       return response.json({
@@ -42,18 +68,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
           lte: currentTime,
         },
       },
-      select: {
-        id: true,
-        authorId: true,
-        categoryId: true,
-        title: true,
-        slug: true,
-        description: true,
-        keywords: true,
-        views: true,
-        publishedAt: true,
-        updatedAt: true,
-      },
+      select: selectColmuns,
     });
 
     return response.json({ posts });

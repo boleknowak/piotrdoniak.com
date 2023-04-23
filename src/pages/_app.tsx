@@ -46,7 +46,6 @@ export default function App({ Component, pageProps: { session, ...pageProps } })
           `,
         }}
       />
-      <Script src="https://accounts.google.com/gsi/client" strategy="beforeInteractive" />
       <TopProgressBar />
       <SessionProvider session={session}>
         <ChakraProvider theme={theme}>

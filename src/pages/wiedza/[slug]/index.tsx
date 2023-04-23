@@ -4,7 +4,7 @@ import SeoTags from '@/components/SeoTags';
 import { PostInterface } from '@/interfaces/PostInterface';
 import { CategoryInterface } from '@/interfaces/CategoryInterface';
 import DateComponent from '@/components/Date';
-import { Link } from '@chakra-ui/react';
+import { Divider, Link, Spinner } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import absoluteUrl from 'next-absolute-url';
 import { useRouter } from 'next/router';
@@ -40,16 +40,27 @@ export default function BlogPostsList({ siteMeta, category }: Props) {
     <>
       <SeoTags title={siteMeta?.title} description={siteMeta?.description} url={siteMeta?.url} />
       <Layout>
-        <div className="mb-20 mt-6 flex h-full w-full items-center justify-center md:mt-0">
+        <div className="mb-20 mt-6 flex h-full w-full items-start justify-center md:mt-12">
           <div>
-            <div className="w-full max-w-2xl text-[#43403C]">
-              <h1 className="mb-4 text-2xl font-bold">Posty o {category.name}</h1>
+            <div className="w-full max-w-2xl text-[#212121]">
+              <div className="text-xs font-medium uppercase text-gray-600">Kącik wiedzy</div>
+              <h1 className="mb-4 text-3xl font-bold">{category.name}</h1>
               <div>
-                <p>Czasem piszę o marketingu, sprawdź co ostatnio napisałem.</p>
+                <p>{category.description}</p>
               </div>
-              <div className="mt-10">
-                {isLoading && <div>loading...</div>}
-                {!isLoading && posts.length === 0 && <div>Brak postów</div>}
+              <Divider my={6} />
+              <div>
+                {isLoading && (
+                  <div className="mx-auto">
+                    {/* TODO: skeleton */}
+                    <Spinner />
+                  </div>
+                )}
+                {!isLoading && posts.length === 0 && (
+                  <div className="text-center text-sm text-gray-600">
+                    Uuups! Nie ma tu nic, ale postaram się wrzucić coś ciekawego już niedługo!
+                  </div>
+                )}
                 {!isLoading && posts.length > 0 && (
                   <div className="space-y-4">
                     {posts.map((post) => (
@@ -92,7 +103,7 @@ export const getServerSideProps = async ({ req, query }) => {
 
   const meta = {
     title: `${category.name} - Piotr Doniak`,
-    description: `Czasem piszę o marketingu, sprawdź co ostatnio napisałem.`,
+    description: category.description,
     url: `https://piotrdoniak.com/wiedza/${category.slug}`,
   };
 

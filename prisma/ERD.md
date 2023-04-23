@@ -24,6 +24,7 @@ erDiagram
 		Int id PK  "autoincrement()"
 		String name
 		String slug  "nullable"
+		String description  "nullable"
 		Int position  "nullable"
 		DateTime createdAt  "now()"
 		DateTime updatedAt

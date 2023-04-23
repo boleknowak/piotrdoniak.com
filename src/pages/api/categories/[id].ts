@@ -37,7 +37,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
 
     if (request.method === 'PUT') {
       const { id } = request.query;
-      const { name } = request.body;
+      const { name, description } = request.body;
       let { slug, position } = request.body;
 
       if (!slug) {
@@ -58,6 +58,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
         data: {
           name,
           slug,
+          description,
           position: parseInt(position, 10),
         },
       });

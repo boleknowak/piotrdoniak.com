@@ -59,6 +59,7 @@ export default function ManageCategoriesModal({ isOpen, onClose, categories, set
       body: JSON.stringify({
         name: e.target.category_name.value,
         slug: e.target.category_slug.value,
+        description: e.target.category_description.value,
         position: e.target.category_position.value,
       }),
     });
@@ -94,6 +95,7 @@ export default function ManageCategoriesModal({ isOpen, onClose, categories, set
       body: JSON.stringify({
         name: e.target.category_name.value,
         slug: e.target.category_slug.value,
+        description: e.target.category_description.value,
         position: e.target.category_position.value,
       }),
     });
@@ -201,6 +203,15 @@ export default function ManageCategoriesModal({ isOpen, onClose, categories, set
                           placeholder="np. Programowanie"
                         />
                       </FormControl>
+                      <FormControl isRequired>
+                        <FormLabel>Opis</FormLabel>
+                        <Input
+                          type="text"
+                          name="category_description"
+                          id="category_description"
+                          placeholder="Opis kategorii powinien być krótki"
+                        />
+                      </FormControl>
                       <FormControl>
                         <FormLabel>Pozycja</FormLabel>
                         <Input
@@ -264,6 +275,16 @@ export default function ManageCategoriesModal({ isOpen, onClose, categories, set
                             placeholder={category.name}
                             value={category.name}
                             onChange={(e) => updateField(e, category, 'name')}
+                          />
+                        </FormControl>
+                        <FormControl isRequired>
+                          <FormLabel>Opis</FormLabel>
+                          <Input
+                            type="text"
+                            name="category_description"
+                            placeholder={category.description}
+                            value={category.description}
+                            onChange={(e) => updateField(e, category, 'description')}
                           />
                         </FormControl>
                         <FormControl>

@@ -13,7 +13,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
       const user = session?.user as UserInterface;
 
       if (user?.is_authorized) {
-        const { name } = request.body;
+        const { name, description } = request.body;
         let { slug, position } = request.body;
 
         if (!slug) {
@@ -31,6 +31,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
           data: {
             name,
             slug,
+            description,
             position: parseInt(position, 10),
           },
         });

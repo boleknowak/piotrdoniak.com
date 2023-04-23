@@ -9,6 +9,8 @@ const schema = z.object({
   message: z.string().min(2).max(500),
 });
 
+export const runtime = 'experimental-edge';
+
 export default async function handle(request: NextApiRequest, response: NextApiResponse) {
   if (request.method !== 'POST') {
     return response.status(405).json({ error: 'method_not_allowed' });

@@ -5,8 +5,6 @@ import SeoTags from '@/components/SeoTags';
 
 const sofia = Sofia({ subsets: ['latin'], weight: '400' });
 
-export const runtime = 'experimental-edge';
-
 export default function Home({ siteMeta }) {
   return (
     <>

@@ -20,9 +20,10 @@ export default function Home({ siteMeta }) {
                 width={600}
                 height={286}
                 className="mb-10 rounded-lg"
-                quality={80}
-                placeholder="blur"
-                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mPcUg8AAe0BNUeV1/kAAAAASUVORK5CYII="
+                quality={75}
+                priority={true}
+                // placeholder="blur"
+                // blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mPcUg8AAe0BNUeV1/kAAAAASUVORK5CYII="
               />
               {/* https://png-pixel.com/ b4b4b4 */}
               <h1 className="mb-4 text-2xl font-bold">Cześć!</h1>
@@ -58,7 +59,7 @@ export const getServerSideProps = async ({ res }) => {
     title: 'Poznaj mnie - Piotr Doniak',
   };
 
-  res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=119');
+  res.setHeader('Cache-Control', 'public, s-maxage=1200, stale-while-revalidate=600');
 
   return {
     props: {

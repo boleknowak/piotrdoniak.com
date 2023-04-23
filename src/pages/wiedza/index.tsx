@@ -68,13 +68,15 @@ export default function BlogPageMarketing({ siteMeta }) {
   );
 }
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async ({ res }) => {
   const meta = {
     title: 'Wiedza - Piotr Doniak',
     description:
       'To idealne miejsce do poszerzania swojej wiedzy z różnych dziedzin i odkrywania nowych, inspirujących treści.',
     url: 'https://piotrdoniak.com/wiedza',
   };
+
+  res.setHeader('Cache-Control', 'public, s-maxage=1200, stale-while-revalidate=600');
 
   return {
     props: {

@@ -55,12 +55,14 @@ export default function Projects({ siteMeta }) {
   );
 }
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async ({ res }) => {
   const meta = {
     title: 'Projekty - Piotr Doniak',
     description: `Projekty stworzone przez autora strony. Przejrzyj je i zobacz, co potrafię.`,
     url: 'https://piotrdoniak.com/projekty',
   };
+
+  res.setHeader('Cache-Control', 'public, s-maxage=1200, stale-while-revalidate=600');
 
   return {
     props: {

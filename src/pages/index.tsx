@@ -54,16 +54,15 @@ export default function Home({ siteMeta }) {
   );
 }
 
-export const getServerSideProps = async ({ res }) => {
+// getServersideProps
+export async function getStaticProps() {
   const meta = {
     title: 'Poznaj mnie - Piotr Doniak',
   };
-
-  res.setHeader('Cache-Control', 'public, s-maxage=1200, stale-while-revalidate=600');
 
   return {
     props: {
       siteMeta: meta,
     },
   };
-};
+}

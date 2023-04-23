@@ -8,6 +8,7 @@ export default function Item({ children, href, subtext, ...props }) {
   return (
     <Link
       href={href}
+      shallow
       className={`flex flex-row items-center justify-between rounded p-2 text-sm text-black transition-all duration-100 ease-in-out ${
         isActive && 'bg-[#42403B] !text-white'
       } ${!isActive && 'hover:bg-[#42403B] hover:text-white'}`}

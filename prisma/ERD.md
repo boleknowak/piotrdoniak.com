@@ -1,30 +1,50 @@
 ```mermaid
 erDiagram
+	ContactMessageStatus {
+		value PENDING
+		value VIEWED
+		value CLOSED
+	}
 	posts {
 		Int id PK  "autoincrement()"
+		String authorId FK  "nullable"
+		Int categoryId FK  "nullable"
 		String title
+		String slug  "nullable"
+		String full_slug  "nullable"
+		String description  "nullable"
 		String content  "nullable"
+		String keywords  "nullable"
+		Int views  "nullable"
+		DateTime publishedAt  "nullable"
 		DateTime createdAt  "now()"
 		DateTime updatedAt
-		String full_slug  "nullable"
+	}
+	categories {
+		Int id PK  "autoincrement()"
+		String name
 		String slug  "nullable"
+		String description  "nullable"
+		Int position  "nullable"
+		DateTime createdAt  "now()"
+		DateTime updatedAt
 	}
 	contacts {
 		Int id PK  "autoincrement()"
 		String name
 		String email
-		DateTime createdAt  "now()"
-		DateTime updatedAt
 		String avatar  "nullable"
 		String draftReply  "nullable"
+		DateTime createdAt  "now()"
+		DateTime updatedAt
 	}
 	contact_messages {
 		Int id PK  "autoincrement()"
 		String message
-		DateTime createdAt  "now()"
-		DateTime updatedAt
 		ContactMessageStatus status "PENDING"
 		Int contactId FK
+		DateTime createdAt  "now()"
+		DateTime updatedAt
 	}
 	accounts {
 		String id PK  "cuid()"
@@ -53,6 +73,7 @@ erDiagram
 	users {
 		String id PK  "cuid()"
 		String name  "nullable"
+		String slug  "nullable"
 		String email  "nullable"
 		DateTime email_verified  "nullable"
 		String image  "nullable"
@@ -65,13 +86,10 @@ erDiagram
 		String token
 		DateTime expires
 	}
-	ContactMessageStatus {
-		value PENDING
-		value VIEWED
-		value CLOSED
-	}
+	posts }o--|| users : author
+	posts }o--|| categories : category
 	contact_messages }o--|| contacts : contact
-	contact_messages }o--|| undefined : "enum:status"
+	contact_messages }o--|| ContactMessageStatus : "enum:status"
 	accounts }o--|| users : user
 	sessions }o--|| users : user
 

@@ -1,16 +1,23 @@
-import { parseISO, format } from 'date-fns';
+import { parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
+import { utcToZonedTime, format } from 'date-fns-tz';
 
-export default function Date({ dateString, withTime = false, onlyTime = false }) {
+export default function DateComponent({ dateString, withTime = false, onlyTime = false }) {
   const date = parseISO(dateString);
+  const zonedDate = utcToZonedTime(date, 'Europe/Warsaw');
+  let pattern = 'd LLLL yyyy';
 
   if (withTime) {
-    return <time dateTime={dateString}>{format(date, 'd LLLL yyyy, HH:mm', { locale: pl })}</time>;
+    pattern = 'd LLLL yyyy, HH:mm';
   }
 
   if (onlyTime) {
-    return <time dateTime={dateString}>{format(date, 'HH:mm', { locale: pl })}</time>;
+    pattern = 'HH:mm';
   }
 
-  return <time dateTime={dateString}>{format(date, 'd LLLL yyyy', { locale: pl })}</time>;
+  return (
+    <time dateTime={dateString}>
+      {format(zonedDate, pattern, { locale: pl, timeZone: 'Europe/Warsaw' })}
+    </time>
+  );
 }

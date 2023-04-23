@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["jsonProtocol"]
 }
 
 generator erd {
@@ -13,25 +14,49 @@ datasource db {
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  full_slug String?  @unique
-  slug      String?  @unique
+  id          Int       @id @default(autoincrement())
+  authorId    String?
+  categoryId  Int?
+  title       String
+  slug        String?   @unique
+  full_slug   String?   @unique
+  description String?
+  content     String?
+  keywords    String?
+  views       Int?      @default(0)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  author   User?     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  category Category? @relation(fields: [categoryId], references: [id])
 
   @@map("posts")
 }
 
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String
+  slug        String?  @unique
+  description String?
+  position    Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  posts Post[]
+
+  @@map("categories")
+}
+
 model Contact {
-  id             Int              @id @default(autoincrement())
-  name           String
-  email          String           @unique
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  avatar         String?
-  draftReply     String?
+  id         Int      @id @default(autoincrement())
+  name       String
+  email      String   @unique
+  avatar     String?
+  draftReply String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
   ContactMessage ContactMessage[]
 
   @@map("contacts")
@@ -40,11 +65,12 @@ model Contact {
 model ContactMessage {
   id        Int                  @id @default(autoincrement())
   message   String
-  createdAt DateTime             @default(now())
-  updatedAt DateTime             @updatedAt
   status    ContactMessageStatus @default(PENDING)
   contactId Int
-  contact   Contact              @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
 
   @@map("contact_messages")
 }
@@ -85,6 +111,7 @@ model Session {
 model User {
   id            String    @id @default(cuid())
   name          String?
+  slug          String?   @unique
   email         String?   @unique
   emailVerified DateTime? @map("email_verified")
   image         String?
@@ -93,6 +120,7 @@ model User {
   is_authorized Boolean   @default(false)
   accounts      Account[]
   sessions      Session[]
+  posts         Post[]
 
   @@map("users")
 }

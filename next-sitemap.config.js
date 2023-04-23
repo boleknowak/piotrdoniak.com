@@ -14,8 +14,6 @@ module.exports = {
     '/404.html',
     '/_error',
     '/_error.html',
-    '/characters/*',
-    '/characters',
     '/count',
     '/posts-sitemap.xml',
     '/panel',

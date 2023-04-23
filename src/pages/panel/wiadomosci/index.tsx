@@ -20,12 +20,12 @@ import {
   faCheck,
   faEnvelopeCircleCheck,
 } from '@fortawesome/free-solid-svg-icons';
-import Date from '@/components/Date';
 import Badge from '@/components/Elements/Badge';
 import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
 import StatusBadge from '@/components/Elements/StatusBadge';
 import Avatar from '@/components/Elements/Avatar';
+import DateComponent from '@/components/Date';
 
 export default function PanelMessages() {
   const [contacts, setContacts] = useState([]);
@@ -272,7 +272,7 @@ export default function PanelMessages() {
                           <div>
                             <div className="font-bold">{formatName(contact.name)}</div>
                             <div className="text-xs text-gray-500">
-                              <Date dateString={contact.lastMessageCreatedAt} />
+                              <DateComponent dateString={contact.lastMessageCreatedAt} />
                             </div>
                           </div>
                         </div>
@@ -318,7 +318,7 @@ export default function PanelMessages() {
                           additionalClasses="flex flex-row items-center space-x-1"
                         >
                           <FontAwesomeIcon icon={faClockSolid} size="sm" className="-ml-1 w-3" />
-                          <Date dateString={selectedContact.createdAt} />
+                          <DateComponent dateString={selectedContact.createdAt} />
                         </Badge>
                         <Badge
                           variant="outlined-gray"
@@ -336,7 +336,7 @@ export default function PanelMessages() {
                       {selectedContact.messages.map((message) => (
                         <div key={message.id} className="mt-4 rounded-md bg-white p-4">
                           <div className="mb-1 flex flex-row items-center space-x-2 text-xs text-gray-500">
-                            <Date dateString={message.createdAt} withTime={true} />
+                            <DateComponent dateString={message.createdAt} withTime={true} />
                             <div>•</div>
                             <button
                               type="button"
@@ -355,7 +355,7 @@ export default function PanelMessages() {
                   )}
                   <div className="mt-4">
                     <hr />
-                    <div className="mt-2 mb-1 font-medium">Szkic odpowiedzi</div>
+                    <div className="mb-1 mt-2 font-medium">Szkic odpowiedzi</div>
                     <textarea
                       name="draft_reply"
                       id="draft_reply"
@@ -363,7 +363,7 @@ export default function PanelMessages() {
                       cols={50}
                       value={draftMessage}
                       onChange={(e) => setDraftMessage(e.target.value)}
-                      className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
+                      className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
                       placeholder="Szkic Twojej odpowiedzi..."
                     ></textarea>
                   </div>

@@ -25,6 +25,7 @@ export const authOptions: NextAuthOptions = {
       session.user = {
         id: user.id,
         name: user.name,
+        slug: user.slug,
         firstName: user.name.split(' ')[0] || '',
         lastName: user.name.split(' ')[1] || '',
         email: user.email,

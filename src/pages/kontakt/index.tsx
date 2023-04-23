@@ -1,6 +1,5 @@
 import Layout from '@/components/Layouts/Layout';
 import { Sofia } from 'next/font/google';
-import Head from 'next/head';
 import Social from '@/components/Social';
 import { socials } from '@/lib/socials';
 import toast from 'react-hot-toast';
@@ -8,7 +7,8 @@ import { useEffect, useState } from 'react';
 import { BarLoader } from 'react-spinners';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import Avatar from '@/components/Elements/Avatar';
-import delay from '@/lib/delay';
+import { delay } from '@/lib/helpers';
+import SeoTags from '@/components/SeoTags';
 
 const ERROR_TYPES = {
   too_small: 'Za krótkie (min. 2 znaki)',
@@ -109,24 +109,7 @@ export default function Contact({ siteMeta }) {
 
   return (
     <>
-      <Head>
-        <title>{siteMeta?.title}</title>
-        <meta name="description" content={siteMeta?.description} />
-        <meta name="robots" content="index, follow" />
-        <meta property="og:title" content={siteMeta?.title} />
-        <meta property="og:description" content={siteMeta?.description} />
-        <meta property="og:image" content={siteMeta?.image} />
-        <meta property="og:url" content={siteMeta?.url} />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary" />
-        <meta property="twitter:domain" content="piotrdoniak.com" />
-        <meta property="twitter:url" content={siteMeta?.url} />
-        <meta name="twitter:title" content={siteMeta?.title} />
-        <meta name="twitter:description" content={siteMeta?.description} />
-        <meta name="twitter:image" content={siteMeta?.image} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="canonical" href={siteMeta?.url} />
-      </Head>
+      <SeoTags title={siteMeta?.title} description={siteMeta?.description} url={siteMeta?.url} />
       <Layout>
         <div className="mb-20 mt-6 flex h-full w-full items-center justify-center md:mt-0">
           <div>
@@ -193,7 +176,7 @@ export default function Contact({ siteMeta }) {
                               placeholder="np. Piotr"
                               value={name}
                               onChange={(e) => setName(e.target.value)}
-                              className={`block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
+                              className={`block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
                                 errors.name ? 'border-red-500' : ''
                               }`}
                             />
@@ -219,7 +202,7 @@ export default function Contact({ siteMeta }) {
                               placeholder="np. piotr@przykladowy.pl"
                               value={email}
                               onChange={(e) => setEmail(e.target.value)}
-                              className={`block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
+                              className={`block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
                                 errors.email ? 'border-red-500' : ''
                               }`}
                             />
@@ -245,7 +228,7 @@ export default function Contact({ siteMeta }) {
                           placeholder="Aa"
                           value={message}
                           onChange={(e) => setMessage(e.target.value)}
-                          className={`block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
+                          className={`block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 ${
                             errors.message ? 'border-red-500' : ''
                           }`}
                         ></textarea>
@@ -287,7 +270,6 @@ export const getServerSideProps = async () => {
   const meta = {
     title: 'Kontakt - Piotr Doniak',
     description: `Chcesz porozmawiać? Skontaktuj się ze mną, a ja odpowiem na Twoje pytania.`,
-    image: 'https://piotrdoniak.com/images/brand/me.png',
     url: 'https://piotrdoniak.com/kontakt',
   };
 

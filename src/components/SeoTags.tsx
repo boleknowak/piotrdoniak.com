@@ -9,16 +9,19 @@ interface SeoTagsProps {
   url?: string;
   canonicalUrl?: string;
   type?: string;
+  image?: string;
+  schema?: unknown;
 }
 
 export default function SeoTags({ ...props }: SeoTagsProps) {
-  const defaultTitle = 'Przygody.online - Gry i zagadki online dla każdego!';
+  const defaultTitle = 'Piotr Doniak';
   const defaultDescription =
-    'Zagadki na przygody.online są idealnym wyborem dla miłośników przygód, łamigłówek i zadań do wykonania. Dołącz do nas już teraz!';
+    'Jestem Piotr i lubię marketing oraz programowanie. Sprawdź moje projekty i bloga, aby dowiedzieć się o mnie więcej.';
   const defaultKeywords =
-    'przygody, gry, zagadki, łamigłówki, przygody online, wyzwania, gra, gra przygodowa, platforma, zabawa, rozrywka, emocje, rozwiązywanie zagadek, interaktywna gra, gra logiczna, gra zręcznościowa, gra dla dzieci, gra dla dorosłych, gra dla całej rodziny, gra mobilna, gra przeglądarkowa, gra online';
-  const defaultUrl = 'https://przygody.online';
+    'Piotr, Piotrek, Piotr Doniak, Piotrek Doniak, Doniak, Marketing, Programowanie';
+  const defaultUrl = 'https://piotrdoniak.com';
   const defaultType = 'website';
+  const defaultImage = 'https://piotrdoniak.com/images/brand/me.png';
 
   const title = props.title ?? defaultTitle;
   const ogTitle = props.og_title ?? props.title ?? defaultTitle;
@@ -26,8 +29,9 @@ export default function SeoTags({ ...props }: SeoTagsProps) {
   const ogDescription = props.og_description ?? props.description ?? defaultDescription;
   const keywords = props.keywords ? `${props.keywords}, ${defaultKeywords}` : defaultKeywords;
   const url = props.url ?? defaultUrl;
-  const canonicalUrl = props.canonicalUrl ?? defaultUrl;
+  const canonicalUrl = props.canonicalUrl ?? url ?? defaultUrl;
   const type = props.type ?? defaultType;
+  const image = props.image ?? defaultImage;
 
   return (
     <Head>
@@ -39,15 +43,23 @@ export default function SeoTags({ ...props }: SeoTagsProps) {
       <meta property="og:description" content={ogDescription} />
       <meta property="og:url" content={url} />
       <meta property="og:type" content={type} />
-      <meta property="og:site_name" content="przygody.online" />
+      <meta property="og:site_name" content="piotrdoniak.com" />
       <meta property="og:locale" content="pl_PL" />
+      <meta property="og:image" content={image} />
       <meta name="twitter:card" content="summary" />
-      <meta name="twitter:site" content="@przygodyonline" />
-      <meta name="twitter:creator" content="@przygodyonline" />
+      <meta name="twitter:site" content="@piotrdoniak" />
+      <meta name="twitter:creator" content="@piotrdoniak" />
       <meta name="twitter:title" content={ogTitle} />
       <meta name="twitter:description" content={ogDescription} />
+      <meta name="twitter:image" content={image} />
       <link rel="canonical" href={canonicalUrl} />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
+      {props.schema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(props.schema) }}
+        />
+      )}
     </Head>
   );
 }

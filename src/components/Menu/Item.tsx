@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 
 export default function Item({ children, href, subtext, ...props }) {
   const router = useRouter();
-  const isActive = router.pathname === href;
+  const isActive = router.asPath === href;
 
   return (
     <Link

@@ -1,6 +1,6 @@
 import Layout from '@/components/Layouts/Layout';
 import Project from '@/components/Project';
-import Head from 'next/head';
+import SeoTags from '@/components/SeoTags';
 
 export default function Projects({ siteMeta }) {
   const projects = [
@@ -22,24 +22,7 @@ export default function Projects({ siteMeta }) {
 
   return (
     <>
-      <Head>
-        <title>{siteMeta?.title}</title>
-        <meta name="description" content={siteMeta?.description} />
-        <meta name="robots" content="index, follow" />
-        <meta property="og:title" content={siteMeta?.title} />
-        <meta property="og:description" content={siteMeta?.description} />
-        <meta property="og:image" content={siteMeta?.image} />
-        <meta property="og:url" content={siteMeta?.url} />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary" />
-        <meta property="twitter:domain" content="piotrdoniak.com" />
-        <meta property="twitter:url" content={siteMeta?.url} />
-        <meta name="twitter:title" content={siteMeta?.title} />
-        <meta name="twitter:description" content={siteMeta?.description} />
-        <meta name="twitter:image" content={siteMeta?.image} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="canonical" href={siteMeta?.url} />
-      </Head>
+      <SeoTags title={siteMeta?.title} description={siteMeta?.description} url={siteMeta?.url} />
       <Layout>
         <div className="mb-20 mt-6 flex h-full w-full items-center justify-center md:mt-0">
           <div>
@@ -76,7 +59,6 @@ export const getServerSideProps = async () => {
   const meta = {
     title: 'Projekty - Piotr Doniak',
     description: `Projekty stworzone przez autora strony. Przejrzyj je i zobacz, co potrafię.`,
-    image: 'https://piotrdoniak.com/images/brand/me.png',
     url: 'https://piotrdoniak.com/projekty',
   };
 

@@ -4,7 +4,7 @@ import SeoTags from '@/components/SeoTags';
 import { PostInterface } from '@/interfaces/PostInterface';
 import { CategoryInterface } from '@/interfaces/CategoryInterface';
 import DateComponent from '@/components/Date';
-import { Divider, Link, Spinner } from '@chakra-ui/react';
+import { Divider, HStack, Link, Spinner } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import absoluteUrl from 'next-absolute-url';
 import { useRouter } from 'next/router';
@@ -40,7 +40,7 @@ export default function BlogPostsList({ siteMeta, category }: Props) {
     <>
       <SeoTags title={siteMeta?.title} description={siteMeta?.description} url={siteMeta?.url} />
       <Layout>
-        <div className="mb-20 mt-6 flex h-full w-full items-start justify-center md:mt-12">
+        <div className="mb-20 flex h-full w-full items-start justify-center pt-6 md:pt-12">
           <div>
             <div className="w-full max-w-2xl text-[#212121]">
               <div className="text-xs font-medium uppercase text-gray-600">Kącik wiedzy</div>
@@ -76,7 +76,13 @@ export default function BlogPostsList({ siteMeta, category }: Props) {
                             <div className="-mt-1 text-lg font-bold">{post.title}</div>
                             <div>{post.description}</div>
                             <div className="mt-2 text-xs text-gray-500">
-                              <DateComponent dateString={post.publishedAt} />
+                              <HStack spacing={1}>
+                                <DateComponent dateString={post.publishedAt} />
+                                <div>•</div>
+                                <div>{post.readingTime} min czytania</div>
+                                <div>•</div>
+                                <div>{post.author.name}</div>
+                              </HStack>
                             </div>
                           </div>
                         </div>

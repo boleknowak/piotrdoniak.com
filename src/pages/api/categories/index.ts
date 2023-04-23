@@ -55,6 +55,13 @@ export default async function handle(request: NextApiRequest, response: NextApiR
     }
 
     const categories = await prisma.category.findMany({
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        description: true,
+        position: true,
+      },
       orderBy: {
         position: 'asc',
       },

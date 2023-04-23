@@ -16,6 +16,7 @@ erDiagram
 		String content  "nullable"
 		String keywords  "nullable"
 		Int views  "nullable"
+		Int readingTime  "nullable"
 		DateTime publishedAt  "nullable"
 		DateTime createdAt  "now()"
 		DateTime updatedAt

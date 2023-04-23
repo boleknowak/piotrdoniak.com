@@ -40,6 +40,7 @@ export default function PanelPostsUpdate({ post }) {
   const [slug, setSlug] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
+  const [readingTime, setReadingTime] = useState('');
   const [content, setContent] = useState('');
   const [publishAt, setPublishAt] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
@@ -67,6 +68,7 @@ export default function PanelPostsUpdate({ post }) {
     setTitle(post.title);
     setSlug(post.slug);
     setDescription(post.description);
+    setReadingTime(post.readingTime);
     setCategory(post.categoryId);
     setContent(post.content);
 
@@ -89,6 +91,7 @@ export default function PanelPostsUpdate({ post }) {
         description,
         categoryId: category,
         content,
+        readingTime,
         publishAt: currentTime(publishAt).getTime(),
       }),
     });
@@ -249,6 +252,17 @@ export default function PanelPostsUpdate({ post }) {
                   time = time.replace('Z', '');
                   setPublishAt(time);
                 }}
+              />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Czas czytania</FormLabel>
+              <Input
+                type="number"
+                name="readingTime"
+                id="readingTime"
+                placeholder="np. 5"
+                value={readingTime}
+                onChange={(e) => setReadingTime(e.target.value)}
               />
             </FormControl>
           </HStack>

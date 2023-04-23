@@ -16,14 +16,21 @@ export default async function handle(request: NextApiRequest, response: NextApiR
     const selectColmuns = {
       id: true,
       authorId: true,
-      categoryId: true,
+      // categoryId: true,
       title: true,
       slug: true,
       description: true,
-      keywords: true,
+      // keywords: true,
       views: true,
+      readingTime: true,
       publishedAt: true,
       updatedAt: true,
+      author: {
+        select: {
+          name: true,
+          slug: true,
+        },
+      },
     };
 
     if (all) {

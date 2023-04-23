@@ -12,6 +12,7 @@ export interface PostInterface {
   content: string;
   keywords: string;
   views: number;
+  readingTime: number;
   publishedAt: string;
   createdAt: string;
   updatedAt: string;

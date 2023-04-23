@@ -16,6 +16,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
           select: {
             id: true,
             name: true,
+            slug: true,
             image: true,
             is_authorized: true,
           },

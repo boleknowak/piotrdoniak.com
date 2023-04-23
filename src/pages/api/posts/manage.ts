@@ -79,7 +79,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
     }
 
     if (request.method === 'POST') {
-      const { title, categoryId, description, content, publishAt } = request.body;
+      const { title, categoryId, description, content, readingTime, publishAt } = request.body;
       let { slug } = request.body;
 
       const category = await prisma.category.findUnique({
@@ -121,6 +121,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
           full_slug: fullSlug,
           description,
           content,
+          readingTime: Number(readingTime),
           keywords,
           publishedAt: publishAt ? new Date(publishAt) : null,
           category: {
@@ -144,7 +145,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
     }
 
     if (request.method === 'PUT') {
-      const { title, categoryId, description, content, publishAt } = request.body;
+      const { title, categoryId, description, content, readingTime, publishAt } = request.body;
       let { slug: slugUrl } = request.body;
       const { id } = request.query;
 
@@ -190,6 +191,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
           full_slug: fullSlug,
           description,
           content,
+          readingTime: Number(readingTime),
           keywords,
           publishedAt: publishAt ? new Date(publishAt) : null,
           category: {

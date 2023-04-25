@@ -92,6 +92,11 @@ Example `.env` file:
 # Application
 APP_URL=http://localhost:3000
 NEXT_PUBLIC_ANALYTICS_ID=GA-XXXXXXXXXX
+NEXT_PUBLIC_TINYMCE_API_KEY=
+NEXT_PUBLIC_FILE_UPLOAD_URL=
+NEXT_PUBLIC_FILE_DOWNLOAD_URL=
+NEXT_PUBLIC_FILE_NAME=
+DISCORD_WEBHOOK_URL=
 
 # Auth
 NEXTAUTH_URL=http://localhost:3000
@@ -157,7 +162,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Add Posts Section
+- [x] Add Posts Section
 - [ ] Add Calendar functionality
 - [ ] Add Newsletter
 
@@ -191,24 +196,28 @@ Piotr Doniak - [hello@piotrdoniak.com](mailto:hello@piotrdoniak.com)
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* [Img Shields](https://shields.io)
-* [Font Awesome](https://fontawesome.com)
-* [Prisma](https://www.prisma.io/)
-* [NextAuth.js](https://next-auth.js.org/)
-* [Next.js](https://nextjs.org/)
-* [Tailwind CSS](https://tailwindcss.com/)
+* [boring-avatars](https://www.npmjs.com/package/boring-avatars)
 * [Chakra UI](https://chakra-ui.com/)
-* [Vercel](https://vercel.com/)
-* [next-sitemap](https://www.npmjs.com/package/next-sitemap)
-* [next-absolute-url](https://www.npmjs.com/package/next-absolute-url)
-* [nprogress](https://www.npmjs.com/package/nprogress)
-* [react-hot-toast](https://react-hot-toast.com/)
-* [react-spinners](https://www.npmjs.com/package/react-spinners)
-* [zod](https://www.npmjs.com/package/zod)
 * [eslint](https://eslint.org/)
+* [Font Awesome](https://fontawesome.com)
+* [Img Shields](https://shields.io)
+* [Next.js](https://nextjs.org/)
+* [NextAuth.js](https://next-auth.js.org/)
+* [next-absolute-url](https://www.npmjs.com/package/next-absolute-url)
+* [next-sitemap](https://www.npmjs.com/package/next-sitemap)
+* [nprogress](https://www.npmjs.com/package/nprogress)
 * [prettier](https://prettier.io/)
+* [Prisma](https://www.prisma.io/)
 * [prisma-erd-generator-markdown](https://www.npmjs.com/package/prisma-erd-generator-markdown)
+* [react-hot-toast](https://react-hot-toast.com/)
+* [react-icons](https://react-icons.github.io/react-icons/)
+* [react-spinners](https://www.npmjs.com/package/react-spinners)
+* [redis](https://www.npmjs.com/package/ioredis)
 * [slugify](https://www.npmjs.com/package/slugify)
+* [Tailwind CSS](https://tailwindcss.com/)
+* [TinyMCE](https://www.tiny.cloud/)
+* [Vercel](https://vercel.com/)
+* [zod](https://www.npmjs.com/package/zod)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

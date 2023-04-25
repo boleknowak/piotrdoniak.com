@@ -6,18 +6,11 @@ import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faCheckSquare,
-  faClock,
-  faEye,
-  faFloppyDisk,
-  faPenToSquare,
-} from '@fortawesome/free-regular-svg-icons';
+import { faCheckSquare, faClock, faEye, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import {
   faLeftLong,
   faClock as faClockSolid,
   faEnvelope,
-  faCheck,
   faEnvelopeCircleCheck,
 } from '@fortawesome/free-solid-svg-icons';
 import Badge from '@/components/Elements/Badge';
@@ -26,6 +19,8 @@ import toast from 'react-hot-toast';
 import StatusBadge from '@/components/Elements/StatusBadge';
 import Avatar from '@/components/Elements/Avatar';
 import DateComponent from '@/components/Date';
+import { Button, FormControl, FormLabel, Icon, Textarea } from '@chakra-ui/react';
+import { BiCheck, BiSave } from 'react-icons/bi';
 
 export default function PanelMessages() {
   const [contacts, setContacts] = useState([]);
@@ -355,33 +350,34 @@ export default function PanelMessages() {
                   )}
                   <div className="mt-4">
                     <hr />
-                    <div className="mb-1 mt-2 font-medium">Szkic odpowiedzi</div>
-                    <textarea
-                      name="draft_reply"
-                      id="draft_reply"
-                      rows={4}
-                      cols={50}
-                      value={draftMessage}
-                      onChange={(e) => setDraftMessage(e.target.value)}
-                      className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
-                      placeholder="Szkic Twojej odpowiedzi..."
-                    ></textarea>
+                    <FormControl id="reply" className="mt-2">
+                      <FormLabel>Szkic odpowiedzi</FormLabel>
+                      <Textarea
+                        name="draft_reply"
+                        id="draft_reply"
+                        rows={4}
+                        cols={50}
+                        value={draftMessage}
+                        onChange={(e) => setDraftMessage(e.target.value)}
+                        placeholder="Szkic Twojej odpowiedzi..."
+                        bgColor="white"
+                      ></Textarea>
+                    </FormControl>
                   </div>
                   <div className="mt-4 flex flex-row items-center space-x-4">
-                    <button
-                      type="button"
-                      disabled={isSaving}
-                      className="flex flex-row items-center space-x-2 rounded-md border border-green-400 bg-green-400 px-3 py-2 text-sm"
+                    <Button
+                      colorScheme="green"
+                      isLoading={isSaving}
+                      leftIcon={<Icon as={BiSave} />}
                       onClick={() => updateDraftReply(selectedContact.id)}
                     >
-                      <FontAwesomeIcon icon={faFloppyDisk} size="lg" className="w-5" />
-                      <div>Zapisz szkic</div>
-                    </button>
+                      Zapisz szkic
+                    </Button>
                     {(hasUnreadMessages(selectedContact) || hasViewedMessages(selectedContact)) && (
-                      <button
-                        type="button"
-                        disabled={isClosing}
-                        className="flex flex-row items-center space-x-2 rounded-md border border-yellow-300 bg-yellow-300 px-3 py-2 text-sm"
+                      <Button
+                        colorScheme="yellow"
+                        isLoading={isClosing}
+                        leftIcon={<Icon as={BiCheck} />}
                         onClick={() =>
                           updateStatus(
                             selectedContact.messages.map((c) => c.id),
@@ -389,9 +385,8 @@ export default function PanelMessages() {
                           )
                         }
                       >
-                        <FontAwesomeIcon icon={faCheck} size="lg" className="w-5" />
-                        <div>Oznacz jako zakończone</div>
-                      </button>
+                        Oznacz jako przeczytane
+                      </Button>
                     )}
                   </div>
                 </div>

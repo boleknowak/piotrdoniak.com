@@ -100,7 +100,7 @@ DISCORD_WEBHOOK_URL=
 
 # Auth
 NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=<very-secret-string>
+NEXTAUTH_SECRET="<very-secret-string>"
 GOOGLE_ID=
 GOOGLE_SECRET=
 

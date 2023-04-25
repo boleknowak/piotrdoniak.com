@@ -1,4 +1,3 @@
-import absoluteUrl from 'next-absolute-url';
 import DateComponent from '@/components/Date';
 import SeoTags from '@/components/SeoTags';
 import Layout from '@/components/Layouts/Layout';
@@ -73,13 +72,10 @@ export default function Post({ siteMeta, post }: Props) {
   );
 }
 
-export async function getServerSideProps({ req, params }) {
-  const { origin } = absoluteUrl(req);
-  const { post } = await fetch(`${origin}/api/posts/${params.slug}`, {
-    headers: {
-      cookie: req.headers.cookie || '',
-    },
-  }).then((res) => res.json());
+export async function getStaticProps({ params }) {
+  const { slug } = params;
+  const origin = process.env.NEXT_PUBLIC_APP_URL;
+  const { post } = await fetch(`${origin}/api/posts/${slug}`).then((res) => res.json());
 
   if (!post) return { notFound: true };
 
@@ -91,8 +87,44 @@ export async function getServerSideProps({ req, params }) {
 
   return {
     props: {
+      post,
       siteMeta: meta,
-      post: post as PostInterface,
     },
+    revalidate: 60,
   };
 }
+
+export async function getStaticPaths() {
+  const origin = process.env.NEXT_PUBLIC_APP_URL;
+  const { posts } = await fetch(`${origin}/api/posts?all=1`).then((res) => res.json());
+  const paths = posts.map((post) => ({ params: { slug: post.slug } }));
+
+  return {
+    paths,
+    fallback: false,
+  };
+}
+
+// export async function getServerSideProps({ req, params }) {
+//   const { origin } = absoluteUrl(req);
+//   const { post } = await fetch(`${origin}/api/posts/${params.slug}`, {
+//     headers: {
+//       cookie: req.headers.cookie || '',
+//     },
+//   }).then((res) => res.json());
+
+//   if (!post) return { notFound: true };
+
+//   const meta = {
+//     title: `${post.title} - Piotr Doniak`,
+//     description: post.description,
+//     url: `${origin}/post/${post.slug}`,
+//   };
+
+//   return {
+//     props: {
+//       siteMeta: meta,
+//       post: post as PostInterface,
+//     },
+//   };
+// }

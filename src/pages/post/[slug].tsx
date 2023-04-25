@@ -77,6 +77,8 @@ export async function getStaticProps({ params }) {
   const origin = process.env.NEXT_PUBLIC_APP_URL;
   const { post } = await fetch(`${origin}/api/posts/${slug}`).then((res) => res.json());
 
+  console.log(post);
+
   if (!post) return { notFound: true };
 
   const meta = {

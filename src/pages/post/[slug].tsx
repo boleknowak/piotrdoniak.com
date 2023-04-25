@@ -77,8 +77,6 @@ export async function getStaticProps({ params }) {
   const origin = process.env.NEXT_PUBLIC_APP_URL;
   const { post } = await fetch(`${origin}/api/posts/${slug}`).then((res) => res.json());
 
-  console.log(post);
-
   if (!post) return { notFound: true };
 
   const meta = {
@@ -99,34 +97,10 @@ export async function getStaticProps({ params }) {
 export async function getStaticPaths() {
   const origin = process.env.NEXT_PUBLIC_APP_URL;
   const { posts } = await fetch(`${origin}/api/posts?all=1`).then((res) => res.json());
-  const paths = posts.map((post) => ({ params: { slug: post.slug } }));
+  const paths = posts.map((post: PostInterface) => ({ params: { slug: post.slug } }));
 
   return {
     paths,
     fallback: false,
   };
 }
-
-// export async function getServerSideProps({ req, params }) {
-//   const { origin } = absoluteUrl(req);
-//   const { post } = await fetch(`${origin}/api/posts/${params.slug}`, {
-//     headers: {
-//       cookie: req.headers.cookie || '',
-//     },
-//   }).then((res) => res.json());
-
-//   if (!post) return { notFound: true };
-
-//   const meta = {
-//     title: `${post.title} - Piotr Doniak`,
-//     description: post.description,
-//     url: `${origin}/post/${post.slug}`,
-//   };
-
-//   return {
-//     props: {
-//       siteMeta: meta,
-//       post: post as PostInterface,
-//     },
-//   };
-// }

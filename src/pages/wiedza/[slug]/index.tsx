@@ -128,32 +128,12 @@ export async function getStaticProps({ params }) {
 export async function getStaticPaths() {
   const origin = process.env.NEXT_PUBLIC_APP_URL;
   const { categories } = await fetch(`${origin}/api/categories`).then((res) => res.json());
-  const paths = categories.map((category) => ({ params: { slug: category.slug } }));
+  const paths = categories.map((category: CategoryInterface) => ({
+    params: { slug: category.slug },
+  }));
 
   return {
     paths,
     fallback: false,
   };
 }
-
-// export const getServerSideProps = async ({ req, query }) => {
-//   const { origin } = absoluteUrl(req);
-//   const response = await fetch(`${origin}/api/categories?id=${query.slug}`);
-//   const data = await response.json();
-//   const { category } = data;
-
-//   if (!category) return { notFound: true };
-
-//   const meta = {
-//     title: `${category.name} - Piotr Doniak`,
-//     description: category.description,
-//     url: `https://piotrdoniak.com/wiedza/${category.slug}`,
-//   };
-
-//   return {
-//     props: {
-//       siteMeta: meta,
-//       category,
-//     },
-//   };
-// };

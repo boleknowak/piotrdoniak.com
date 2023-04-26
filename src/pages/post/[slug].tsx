@@ -2,6 +2,7 @@ import DateComponent from '@/components/Date';
 import SeoTags from '@/components/SeoTags';
 import Layout from '@/components/Layouts/Layout';
 import { PostInterface } from '@/interfaces/PostInterface';
+import { useEffect } from 'react';
 
 interface Props {
   siteMeta: {
@@ -40,6 +41,16 @@ export default function Post({ siteMeta, post }: Props) {
     datePublished: post.publishedAt,
     dateModified: post.updatedAt,
   };
+
+  const updateViews = async () => {
+    await fetch(`/api/posts/views?slug=${post.slug}`, {
+      method: 'POST',
+    });
+  };
+
+  useEffect(() => {
+    updateViews();
+  }, []);
 
   return (
     <>

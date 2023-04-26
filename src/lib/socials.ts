@@ -8,6 +8,7 @@ export const socials = [
     icon: faLinkedin,
     color: '#0a66c2',
     url: 'https://www.linkedin.com/in/piotrdoniak/?utm_source=piotrdoniak.com&utm_medium=portfolio&utm_campaign={source}',
+    ping: false,
   },
   {
     id: 2,
@@ -16,6 +17,7 @@ export const socials = [
     icon: faGithub,
     color: '#333',
     url: 'https://github.com/boleknowak/?utm_source=piotrdoniak.com&utm_medium=portfolio&utm_campaign={source}',
+    ping: false,
   },
   {
     id: 3,
@@ -24,5 +26,6 @@ export const socials = [
     icon: faInstagram,
     color: '#e1306c',
     url: 'https://www.instagram.com/piotrdoniak/?utm_source=piotrdoniak.com&utm_medium=portfolio&utm_campaign={source}',
+    ping: false,
   },
 ];

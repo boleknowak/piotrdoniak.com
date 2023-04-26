@@ -2,7 +2,10 @@ import DateComponent from '@/components/Date';
 import SeoTags from '@/components/SeoTags';
 import Layout from '@/components/Layouts/Layout';
 import { PostInterface } from '@/interfaces/PostInterface';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Button, Divider, Flex, HStack, Heading, IconButton, Tooltip } from '@chakra-ui/react';
+import { FiHeart, FiShare2 } from 'react-icons/fi';
+import { FaHeart } from 'react-icons/fa';
 
 interface Props {
   siteMeta: {
@@ -14,6 +17,9 @@ interface Props {
 }
 
 export default function Post({ siteMeta, post }: Props) {
+  const [likes, setLikes] = useState(0);
+  const [liked, setLiked] = useState(false);
+  const [isUpdatingLikes, setIsUpdatingLikes] = useState(false);
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
@@ -43,13 +49,46 @@ export default function Post({ siteMeta, post }: Props) {
   };
 
   const updateViews = async () => {
-    await fetch(`/api/posts/views?slug=${post.slug}`, {
-      method: 'POST',
-    });
+    try {
+      await fetch(`/api/posts/views?slug=${post.slug}`, {
+        method: 'POST',
+      });
+    } catch (error) {
+      // console.log(error);
+    }
+  };
+
+  const updateLikes = async () => {
+    setIsUpdatingLikes(true);
+    try {
+      const response = await fetch(`/api/posts/likes?slug=${post.slug}`, {
+        method: 'POST',
+      });
+      const data = await response.json();
+
+      setIsUpdatingLikes(false);
+      if (data.status !== 'error') {
+        setLikes(data.likes);
+        setLiked(data.liked);
+      }
+    } catch (error) {
+      setIsUpdatingLikes(false);
+      // console.log(error);
+    }
   };
 
   useEffect(() => {
     updateViews();
+    setLikes(post.likes);
+
+    const response = fetch(`/api/posts/likes?slug=${post.slug}`, {
+      method: 'GET',
+    });
+    response
+      .then((res) => res.json())
+      .then((data) => {
+        setLiked(data.liked);
+      });
   }, []);
 
   return (
@@ -65,13 +104,50 @@ export default function Post({ siteMeta, post }: Props) {
         <div className="mb-20 flex h-full w-full items-start pt-4 md:pt-10">
           <div className="mx-auto w-full max-w-2xl">
             <div>
-              <h1 className="text-2xl font-bold">{post.title}</h1>
-              <div>
-                <DateComponent dateString={post.publishedAt} />
-              </div>
-              <div>{post.views}</div>
+              <Heading as="h1" size="lg" fontWeight="bold" mt={4}>
+                {post.title}
+              </Heading>
+              <Flex mt={4} alignItems="center" justifyContent="space-between">
+                <HStack spacing={2} className="text-sm text-gray-600">
+                  <DateComponent dateString={post.publishedAt} />
+                  <div>•</div>
+                  <div>{post.readingTime} min czytania</div>
+                  {/* <div>•</div>
+                  <div>{post.author.name}</div> */}
+                </HStack>
+                <HStack spacing={2}>
+                  <Tooltip
+                    label={liked ? 'Lubisz to!' : 'Lubię to!'}
+                    aria-label="Lubię to!"
+                    placement="top"
+                  >
+                    <Button
+                      leftIcon={liked ? <FaHeart /> : <FiHeart />}
+                      variant={liked ? 'solid' : 'outline'}
+                      colorScheme="red"
+                      size="sm"
+                      aria-label="Polub"
+                      isLoading={isUpdatingLikes}
+                      loadingText={likes.toString()}
+                      onClick={() => updateLikes()}
+                    >
+                      {likes}
+                    </Button>
+                  </Tooltip>
+                  <Tooltip label="Udostępnij" aria-label="Udostępnij" placement="top">
+                    <IconButton
+                      variant="outline"
+                      colorScheme="blue"
+                      size="sm"
+                      aria-label="Udostępnij"
+                      icon={<FiShare2 />}
+                    />
+                  </Tooltip>
+                </HStack>
+              </Flex>
             </div>
-            <div className="mt-4 w-full max-w-2xl text-left text-[#212121]">
+            <Divider my={4} />
+            <div className="mt-4 w-full max-w-2xl text-left text-black">
               <article className="prose prose-p:my-2 prose-p:leading-6 prose-img:rounded-md">
                 <div dangerouslySetInnerHTML={{ __html: post.content }} />
               </article>

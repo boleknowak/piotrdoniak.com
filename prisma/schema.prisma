@@ -24,6 +24,7 @@ model Post {
   content     String?
   keywords    String?
   views       Int?      @default(0)
+  likes       Int?      @default(0)
   readingTime Int?      @default(0)
   publishedAt DateTime?
   createdAt   DateTime  @default(now())

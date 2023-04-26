@@ -19,6 +19,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
       slug: true,
       description: true,
       views: true,
+      likes: true,
       readingTime: true,
       publishedAt: true,
       updatedAt: true,

@@ -1,4 +1,9 @@
-import { faGithub, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons';
+import {
+  faGithub,
+  faInstagram,
+  faLinkedin,
+  // faTwitter
+} from '@fortawesome/free-brands-svg-icons';
 
 export const socials = [
   {
@@ -28,4 +33,13 @@ export const socials = [
     url: 'https://www.instagram.com/piotrdoniak/?utm_source=piotrdoniak.com&utm_medium=portfolio&utm_campaign={source}',
     ping: false,
   },
+  // {
+  //   id: 4,
+  //   name: 'Twitter',
+  //   text: 'piotrdoniak',
+  //   icon: faTwitter,
+  //   color: '#1da1f2',
+  //   url: 'https://twitter.com/piotrdoniak/?utm_source=piotrdoniak.com&utm_medium=portfolio&utm_campaign={source}',
+  //   ping: false,
+  // },
 ];

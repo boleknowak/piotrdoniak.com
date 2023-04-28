@@ -120,6 +120,7 @@ export default function Post({ siteMeta, post }: Props) {
                     label={liked ? 'Lubisz to!' : 'Lubię to!'}
                     aria-label="Lubię to!"
                     placement="top"
+                    hasArrow
                   >
                     <Button
                       leftIcon={liked ? <FaHeart /> : <FiHeart />}
@@ -134,7 +135,7 @@ export default function Post({ siteMeta, post }: Props) {
                       {likes}
                     </Button>
                   </Tooltip>
-                  <Tooltip label="Udostępnij" aria-label="Udostępnij" placement="top">
+                  <Tooltip label="Udostępnij" aria-label="Udostępnij" placement="top" hasArrow>
                     <IconButton
                       variant="outline"
                       colorScheme="blue"

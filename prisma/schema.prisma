@@ -13,25 +13,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id          Int       @id @default(autoincrement())
-  authorId    String?
-  categoryId  Int?
-  title       String
-  slug        String?   @unique
-  full_slug   String?   @unique
-  description String?
-  content     String?
-  keywords    String?
-  views       Int?      @default(0)
-  likes       Int?      @default(0)
-  readingTime Int?      @default(0)
-  publishedAt DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+model Image {
+  id           Int      @id @default(autoincrement())
+  name         String
+  url          String
+  size         Int
+  type         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  featuredPost Post[]   @relation("PostFeaturedImage")
+  ogPost       Post[]   @relation("PostOgImage")
+  ogLargeImage Post[]   @relation("PostOgLargeImage")
 
-  author   User?     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  category Category? @relation(fields: [categoryId], references: [id])
+  @@map("images")
+}
+
+model Post {
+  id              Int       @id @default(autoincrement())
+  authorId        String?
+  categoryId      Int?
+  title           String
+  slug            String?   @unique
+  full_slug       String?   @unique
+  description     String?
+  content         String?
+  keywords        String?
+  views           Int?      @default(0)
+  likes           Int?      @default(0)
+  readingTime     Int?      @default(0)
+  featuredImageId Int?
+  ogImageId       Int?
+  ogLargeImageId  Int?
+  publishedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  author        User?     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  category      Category? @relation(fields: [categoryId], references: [id])
+  featuredImage Image?    @relation("PostFeaturedImage", fields: [featuredImageId], references: [id])
+  ogImage       Image?    @relation("PostOgImage", fields: [ogImageId], references: [id])
+  ogLargeImage  Image?    @relation("PostOgLargeImage", fields: [ogLargeImageId], references: [id])
 
   @@map("posts")
 }

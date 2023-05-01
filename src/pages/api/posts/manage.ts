@@ -7,10 +7,28 @@ import { getServerSession } from 'next-auth';
 import { UserInterface } from '@/interfaces/UserInterface';
 import slugify from 'slugify';
 import { makeKeywords } from '@/lib/helpers';
+import formidable from 'formidable';
+import { S3 } from '@aws-sdk/client-s3';
+import { Image } from '@prisma/client';
+import { uploadImage } from '@/lib/uploadImage';
 import { authOptions } from '../auth/[...nextauth]';
 
 dayjs.extend(timezone);
 dayjs.extend(utc);
+
+const s3 = new S3({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 export default async function handle(request: NextApiRequest, response: NextApiResponse) {
   try {
@@ -69,6 +87,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
               is_authorized: true,
             },
           },
+          featuredImage: true,
         },
         orderBy: {
           publishedAt: 'desc',
@@ -145,9 +164,70 @@ export default async function handle(request: NextApiRequest, response: NextApiR
     }
 
     if (request.method === 'PUT') {
-      const { title, categoryId, description, content, readingTime, publishAt } = request.body;
-      let { slug: slugUrl } = request.body;
+      const data = (await new Promise((resolve, reject) => {
+        const form = formidable();
+
+        form.parse(request, (err, fields, files) => {
+          // eslint-disable-next-line prefer-promise-reject-errors
+          if (err) reject({ err });
+          resolve({ err, fields, files });
+        });
+      })) as unknown as {
+        err: unknown;
+        fields: {
+          title: string;
+          slug: string;
+          categoryId: string;
+          description: string;
+          content: string;
+          readingTime: string;
+          publishAt: string;
+          lockChangeFeaturedImage: string;
+        };
+        files: {
+          featuredImage?: {
+            originalFilename: string;
+            filepath: string;
+            size: number;
+            mimetype: string;
+          };
+        };
+      };
+
+      if (data.err) {
+        return response.json({
+          success: false,
+          message: 'Ups! Serwer napotkał problem.',
+          error_message: 'Nie udało się przetworzyć danych.',
+        });
+      }
+
+      const {
+        title,
+        categoryId,
+        description,
+        content,
+        readingTime,
+        publishAt,
+        lockChangeFeaturedImage,
+      } = data.fields;
+      let { slug: slugUrl } = data.fields;
       const { id } = request.query;
+
+      let featuredImageObject = {} as Image;
+      if (lockChangeFeaturedImage === 'false' && data.files?.featuredImage) {
+        const uploadFeaturedImage = await uploadImage(data.files.featuredImage, s3);
+
+        if (uploadFeaturedImage.success) {
+          featuredImageObject = uploadFeaturedImage.image;
+        } else {
+          return response.status(500).json({
+            success: false,
+            message: uploadFeaturedImage.message,
+            error_message: uploadFeaturedImage.error_message,
+          });
+        }
+      }
 
       const category = await prisma.category.findUnique({
         where: {
@@ -181,25 +261,37 @@ export default async function handle(request: NextApiRequest, response: NextApiR
         category.name.toLocaleLowerCase(),
       ]);
 
+      const queryData = {
+        title,
+        slug: slugUrl,
+        full_slug: fullSlug,
+        description,
+        content,
+        readingTime: Number(readingTime),
+        keywords,
+        publishedAt: publishAt ? new Date(publishAt) : null,
+        category: {
+          connect: {
+            id: category.id,
+          },
+        },
+      };
+
+      if (featuredImageObject?.id) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        queryData.featuredImage = {
+          connect: {
+            id: featuredImageObject.id,
+          },
+        };
+      }
+
       const post = await prisma.post.update({
         where: {
           id: Number(id),
         },
-        data: {
-          title,
-          slug: slugUrl,
-          full_slug: fullSlug,
-          description,
-          content,
-          readingTime: Number(readingTime),
-          keywords,
-          publishedAt: publishAt ? new Date(publishAt) : null,
-          category: {
-            connect: {
-              id: category.id,
-            },
-          },
-        },
+        data: queryData,
       });
 
       return response.json({

@@ -4,6 +4,17 @@ import { pl } from 'date-fns/locale';
 const COUNT_OF_DAYS = 31;
 const COUNT_OF_VIEWS = 1000;
 
+export const randomString = (length: number) => {
+  const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+
+  for (let i = length; i > 0; i -= 1) {
+    result += chars[Math.floor(Math.random() * chars.length)];
+  }
+
+  return result;
+};
+
 export const daysAgoFromNow = (date: string) => {
   const now = new Date();
   const postDate = new Date(date);

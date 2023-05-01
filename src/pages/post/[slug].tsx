@@ -1,11 +1,13 @@
 import DateComponent from '@/components/Date';
 import SeoTags from '@/components/SeoTags';
 import Layout from '@/components/Layouts/Layout';
-import { PostInterface } from '@/interfaces/PostInterface';
 import { useEffect, useState } from 'react';
 import { Button, Divider, Flex, HStack, Heading, IconButton, Tooltip } from '@chakra-ui/react';
 import { FiHeart, FiShare2 } from 'react-icons/fi';
 import { FaHeart } from 'react-icons/fa';
+import Image from 'next/image';
+import { Image as ImageInterface, Post as PostInterface } from '@prisma/client';
+import { UserInterface } from '@/interfaces/UserInterface';
 
 interface Props {
   siteMeta: {
@@ -13,7 +15,10 @@ interface Props {
     description: string;
     url: string;
   };
-  post: PostInterface;
+  post: PostInterface & {
+    featuredImage?: ImageInterface;
+    author: UserInterface;
+  };
 }
 
 export default function Post({ siteMeta, post }: Props) {
@@ -103,6 +108,20 @@ export default function Post({ siteMeta, post }: Props) {
       <Layout>
         <div className="mb-20 flex h-full w-full items-start pt-4 md:pt-10">
           <div className="mx-auto w-full max-w-2xl">
+            {post.featuredImageId && post.featuredImage?.url && (
+              <div>
+                <Image
+                  src={post.featuredImage.url}
+                  alt={post.featuredImage.name || post.title}
+                  title={post.featuredImage.name || post.title}
+                  width={600}
+                  height={286}
+                  className="mb-10 rounded-lg"
+                  quality={75}
+                  priority={true}
+                />
+              </div>
+            )}
             <div>
               <Heading as="h1" size="lg" fontWeight="bold" mt={4}>
                 {post.title}

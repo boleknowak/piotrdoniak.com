@@ -33,6 +33,23 @@ import { currentTime } from '@/lib/currentTime';
 import { formatDistance } from '@/lib/helpers';
 import absoluteUrl from 'next-absolute-url';
 import { useRouter } from 'next/router';
+import { FilePond, registerPlugin } from 'react-filepond';
+import 'filepond/dist/filepond.min.css';
+import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import FilePondPluginImageCrop from 'filepond-plugin-image-crop';
+import FilePondPluginImageResize from 'filepond-plugin-image-resize';
+import FilePondPluginImageTransform from 'filepond-plugin-image-transform';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import 'filepond-plugin-image-edit/dist/filepond-plugin-image-edit.css';
+
+registerPlugin(
+  FilePondPluginImageExifOrientation,
+  FilePondPluginImagePreview,
+  FilePondPluginImageCrop,
+  FilePondPluginImageResize,
+  FilePondPluginImageTransform
+);
 
 export default function PanelPostsUpdate({ post }) {
   const [categories, setCategories] = useState<CategoryInterface[]>([]);
@@ -45,12 +62,15 @@ export default function PanelPostsUpdate({ post }) {
   const [publishAt, setPublishAt] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [lockChangeFeaturedImage, setLockChangeFeaturedImage] = useState(false);
+  const [lastFeaturedImageId, setLastFeaturedImageId] = useState('');
   const {
     isOpen: isConfirmDialogOpened,
     onOpen: openConfirmDialog,
     onClose: closeConfirmDialog,
   } = useDisclosure();
   const cancelRef = useRef();
+  const filepondFeaturedImageRef = useRef<FilePond>();
   const { data: session, status: authed } = useSession();
   const toast = useToast();
   const router = useRouter();
@@ -80,20 +100,28 @@ export default function PanelPostsUpdate({ post }) {
   const handleUpdatePost = async () => {
     setIsUpdating(true);
 
+    const featuredImage = filepondFeaturedImageRef.current.getFile();
+
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('slug', slug);
+    formData.append('description', description);
+    formData.append('categoryId', category);
+    formData.append('content', content);
+    formData.append('readingTime', readingTime);
+    formData.append('publishAt', currentTime(publishAt).toISOString());
+    if (featuredImage) {
+      formData.append('featuredImage', featuredImage.file);
+      // TODO: add title of the image for alt attribute
+    }
+    formData.append('lockChangeFeaturedImage', lockChangeFeaturedImage.toString());
+
     const response = await fetch(`/api/posts/manage?id=${post.id}`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
-      body: JSON.stringify({
-        title,
-        slug,
-        description,
-        categoryId: category,
-        content,
-        readingTime,
-        publishAt: currentTime(publishAt).getTime(),
-      }),
+      body: formData,
     });
 
     const data = await response.json();
@@ -133,6 +161,31 @@ export default function PanelPostsUpdate({ post }) {
       closeConfirmDialog();
       router.push('/panel/wpisy');
     }
+  };
+
+  const handleImageUploaderInit = () => {
+    if (!post.featuredImage?.url) return;
+
+    filepondFeaturedImageRef.current.addFile(post.featuredImage.url);
+    if (filepondFeaturedImageRef.current.getFile()) {
+      setLockChangeFeaturedImage(true);
+    }
+  };
+
+  const handleFeaturedImageUpdate = (file) => {
+    if (!file?.id) {
+      setLockChangeFeaturedImage(false);
+    } else if (!post.featuredImage?.url) {
+      setLockChangeFeaturedImage(false);
+    } else if (lastFeaturedImageId === '') {
+      setLockChangeFeaturedImage(true);
+    } else if (file?.id === lastFeaturedImageId) {
+      setLockChangeFeaturedImage(true);
+    } else {
+      setLockChangeFeaturedImage(false);
+    }
+
+    setLastFeaturedImageId(file?.id);
   };
 
   useEffect(() => {
@@ -269,7 +322,16 @@ export default function PanelPostsUpdate({ post }) {
           <div>
             <EditorComponent onUpdate={(c) => setContent(c)} initValue={post.content} />
           </div>
-          {/* TODO: add large image (like on index page), add images for og etc. */}
+          <div>
+            <div>Featured Image</div>
+            <FilePond
+              oninit={() => handleImageUploaderInit()}
+              onaddfile={(error, file) => handleFeaturedImageUpdate(file)}
+              ref={filepondFeaturedImageRef}
+              name="featuredImage"
+              labelIdle='Przeciągnij i upuść lub <span class="filepond--label-action">wyszukaj</span>'
+            />
+          </div>
         </div>
         <AlertDialog
           isOpen={isConfirmDialogOpened}

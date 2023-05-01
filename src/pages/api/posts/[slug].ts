@@ -21,6 +21,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
             is_authorized: true,
           },
         },
+        featuredImage: true,
       },
     });
 

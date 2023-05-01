@@ -4,7 +4,7 @@ import Item from '@/components/Menu/Item';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faX } from '@fortawesome/free-solid-svg-icons';
 import { MdOutlineLightbulb } from 'react-icons/md';
-import { HiOutlineFolderOpen } from 'react-icons/hi';
+import { HiOutlineFolderOpen, HiOutlineSparkles } from 'react-icons/hi';
 import { IoMegaphoneOutline } from 'react-icons/io5';
 import { BiCodeAlt, BiEnvelope, BiIdCard } from 'react-icons/bi';
 import React, { useEffect, useState } from 'react';
@@ -73,6 +73,14 @@ export default function Layout({ children }) {
       name: 'Programowanie',
       href: '/wiedza/programowanie',
       icon: <BiCodeAlt />,
+      subtext: null,
+      type: 'element',
+    },
+    {
+      id: 'inne',
+      name: 'Inne',
+      href: '/wiedza/inne',
+      icon: <HiOutlineSparkles />,
       subtext: null,
       type: 'element',
     },

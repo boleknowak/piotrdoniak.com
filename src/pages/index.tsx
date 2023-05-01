@@ -1,9 +1,7 @@
 import Layout from '@/components/Layouts/Layout';
-import { Sofia } from 'next/font/google';
 import Image from 'next/image';
 import SeoTags from '@/components/SeoTags';
-
-const sofia = Sofia({ subsets: ['latin'], weight: '400' });
+import FontWrapper from '@/components/FontWrapper';
 
 export default function Home({ siteMeta }) {
   return (
@@ -29,12 +27,9 @@ export default function Home({ siteMeta }) {
               <h1 className="mb-4 text-2xl font-bold">Cześć!</h1>
               <div className="space-y-4 leading-6 tracking-wide">
                 <p>
-                  To ja, Piotrek — student e-marketingu. Swoją przygodę zacząłem od programowania,
-                  <br />a obecnie zależy mi na{' '}
-                  <span className="underline decoration-dotted underline-offset-4" title="Poznań">
-                    POZ
-                  </span>
-                  naniu się ze światem marketingu.
+                  To ja, Piotrek — student e-marketingu o kreatywnym nastawieniu. Swoją przygodę
+                  zacząłem od programowania, a teraz chcę się poznać ze światem marketingu, aby
+                  wykorzystywać go w różnych projektach.
                 </p>
                 <p>
                   Zdobywanie wiedzy uważam za możliwość rozwoju, a dzięki temu coraz szybciej i
@@ -43,7 +38,7 @@ export default function Home({ siteMeta }) {
                 <p>
                   Zapraszam Cię do zapoznania się z moimi projektami oraz wpisami na blogu
                   {` `}
-                  <span className={sofia.className}>:)</span>
+                  <FontWrapper font="sofia">:)</FontWrapper>
                 </p>
               </div>
             </div>
@@ -54,7 +49,6 @@ export default function Home({ siteMeta }) {
   );
 }
 
-// getServersideProps
 export async function getStaticProps() {
   const meta = {
     title: 'Poznaj mnie - Piotr Doniak',

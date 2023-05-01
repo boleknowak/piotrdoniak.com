@@ -197,7 +197,7 @@ export async function getStaticProps({ params }) {
       post,
       siteMeta: meta,
     },
-    revalidate: 60,
+    revalidate: 1,
   };
 }
 

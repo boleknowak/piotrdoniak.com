@@ -8,6 +8,7 @@ erDiagram
 	images {
 		Int id PK  "autoincrement()"
 		String name
+		String title  "nullable"
 		String url
 		Int size
 		String type
@@ -29,7 +30,6 @@ erDiagram
 		Int readingTime  "nullable"
 		Int featuredImageId FK  "nullable"
 		Int ogImageId FK  "nullable"
-		Int ogLargeImageId FK  "nullable"
 		DateTime publishedAt  "nullable"
 		DateTime createdAt  "now()"
 		DateTime updatedAt
@@ -104,7 +104,6 @@ erDiagram
 	posts }o--|| categories : category
 	posts }o--|| images : featuredImage
 	posts }o--|| images : ogImage
-	posts }o--|| images : ogLargeImage
 	contact_messages }o--|| contacts : contact
 	contact_messages }o--|| ContactMessageStatus : "enum:status"
 	accounts }o--|| users : user

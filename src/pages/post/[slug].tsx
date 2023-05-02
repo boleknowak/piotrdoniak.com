@@ -186,7 +186,9 @@ export async function getStaticProps({ params }) {
   const origin = process.env.NEXT_PUBLIC_APP_URL;
   const { post } = await fetch(`${origin}/api/posts/${slug}`).then((res) => res.json());
 
-  if (!post) return { notFound: true };
+  console.log(post);
+
+  if (!post) return { notFound: true, revalidate: 1 };
 
   const meta = {
     title: `${post.title} - Piotr Doniak`,

@@ -21,8 +21,22 @@ export default async function handle(request: NextApiRequest, response: NextApiR
             is_authorized: true,
           },
         },
-        featuredImage: true,
-        ogImage: true,
+        featuredImage: {
+          select: {
+            id: true,
+            name: true,
+            title: true,
+            url: true,
+          },
+        },
+        ogImage: {
+          select: {
+            id: true,
+            name: true,
+            title: true,
+            url: true,
+          },
+        },
       },
     });
 

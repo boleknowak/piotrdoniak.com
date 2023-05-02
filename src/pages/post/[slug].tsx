@@ -17,6 +17,7 @@ interface Props {
   };
   post: PostInterface & {
     featuredImage?: ImageInterface;
+    ogImage?: ImageInterface;
     author: UserInterface;
   };
 }
@@ -34,7 +35,7 @@ export default function Post({ siteMeta, post }: Props) {
     // },
     headline: post.title,
     description: post.description,
-    // image: '',
+    image: post.ogImage?.url || 'https://piotrdoniak.com/images/brand/me.png',
     author: {
       '@type': 'Person',
       name: post.author.name,
@@ -103,6 +104,7 @@ export default function Post({ siteMeta, post }: Props) {
         description={siteMeta?.description}
         url={siteMeta?.url}
         type="article"
+        image={post.ogImage?.url}
         schema={schema}
       />
       <Layout>
@@ -112,8 +114,8 @@ export default function Post({ siteMeta, post }: Props) {
               <div>
                 <Image
                   src={post.featuredImage.url}
-                  alt={post.featuredImage.name || post.title}
-                  title={post.featuredImage.name || post.title}
+                  alt={post.featuredImage.title || post.featuredImage.name || post.title}
+                  title={post.featuredImage.title || post.featuredImage.name || post.title}
                   width={600}
                   height={286}
                   className="mb-10 rounded-lg"
@@ -208,6 +210,6 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: false,
+    fallback: 'blocking',
   };
 }

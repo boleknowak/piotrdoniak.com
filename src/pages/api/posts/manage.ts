@@ -10,7 +10,7 @@ import { makeKeywords } from '@/lib/helpers';
 import formidable from 'formidable';
 import { S3 } from '@aws-sdk/client-s3';
 import { Image } from '@prisma/client';
-import { uploadImage } from '@/lib/uploadImage';
+import { uploadImage, deleteImage } from '@/lib/S3Manager';
 import { authOptions } from '../auth/[...nextauth]';
 
 dayjs.extend(timezone);
@@ -88,6 +88,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
             },
           },
           featuredImage: true,
+          ogImage: true,
         },
         orderBy: {
           publishedAt: 'desc',
@@ -98,8 +99,37 @@ export default async function handle(request: NextApiRequest, response: NextApiR
     }
 
     if (request.method === 'POST') {
-      const { title, categoryId, description, content, readingTime, publishAt } = request.body;
-      let { slug } = request.body;
+      const data = (await new Promise((resolve, reject) => {
+        const form = formidable();
+
+        form.parse(request, (err, fields, files) => {
+          // eslint-disable-next-line prefer-promise-reject-errors
+          if (err) reject({ err });
+          resolve({ err, fields, files });
+        });
+      })) as unknown as {
+        err: unknown;
+        fields: {
+          title: string;
+          slug: string;
+          categoryId: string;
+          description: string;
+          content: string;
+          readingTime: string;
+          publishAt: string;
+        };
+      };
+
+      if (data.err) {
+        return response.json({
+          success: false,
+          message: 'Ups! Serwer napotkał problem.',
+          error_message: 'Nie udało się przetworzyć danych.',
+        });
+      }
+
+      const { title, categoryId, description, content, readingTime, publishAt } = data.fields;
+      let { slug } = data.fields;
 
       const category = await prisma.category.findUnique({
         where: {
@@ -182,10 +212,19 @@ export default async function handle(request: NextApiRequest, response: NextApiR
           content: string;
           readingTime: string;
           publishAt: string;
+          featuredImageTitle: string;
+          ogImageTitle: string;
           lockChangeFeaturedImage: string;
+          lockChangeOgImage: string;
         };
         files: {
           featuredImage?: {
+            originalFilename: string;
+            filepath: string;
+            size: number;
+            mimetype: string;
+          };
+          ogImage?: {
             originalFilename: string;
             filepath: string;
             size: number;
@@ -210,13 +249,18 @@ export default async function handle(request: NextApiRequest, response: NextApiR
         readingTime,
         publishAt,
         lockChangeFeaturedImage,
+        lockChangeOgImage,
       } = data.fields;
       let { slug: slugUrl } = data.fields;
       const { id } = request.query;
 
       let featuredImageObject = {} as Image;
       if (lockChangeFeaturedImage === 'false' && data.files?.featuredImage) {
-        const uploadFeaturedImage = await uploadImage(data.files.featuredImage, s3);
+        const uploadFeaturedImage = await uploadImage({
+          file: data.files.featuredImage,
+          s3,
+          alt: data.fields.featuredImageTitle,
+        });
 
         if (uploadFeaturedImage.success) {
           featuredImageObject = uploadFeaturedImage.image;
@@ -225,6 +269,25 @@ export default async function handle(request: NextApiRequest, response: NextApiR
             success: false,
             message: uploadFeaturedImage.message,
             error_message: uploadFeaturedImage.error_message,
+          });
+        }
+      }
+
+      let ogImageObject = {} as Image;
+      if (lockChangeOgImage === 'false' && data.files?.ogImage) {
+        const uploadOgImage = await uploadImage({
+          file: data.files.ogImage,
+          s3,
+          alt: data.fields.ogImageTitle,
+        });
+
+        if (uploadOgImage.success) {
+          ogImageObject = uploadOgImage.image;
+        } else {
+          return response.status(500).json({
+            success: false,
+            message: uploadOgImage.message,
+            error_message: uploadOgImage.error_message,
           });
         }
       }
@@ -287,12 +350,44 @@ export default async function handle(request: NextApiRequest, response: NextApiR
         };
       }
 
+      if (ogImageObject?.id) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        queryData.ogImage = {
+          connect: {
+            id: ogImageObject.id,
+          },
+        };
+      }
+
       const post = await prisma.post.update({
         where: {
           id: Number(id),
         },
         data: queryData,
       });
+
+      if (post.featuredImageId) {
+        await prisma.image.update({
+          where: {
+            id: post.featuredImageId,
+          },
+          data: {
+            title: data.fields.featuredImageTitle,
+          },
+        });
+      }
+
+      if (post.ogImageId) {
+        await prisma.image.update({
+          where: {
+            id: post.ogImageId,
+          },
+          data: {
+            title: data.fields.ogImageTitle,
+          },
+        });
+      }
 
       return response.json({
         success: true,
@@ -303,6 +398,77 @@ export default async function handle(request: NextApiRequest, response: NextApiR
 
     if (request.method === 'DELETE') {
       const { id } = request.query;
+      const removeImage = request.query.removeImage as string;
+      const validValues = ['featuredImage', 'ogImage'];
+
+      if (removeImage) {
+        if (validValues.includes(removeImage)) {
+          const post = await prisma.post.findUnique({
+            where: {
+              id: Number(id),
+            },
+            include: {
+              featuredImage: true,
+              ogImage: true,
+            },
+          });
+
+          if (!post) {
+            return response.json({
+              success: false,
+              message: 'Ups! Serwer napotkał problem.',
+              error_message: 'Nie znaleziono posta o podanym ID.',
+            });
+          }
+
+          if (post.featuredImage && removeImage === 'featuredImage') {
+            await deleteImage({
+              s3,
+              image: post.featuredImage,
+            });
+
+            await prisma.post.update({
+              where: {
+                id: Number(id),
+              },
+              data: {
+                featuredImage: {
+                  disconnect: true,
+                },
+              },
+            });
+          }
+
+          if (post.ogImage && removeImage === 'ogImage') {
+            await deleteImage({
+              s3,
+              image: post.ogImage,
+            });
+
+            await prisma.post.update({
+              where: {
+                id: Number(id),
+              },
+              data: {
+                ogImage: {
+                  disconnect: true,
+                },
+              },
+            });
+          }
+
+          return response.json({
+            success: true,
+            message: 'Obraz został usunięty.',
+            post,
+          });
+        }
+        return response.json({
+          success: false,
+          message: 'Wybierz poprawny typ!',
+        });
+      }
+
       const post = await prisma.post.delete({
         where: {
           id: Number(id),

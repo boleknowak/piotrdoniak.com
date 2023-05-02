@@ -31,6 +31,7 @@ export default function PanelPostsCreate() {
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
   const [content, setContent] = useState('');
+  const [readingTime, setReadingTime] = useState('');
   const [publishAt, setPublishAt] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const { data: session, status: authed } = useSession();
@@ -52,19 +53,21 @@ export default function PanelPostsCreate() {
   const handleCreatePost = async () => {
     setIsCreating(true);
 
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('slug', slug);
+    formData.append('description', description);
+    formData.append('categoryId', category);
+    formData.append('content', content);
+    formData.append('readingTime', readingTime);
+    formData.append('publishAt', currentTime(publishAt).toISOString());
+
     const response = await fetch('/api/posts/manage', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
-      body: JSON.stringify({
-        title,
-        slug,
-        description,
-        categoryId: category,
-        content,
-        publishAt: currentTime(publishAt).getTime(),
-      }),
+      body: formData,
     });
 
     const data = await response.json();
@@ -187,6 +190,17 @@ export default function PanelPostsCreate() {
                   time = time.replace('Z', '');
                   setPublishAt(time);
                 }}
+              />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Czas czytania</FormLabel>
+              <Input
+                type="number"
+                name="readingTime"
+                id="readingTime"
+                placeholder="np. 5"
+                value={readingTime}
+                onChange={(e) => setReadingTime(e.target.value)}
               />
             </FormControl>
           </HStack>

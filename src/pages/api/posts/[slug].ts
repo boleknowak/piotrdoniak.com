@@ -22,6 +22,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
           },
         },
         featuredImage: true,
+        ogImage: true,
       },
     });
 

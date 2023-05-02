@@ -11,11 +11,15 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Button,
+  Divider,
   Flex,
   FormControl,
   FormHelperText,
   FormLabel,
+  Grid,
+  GridItem,
   HStack,
+  Heading,
   IconButton,
   Input,
   Link,
@@ -33,6 +37,13 @@ import { currentTime } from '@/lib/currentTime';
 import { formatDistance } from '@/lib/helpers';
 import absoluteUrl from 'next-absolute-url';
 import { useRouter } from 'next/router';
+import { FilePond, registerPlugin } from 'react-filepond';
+import 'filepond/dist/filepond.min.css';
+import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+
+registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
 export default function PanelPostsUpdate({ post }) {
   const [categories, setCategories] = useState<CategoryInterface[]>([]);
@@ -45,12 +56,26 @@ export default function PanelPostsUpdate({ post }) {
   const [publishAt, setPublishAt] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [lockChangeFeaturedImage, setLockChangeFeaturedImage] = useState(false);
+  const [lockChangeOgImage, setLockChangeOgImage] = useState(false);
+  const [lastFeaturedImageId, setLastFeaturedImageId] = useState('');
+  const [lastOgImageId, setLastOgImageId] = useState('');
+  const [featuredImageTitle, setFeaturedImageTitle] = useState('');
+  const [ogImageTitle, setOgImageTitle] = useState('');
+  const [removeImageType, setRemoveImageType] = useState('');
+  const {
+    isOpen: isConfirmRemoveImageDialogOpened,
+    onOpen: openConfirmRemoveImageDialog,
+    onClose: closeConfirmRemoveImageDialog,
+  } = useDisclosure();
   const {
     isOpen: isConfirmDialogOpened,
     onOpen: openConfirmDialog,
     onClose: closeConfirmDialog,
   } = useDisclosure();
   const cancelRef = useRef();
+  const filepondFeaturedImageRef = useRef<FilePond>();
+  const filepondOgImageRef = useRef<FilePond>();
   const { data: session, status: authed } = useSession();
   const toast = useToast();
   const router = useRouter();
@@ -80,20 +105,34 @@ export default function PanelPostsUpdate({ post }) {
   const handleUpdatePost = async () => {
     setIsUpdating(true);
 
+    const featuredImage = filepondFeaturedImageRef.current.getFile();
+    const ogImage = filepondOgImageRef.current.getFile();
+
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('slug', slug);
+    formData.append('description', description);
+    formData.append('categoryId', category);
+    formData.append('content', content);
+    formData.append('readingTime', readingTime);
+    formData.append('publishAt', currentTime(publishAt).toISOString());
+    formData.append('featuredImageTitle', featuredImageTitle);
+    formData.append('ogImageTitle', ogImageTitle);
+    if (featuredImage) {
+      formData.append('featuredImage', featuredImage.file);
+    }
+    if (ogImage) {
+      formData.append('ogImage', ogImage.file);
+    }
+    formData.append('lockChangeFeaturedImage', lockChangeFeaturedImage.toString());
+    formData.append('lockChangeOgImage', lockChangeOgImage.toString());
+
     const response = await fetch(`/api/posts/manage?id=${post.id}`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
-      body: JSON.stringify({
-        title,
-        slug,
-        description,
-        categoryId: category,
-        content,
-        readingTime,
-        publishAt: currentTime(publishAt).getTime(),
-      }),
+      body: formData,
     });
 
     const data = await response.json();
@@ -133,6 +172,93 @@ export default function PanelPostsUpdate({ post }) {
       closeConfirmDialog();
       router.push('/panel/wpisy');
     }
+  };
+
+  const removeImageConfirm = async (name: string) => {
+    setRemoveImageType(name);
+    openConfirmRemoveImageDialog();
+  };
+
+  const removeImage = async (name: string) => {
+    setIsDeleting(true);
+    const response = await fetch(`/api/posts/manage?id=${post.id}&removeImage=${name}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+
+    setIsDeleting(false);
+    toast({
+      title: data.message,
+      description: data.error_message || null,
+      status: data.success ? 'success' : 'error',
+      duration: data.success ? 3000 : 9000,
+      isClosable: true,
+    });
+
+    if (data.success) {
+      closeConfirmRemoveImageDialog();
+      if (name === 'featuredImage') {
+        filepondFeaturedImageRef.current.removeFile();
+      } else if (name === 'ogImage') {
+        filepondOgImageRef.current.removeFile();
+      }
+    }
+  };
+
+  const handleFeaturedImageUploaderInit = () => {
+    if (post.featuredImage?.url) {
+      filepondFeaturedImageRef.current.addFile(post.featuredImage.url);
+      if (filepondFeaturedImageRef.current.getFile()) {
+        setLockChangeFeaturedImage(true);
+        setFeaturedImageTitle(post.featuredImage.title || '');
+      }
+    }
+  };
+
+  const handleOgImageUploaderInit = () => {
+    if (post.ogImage?.url) {
+      filepondOgImageRef.current.addFile(post.ogImage.url);
+      if (filepondOgImageRef.current.getFile()) {
+        setLockChangeOgImage(true);
+        setOgImageTitle(post.ogImage.title || '');
+      }
+    }
+  };
+
+  const handleFeaturedImageUpdate = (file) => {
+    if (!file?.id) {
+      setLockChangeFeaturedImage(false);
+    } else if (!post.featuredImage?.url) {
+      setLockChangeFeaturedImage(false);
+    } else if (lastFeaturedImageId === '') {
+      setLockChangeFeaturedImage(true);
+    } else if (file?.id === lastFeaturedImageId) {
+      setLockChangeFeaturedImage(true);
+    } else {
+      setLockChangeFeaturedImage(false);
+    }
+
+    setLastFeaturedImageId(file?.id);
+  };
+
+  const handleOgImageUpdate = (file) => {
+    if (!file?.id) {
+      setLockChangeOgImage(false);
+    } else if (!post.ogImage?.url) {
+      setLockChangeOgImage(false);
+    } else if (lastOgImageId === '') {
+      setLockChangeOgImage(true);
+    } else if (file?.id === lastOgImageId) {
+      setLockChangeOgImage(true);
+    } else {
+      setLockChangeOgImage(false);
+    }
+
+    setLastOgImageId(file?.id);
   };
 
   useEffect(() => {
@@ -269,7 +395,93 @@ export default function PanelPostsUpdate({ post }) {
           <div>
             <EditorComponent onUpdate={(c) => setContent(c)} initValue={post.content} />
           </div>
-          {/* TODO: add large image (like on index page), add images for og etc. */}
+          <div className="pt-6">
+            <Flex justify="space-between" align="center" mb={4}>
+              <Heading as="h3" size="md">
+                Wgraj obrazki do posta
+              </Heading>
+              <Button isLoading={isUpdating} colorScheme="green" onClick={() => handleUpdatePost()}>
+                Zapisz zmiany
+              </Button>
+            </Flex>
+            <Divider my={4} />
+            <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={4}>
+              <GridItem p={4}>
+                <Flex justify="space-between" align="center" mb={4}>
+                  <Heading size="md">Góra posta</Heading>
+                  <div>
+                    <Button
+                      variant="outline"
+                      colorScheme="red"
+                      size="xs"
+                      onClick={() => removeImageConfirm('featuredImage')}
+                    >
+                      Usuń
+                    </Button>
+                  </div>
+                </Flex>
+                <FormControl isRequired mb={4}>
+                  <FormLabel>Tytuł obrazka</FormLabel>
+                  <Input
+                    type="text"
+                    name="featuredImageTitle"
+                    id="featuredImageTitle"
+                    placeholder="Piękne góry w tle"
+                    value={featuredImageTitle}
+                    onChange={(e) => setFeaturedImageTitle(e.target.value)}
+                  />
+                </FormControl>
+                <FilePond
+                  oninit={() => handleFeaturedImageUploaderInit()}
+                  onaddfile={(error, file) => handleFeaturedImageUpdate(file)}
+                  ref={filepondFeaturedImageRef}
+                  name="featuredImage"
+                  allowPaste={false}
+                  dropOnPage={true}
+                  labelIdle='Przeciągnij i upuść lub <span class="filepond--label-action">wyszukaj</span>'
+                  labelFileWaitingForSize="Kalkulowanie rozmiaru"
+                  labelFileLoading="Wczytywanie"
+                />
+              </GridItem>
+              <GridItem p={4}>
+                <Flex justify="space-between" align="center" mb={4}>
+                  <Heading size="md">Open Graph</Heading>
+                  <div>
+                    <Button
+                      variant="outline"
+                      colorScheme="red"
+                      size="xs"
+                      onClick={() => removeImageConfirm('ogImage')}
+                    >
+                      Usuń
+                    </Button>
+                  </div>
+                </Flex>
+                <FormControl isRequired mb={4}>
+                  <FormLabel>Tytuł obrazka</FormLabel>
+                  <Input
+                    type="text"
+                    name="ogImageTitle"
+                    id="ogImageTitle"
+                    placeholder="Piękne góry w tle"
+                    value={ogImageTitle}
+                    onChange={(e) => setOgImageTitle(e.target.value)}
+                  />
+                </FormControl>
+                <FilePond
+                  oninit={() => handleOgImageUploaderInit()}
+                  onaddfile={(error, file) => handleOgImageUpdate(file)}
+                  ref={filepondOgImageRef}
+                  name="ogImage"
+                  allowPaste={false}
+                  dropOnPage={true}
+                  labelIdle='Przeciągnij i upuść lub <span class="filepond--label-action">wyszukaj</span>'
+                  labelFileWaitingForSize="Kalkulowanie rozmiaru"
+                  labelFileLoading="Wczytywanie"
+                />
+              </GridItem>
+            </Grid>
+          </div>
         </div>
         <AlertDialog
           isOpen={isConfirmDialogOpened}
@@ -292,6 +504,36 @@ export default function PanelPostsUpdate({ post }) {
                 <Button
                   colorScheme="red"
                   onClick={() => handleDeletePost()}
+                  isLoading={isDeleting}
+                  ml={3}
+                >
+                  Usuń
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
+        <AlertDialog
+          isOpen={isConfirmRemoveImageDialogOpened}
+          leastDestructiveRef={cancelRef}
+          onClose={closeConfirmRemoveImageDialog}
+        >
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                Potwierdź usunięcie obrazka
+              </AlertDialogHeader>
+              <AlertDialogBody>
+                Jesteś pewien, że chcesz usunąć ten obrazek? Tej operacji{' '}
+                <span className="font-bold underline">nie</span> można cofnąć!
+              </AlertDialogBody>
+              <AlertDialogFooter>
+                <Button ref={cancelRef} onClick={closeConfirmRemoveImageDialog}>
+                  Anuluj
+                </Button>
+                <Button
+                  colorScheme="red"
+                  onClick={() => removeImage(removeImageType)}
                   isLoading={isDeleting}
                   ml={3}
                 >

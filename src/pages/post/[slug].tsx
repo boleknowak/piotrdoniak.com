@@ -1,11 +1,13 @@
 import DateComponent from '@/components/Date';
 import SeoTags from '@/components/SeoTags';
 import Layout from '@/components/Layouts/Layout';
-import { PostInterface } from '@/interfaces/PostInterface';
 import { useEffect, useState } from 'react';
 import { Button, Divider, Flex, HStack, Heading, IconButton, Tooltip } from '@chakra-ui/react';
 import { FiHeart, FiShare2 } from 'react-icons/fi';
 import { FaHeart } from 'react-icons/fa';
+import Image from 'next/image';
+import { Image as ImageInterface, Post as PostInterface } from '@prisma/client';
+import { UserInterface } from '@/interfaces/UserInterface';
 
 interface Props {
   siteMeta: {
@@ -13,7 +15,11 @@ interface Props {
     description: string;
     url: string;
   };
-  post: PostInterface;
+  post: PostInterface & {
+    featuredImage?: ImageInterface;
+    ogImage?: ImageInterface;
+    author: UserInterface;
+  };
 }
 
 export default function Post({ siteMeta, post }: Props) {
@@ -29,7 +35,7 @@ export default function Post({ siteMeta, post }: Props) {
     // },
     headline: post.title,
     description: post.description,
-    // image: '',
+    image: post.ogImage?.url || 'https://piotrdoniak.com/images/brand/me.png',
     author: {
       '@type': 'Person',
       name: post.author.name,
@@ -98,11 +104,26 @@ export default function Post({ siteMeta, post }: Props) {
         description={siteMeta?.description}
         url={siteMeta?.url}
         type="article"
+        image={post.ogImage?.url}
         schema={schema}
       />
       <Layout>
         <div className="mb-20 flex h-full w-full items-start pt-4 md:pt-10">
           <div className="mx-auto w-full max-w-2xl">
+            {post.featuredImageId && post.featuredImage?.url && (
+              <div>
+                <Image
+                  src={post.featuredImage.url}
+                  alt={post.featuredImage.title || post.featuredImage.name || post.title}
+                  title={post.featuredImage.title || post.featuredImage.name || post.title}
+                  width={600}
+                  height={286}
+                  className="mb-10 rounded-lg"
+                  quality={75}
+                  priority={true}
+                />
+              </div>
+            )}
             <div>
               <Heading as="h1" size="lg" fontWeight="bold" mt={4}>
                 {post.title}
@@ -165,7 +186,7 @@ export async function getStaticProps({ params }) {
   const origin = process.env.NEXT_PUBLIC_APP_URL;
   const { post } = await fetch(`${origin}/api/posts/${slug}`).then((res) => res.json());
 
-  if (!post) return { notFound: true };
+  if (!post) return { notFound: true, revalidate: 1 };
 
   const meta = {
     title: `${post.title} - Piotr Doniak`,
@@ -178,7 +199,7 @@ export async function getStaticProps({ params }) {
       post,
       siteMeta: meta,
     },
-    revalidate: 60,
+    revalidate: 1,
   };
 }
 
@@ -189,6 +210,6 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: false,
+    fallback: 'blocking',
   };
 }

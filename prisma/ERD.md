@@ -5,6 +5,16 @@ erDiagram
 		value VIEWED
 		value CLOSED
 	}
+	images {
+		Int id PK  "autoincrement()"
+		String name
+		String title  "nullable"
+		String url
+		Int size
+		String type
+		DateTime createdAt  "now()"
+		DateTime updatedAt
+	}
 	posts {
 		Int id PK  "autoincrement()"
 		String authorId FK  "nullable"
@@ -18,6 +28,8 @@ erDiagram
 		Int views  "nullable"
 		Int likes  "nullable"
 		Int readingTime  "nullable"
+		Int featuredImageId FK  "nullable"
+		Int ogImageId FK  "nullable"
 		DateTime publishedAt  "nullable"
 		DateTime createdAt  "now()"
 		DateTime updatedAt
@@ -90,6 +102,8 @@ erDiagram
 	}
 	posts }o--|| users : author
 	posts }o--|| categories : category
+	posts }o--|| images : featuredImage
+	posts }o--|| images : ogImage
 	contact_messages }o--|| contacts : contact
 	contact_messages }o--|| ContactMessageStatus : "enum:status"
 	accounts }o--|| users : user

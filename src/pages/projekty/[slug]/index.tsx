@@ -34,11 +34,13 @@ export async function getStaticProps({ params }) {
   const origin = process.env.NEXT_PUBLIC_APP_URL;
   const { project } = await fetch(`${origin}/api/projects?id=${slug}`).then((res) => res.json());
 
+  console.log(project);
+
   if (!project) return { notFound: true };
 
   const meta = {
     title: `Projekt - ${project.name} - Piotr Doniak`,
-    description: project.shortDescription,
+    description: project.shortDescription || project.description || '',
     url: `https://piotrdoniak.com/projekty/${project.slug}`,
   };
 
@@ -60,6 +62,6 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: true,
+    fallback: 'blocking',
   };
 }

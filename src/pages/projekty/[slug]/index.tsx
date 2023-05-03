@@ -8,13 +8,19 @@ type Props = {
     title: string;
     description: string;
     url: string;
+    image?: string;
   };
 };
 
 export default function ProjectDetails({ project, siteMeta }: Props) {
   return (
     <>
-      <SeoTags title={siteMeta?.title} description={siteMeta?.description} url={siteMeta?.url} />
+      <SeoTags
+        title={siteMeta?.title}
+        description={siteMeta?.description}
+        url={siteMeta?.url}
+        image={siteMeta?.image}
+      />
       <Layout>
         <div className="mb-20 flex h-full w-full items-start pt-4 md:pt-10">
           <div className="mx-auto w-full max-w-2xl">
@@ -34,14 +40,13 @@ export async function getStaticProps({ params }) {
   const origin = process.env.NEXT_PUBLIC_APP_URL;
   const { project } = await fetch(`${origin}/api/projects?id=${slug}`).then((res) => res.json());
 
-  console.log(project);
-
   if (!project) return { notFound: true };
 
   const meta = {
     title: `Projekt - ${project.name} - Piotr Doniak`,
     description: project.shortDescription || project.description || '',
     url: `https://piotrdoniak.com/projekty/${project.slug}`,
+    image: project.image,
   };
 
   return {

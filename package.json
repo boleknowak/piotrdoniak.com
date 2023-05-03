@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run typecheck && npm run format:fix && npm run lint:fix && npx prisma generate && npm run prisma:migrate && next build && npm run sitemap:generate",
+    "build": "npx prisma generate && npm run prisma:migrate && npm run typecheck && npm run format:fix && npm run lint:fix && next build && npm run sitemap:generate",
     "start": "next start",
     "lint": "eslint --ext .js,.cjs,.ts,.tsx .",
     "lint:fix": "eslint --ext .js,.cjs,.ts,.tsx . --fix",

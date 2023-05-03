@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react';
 import Footer from '@/components/Menu/Footer';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import * as gtag from '@/lib/gtag';
+// import Image from 'next/image';
 
 const caveat = Caveat({ subsets: ['latin'] });
 
@@ -156,11 +157,24 @@ export default function Layout({ children }) {
         <div className="m-2 hidden h-[98%] w-72 rounded border border-yellow-500 bg-yellow-50 xl:block">
           <div className="items-between flex h-full flex-col">
             <div className="p-4">
-              <Link href="/">
-                <div className="text-3xl font-bold">
-                  <span className={caveat.className}>Piotr Doniak</span>
+              <div className="flex flex-row items-center justify-between">
+                <div>
+                  <Link href="/" className="block">
+                    <div className="text-3xl font-bold">
+                      <span className={caveat.className}>Piotr Doniak</span>
+                    </div>
+                  </Link>
                 </div>
-              </Link>
+                <div>
+                  {/* <Image
+                    src="/images/brand/me.png"
+                    alt="To ja!"
+                    width={48}
+                    height={48}
+                    className="rounded-full"
+                  /> */}
+                </div>
+              </div>
               <div className="mt-6 space-y-1">
                 {menu.map((item) => (
                   <div key={`side-${item.id}`}>

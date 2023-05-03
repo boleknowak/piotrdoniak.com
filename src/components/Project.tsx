@@ -1,22 +1,73 @@
+import {
+  Box,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  Divider,
+  Flex,
+  Heading,
+  IconButton,
+  Text,
+  Tooltip,
+} from '@chakra-ui/react';
 import Image from 'next/image';
+import { FiExternalLink } from 'react-icons/fi';
+import Link from 'next/link';
+import { Project as ProjectType } from '@prisma/client';
+import DateComponent from './Date';
 
-export default function Project({ project, ...props }) {
+type Props = {
+  project: ProjectType;
+};
+
+export default function Project({ project }: Props) {
   return (
-    <a href={project.url} target="_blank" className="project-item block" {...props}>
-      <div className="flex transform flex-row items-start space-x-4 rounded border border-gray-200 bg-white p-4 transition duration-300 hover:scale-105 hover:bg-gray-100">
-        <Image
-          src={project.image}
-          alt={project.title}
-          title={project.title}
-          width={64}
-          height={64}
-          className="rounded-md"
-        />
-        <div>
-          <div className="-mt-1 text-lg font-bold">{project.title}</div>
-          <div>{project.description}</div>
-        </div>
-      </div>
-    </a>
+    <Card maxW="sm" border="1px" borderColor="gray.200">
+      <CardBody>
+        <Flex alignItems="center" gap={4}>
+          <Image
+            src={project.image}
+            alt={project.name}
+            height={64}
+            width={64}
+            className="rounded-xl"
+          />
+          <div>
+            <Heading as="h2" size="md">
+              {project.name}
+            </Heading>
+            <Text fontSize="sm" color="gray.500">
+              od <DateComponent dateString={new Date(project.publishedAt).toISOString()} fullDate />
+            </Text>
+          </div>
+        </Flex>
+        <Box mt="6">
+          <Text>{project.shortDescription}</Text>
+        </Box>
+      </CardBody>
+      <Divider />
+      <CardFooter>
+        <Flex grow={1} justifyContent="flex-end" gap={4}>
+          <Link href={`/projekty/${project.slug}`} className="block w-full">
+            <Button variant="solid" w="full" colorScheme="yellow">
+              Zobacz szczegóły
+            </Button>
+          </Link>
+          {project.url && (
+            <Tooltip label="Otwórz stronę" aria-label="Otwórz stronę" placement="top" hasArrow>
+              <Link href={project.url} passHref target="_blank">
+                <IconButton
+                  aria-label="Otwórz w nowej karcie"
+                  icon={<FiExternalLink />}
+                  variant="outline"
+                  colorScheme="gray"
+                />
+              </Link>
+            </Tooltip>
+          )}
+        </Flex>
+      </CardFooter>
+    </Card>
   );
 }

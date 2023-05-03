@@ -5,6 +5,18 @@ erDiagram
 		value VIEWED
 		value CLOSED
 	}
+	projects {
+		Int id PK  "autoincrement()"
+		String name
+		String slug
+		String shortDescription  "nullable"
+		String description  "nullable"
+		String url  "nullable"
+		String image  "nullable"
+		DateTime publishedAt  "nullable"
+		DateTime createdAt  "now()"
+		DateTime updatedAt
+	}
 	images {
 		Int id PK  "autoincrement()"
 		String name

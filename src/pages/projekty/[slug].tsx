@@ -54,7 +54,6 @@ export async function getStaticProps({ params }) {
 export async function getStaticPaths() {
   const origin = process.env.NEXT_PUBLIC_APP_URL;
   const { projects } = await fetch(`${origin}/api/projects`).then((res) => res.json());
-  console.log(projects);
   const paths = projects.map((project: Project) => ({
     params: { slug: project.id },
   }));

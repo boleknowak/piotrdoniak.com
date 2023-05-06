@@ -3,10 +3,10 @@ generator client {
   previewFeatures = ["jsonProtocol"]
 }
 
-generator erd {
-  provider = "prisma-erd-generator-markdown"
-  output   = "./ERD.md"
-}
+// generator erd {
+//   provider = "prisma-erd-generator-markdown"
+//   output   = "./ERD.md"
+// }
 
 datasource db {
   provider = "postgresql"
@@ -21,11 +21,48 @@ model Project {
   description      String?
   url              String?
   image            String?
+  imageWidth       Int?      @default(64)
+  imageHeight      Int?      @default(64)
+  bgColor          String?   @default("#ffffff")
+  fontColor        String?   @default("#000000")
   publishedAt      DateTime?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
+  projectMenu        ProjectMenu[]
+  projectMenuContent ProjectMenuContent[]
+
   @@map("projects")
+}
+
+model ProjectMenu {
+  id        Int      @id @default(autoincrement())
+  projectId Int      @map("project_id")
+  name      String
+  slug      String?  @unique
+  position  Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project            Project              @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectMenuContent ProjectMenuContent[]
+
+  @@map("project_menus")
+}
+
+model ProjectMenuContent {
+  id            Int      @id @default(autoincrement())
+  projectId     Int      @map("project_id")
+  projectMenuId Int      @map("project_menu_id")
+  content       String
+  position      Int?     @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  project     Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectMenu ProjectMenu @relation(fields: [projectMenuId], references: [id], onDelete: Cascade)
+
+  @@map("project_menu_contents")
 }
 
 model Image {

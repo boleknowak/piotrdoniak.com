@@ -13,6 +13,8 @@ erDiagram
 		String description  "nullable"
 		String url  "nullable"
 		String image  "nullable"
+		Int imageWidth  "nullable"
+		Int imageHeight  "nullable"
 		DateTime publishedAt  "nullable"
 		DateTime createdAt  "now()"
 		DateTime updatedAt

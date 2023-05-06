@@ -6,7 +6,11 @@ export default async function handle(request: NextApiRequest, response: NextApiR
     const { id } = request.query;
 
     if (!id) {
-      const projects = await prisma.project.findMany();
+      const projects = await prisma.project.findMany({
+        orderBy: {
+          publishedAt: 'desc',
+        },
+      });
 
       return response.json({ projects });
     }
@@ -14,6 +18,20 @@ export default async function handle(request: NextApiRequest, response: NextApiR
     const project = await prisma.project.findFirst({
       where: {
         OR: [{ id: Number(id) || 0 }, { slug: id as string }],
+      },
+      include: {
+        projectMenu: {
+          orderBy: {
+            position: 'asc',
+          },
+          include: {
+            projectMenuContent: {
+              orderBy: {
+                position: 'asc',
+              },
+            },
+          },
+        },
       },
     });
 

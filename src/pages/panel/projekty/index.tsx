@@ -11,8 +11,8 @@ export default function PanelProjects() {
   const { data: session, status: authed } = useSession();
 
   const fetchProjects = async () => {
-    const res = await fetch('/api/projects/manage');
-    const data = await res.json();
+    const response = await fetch('/api/projects/manage');
+    const data = await response.json();
     setProjects(data.projects);
   };
 
@@ -33,7 +33,7 @@ export default function PanelProjects() {
       <PanelLayout>
         <h1 className="text-xl font-bold">Projekty</h1>
         <div>Co stworzyłeś, {user?.firstName}?</div>
-        <div>{JSON.stringify(projects.map((p) => p.name))}</div>
+        <div>{JSON.stringify(projects?.map((p) => p.name))}</div>
       </PanelLayout>
     </>
   );

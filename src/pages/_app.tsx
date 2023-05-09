@@ -34,6 +34,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } })
         strategy="afterInteractive"
       />
       <Script
+        id="gtag-init"
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `

@@ -20,6 +20,7 @@ import { useEffect, useState } from 'react';
 import { FaHeart } from 'react-icons/fa';
 import { FiExternalLink, FiHeart } from 'react-icons/fi';
 import { BsChevronLeft } from 'react-icons/bs';
+import { formatDistance } from '@/lib/helpers';
 
 type ProjectMenuWithContent = ProjectMenu & {
   projectMenuContent: ProjectMenuContent[];
@@ -41,6 +42,9 @@ export default function ProjectDetails({ project, siteMeta }: Props) {
   const [likes, setLikes] = useState(0);
   const [liked, setLiked] = useState(false);
   const [isUpdatingLikes, setIsUpdatingLikes] = useState(false);
+
+  let { url } = project;
+  url = url.replace('{source}', 'project-details');
 
   const updateViews = async () => {
     try {
@@ -118,13 +122,24 @@ export default function ProjectDetails({ project, siteMeta }: Props) {
                     <Heading as="h2" size="md">
                       {project.name}
                     </Heading>
-                    <Text fontSize="sm" color="gray.500">
-                      od{' '}
-                      <DateComponent
-                        dateString={new Date(project.publishedAt).toISOString()}
-                        fullDate
-                      />
-                    </Text>
+                    <Tooltip
+                      label={
+                        project.publishedAt
+                          ? formatDistance(new Date(project.publishedAt).toISOString())
+                          : 'Data publikacji'
+                      }
+                      aria-label="Data publikacji"
+                      placement="right"
+                      hasArrow
+                    >
+                      <Text fontSize="sm" color="gray.500" display="inline-block">
+                        od{' '}
+                        <DateComponent
+                          dateString={new Date(project.publishedAt).toISOString()}
+                          fullDate
+                        />
+                      </Text>
+                    </Tooltip>
                     <div>
                       <Tooltip
                         label={liked ? 'Lubisz to!' : 'Lubię to!'}
@@ -149,16 +164,18 @@ export default function ProjectDetails({ project, siteMeta }: Props) {
                   </div>
                 </div>
               </div>
-              <div>
-                <Link href={project.url} passHref target="_blank">
-                  <Button colorScheme="yellow" w="full" rightIcon={<FiExternalLink />}>
-                    Zobacz stronę
-                  </Button>
-                </Link>
-              </div>
+              {project.url && (
+                <div>
+                  <Link href={url} passHref target="_blank">
+                    <Button colorScheme="yellow" w="full" rightIcon={<FiExternalLink />}>
+                      Zobacz stronę
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </div>
             <div className="space-y-2 leading-6 tracking-normal">
-              <p>{project.shortDescription}</p>
+              <p>{project.description}</p>
             </div>
             <Divider my={6} />
             {project.projectMenu?.length > 0 && (

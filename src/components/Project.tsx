@@ -19,9 +19,13 @@ import DateComponent from './Date';
 
 type Props = {
   project: ProjectType;
+  source?: string;
 };
 
-export default function Project({ project }: Props) {
+export default function Project({ project, source = 'other' }: Props) {
+  let { url } = project;
+  url = url.replace('{source}', source);
+
   return (
     <Card maxW="sm" border="1px" borderColor="gray.200">
       <CardBody>
@@ -43,7 +47,7 @@ export default function Project({ project }: Props) {
           </div>
         </Flex>
         <Box mt="6">
-          <Text>{project.shortDescription}</Text>
+          <Text>{project.description}</Text>
         </Box>
       </CardBody>
       <Divider />
@@ -56,7 +60,7 @@ export default function Project({ project }: Props) {
           </Link>
           {project.url && (
             <Tooltip label="Otwórz stronę" aria-label="Otwórz stronę" placement="top" hasArrow>
-              <Link href={project.url} passHref target="_blank">
+              <Link href={url} passHref target="_blank">
                 <IconButton
                   aria-label="Otwórz w nowej karcie"
                   icon={<FiExternalLink />}

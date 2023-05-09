@@ -52,7 +52,7 @@ export default function Projects({ siteMeta }) {
                   {!isLoading &&
                     projects?.map((project) => (
                       <GridItem mx="auto" key={project.id}>
-                        <Project project={project} />
+                        <Project project={project} source="projects-list" />
                       </GridItem>
                     ))}
                 </Grid>

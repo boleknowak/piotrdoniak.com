@@ -14,22 +14,21 @@ datasource db {
 }
 
 model Project {
-  id               Int       @id @default(autoincrement())
-  name             String
-  slug             String    @unique
-  shortDescription String?
-  description      String?
-  url              String?
-  image            String?
-  imageWidth       Int?      @default(64)
-  imageHeight      Int?      @default(64)
-  bgColor          String?   @default("#ffffff")
-  fontColor        String?   @default("#000000")
-  views            Int?      @default(0)
-  likes            Int?      @default(0)
-  publishedAt      DateTime?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  id          Int       @id @default(autoincrement())
+  name        String
+  slug        String    @unique
+  description String?
+  url         String?
+  image       String?
+  imageWidth  Int?      @default(64)
+  imageHeight Int?      @default(64)
+  bgColor     String?   @default("#ffffff")
+  fontColor   String?   @default("#000000")
+  views       Int?      @default(0)
+  likes       Int?      @default(0)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   projectMenu        ProjectMenu[]
   projectMenuContent ProjectMenuContent[]

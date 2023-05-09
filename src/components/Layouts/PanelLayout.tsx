@@ -9,6 +9,7 @@ import {
   faComment,
   faEnvelope,
   faFileLines,
+  faFolder,
   faUser,
 } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -90,7 +91,7 @@ export default function PanelLayout({ children }) {
       name: 'Projekty',
       type: 'element',
       href: '/panel/projekty',
-      icon: faEnvelope,
+      icon: faFolder,
       subtext: null,
       authorizedRoute: true,
     },

@@ -236,7 +236,7 @@ export async function getStaticProps({ params }) {
 
   const meta = {
     title: `Projekt - ${project.name} - Piotr Doniak`,
-    description: project.shortDescription || project.description || '',
+    description: project.description || '',
     url: `https://piotrdoniak.com/projekty/${project.slug}`,
     image: project.image,
   };

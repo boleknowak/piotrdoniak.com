@@ -11,11 +11,15 @@ import {
   TabPanels,
   Tabs,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
 import { Project, ProjectMenu, ProjectMenuContent } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FiExternalLink } from 'react-icons/fi';
+import { useEffect, useState } from 'react';
+import { FaHeart } from 'react-icons/fa';
+import { FiExternalLink, FiHeart } from 'react-icons/fi';
+import { BsChevronLeft } from 'react-icons/bs';
 
 type ProjectMenuWithContent = ProjectMenu & {
   projectMenuContent: ProjectMenuContent[];
@@ -34,6 +38,52 @@ type Props = {
 };
 
 export default function ProjectDetails({ project, siteMeta }: Props) {
+  const [likes, setLikes] = useState(0);
+  const [liked, setLiked] = useState(false);
+  const [isUpdatingLikes, setIsUpdatingLikes] = useState(false);
+
+  const updateViews = async () => {
+    try {
+      await fetch(`/api/projects/views?slug=${project.slug}`, {
+        method: 'POST',
+      });
+    } catch (error) {
+      // console.log(error);
+    }
+  };
+
+  const updateLikes = async () => {
+    setIsUpdatingLikes(true);
+    try {
+      const response = await fetch(`/api/projects/likes?slug=${project.slug}`, {
+        method: 'POST',
+      });
+      const data = await response.json();
+
+      setIsUpdatingLikes(false);
+      if (data.status !== 'error') {
+        setLikes(data.likes);
+        setLiked(data.liked);
+      }
+    } catch (error) {
+      setIsUpdatingLikes(false);
+    }
+  };
+
+  useEffect(() => {
+    updateViews();
+    setLikes(project.likes);
+
+    const response = fetch(`/api/projects/likes?slug=${project.slug}`, {
+      method: 'GET',
+    });
+    response
+      .then((res) => res.json())
+      .then((data) => {
+        setLiked(data.liked);
+      });
+  }, []);
+
   return (
     <>
       <SeoTags
@@ -45,7 +95,14 @@ export default function ProjectDetails({ project, siteMeta }: Props) {
       <Layout>
         <div className="mb-20 flex h-full w-full items-start pt-4 md:pt-10">
           <div className="mx-auto w-full max-w-2xl">
-            <div className="mb-6 flex flex-row items-center justify-between space-x-1 ">
+            <div className="-mt-6 mb-10">
+              <Link href="/projekty" passHref>
+                <Button colorScheme="gray" size="xs" leftIcon={<BsChevronLeft />}>
+                  Wróć do listy projektów
+                </Button>
+              </Link>
+            </div>
+            <div className="mb-6 flex flex-col space-x-0 space-y-6 sm:flex-row sm:items-center sm:justify-between sm:space-x-1 sm:space-y-0">
               <div>
                 <div className="flex flex-row items-center space-x-4">
                   <div>
@@ -68,30 +125,51 @@ export default function ProjectDetails({ project, siteMeta }: Props) {
                         fullDate
                       />
                     </Text>
+                    <div>
+                      <Tooltip
+                        label={liked ? 'Lubisz to!' : 'Lubię to!'}
+                        aria-label="Lubię to!"
+                        placement="bottom"
+                        hasArrow
+                      >
+                        <Button
+                          leftIcon={liked ? <FaHeart /> : <FiHeart />}
+                          variant={liked ? 'solid' : 'outline'}
+                          colorScheme="red"
+                          size="xs"
+                          aria-label="Polub"
+                          isLoading={isUpdatingLikes}
+                          loadingText={likes.toString()}
+                          onClick={() => updateLikes()}
+                        >
+                          {likes}
+                        </Button>
+                      </Tooltip>
+                    </div>
                   </div>
                 </div>
               </div>
               <div>
                 <Link href={project.url} passHref target="_blank">
-                  <Button colorScheme="yellow" rightIcon={<FiExternalLink />}>
+                  <Button colorScheme="yellow" w="full" rightIcon={<FiExternalLink />}>
                     Zobacz stronę
                   </Button>
                 </Link>
               </div>
             </div>
             <div className="space-y-2 leading-6 tracking-normal">
-              <p>{project.description || project.shortDescription}</p>
+              <p>{project.shortDescription}</p>
             </div>
             <Divider my={6} />
             {project.projectMenu?.length > 0 && (
               <div className="mt-6">
-                <Tabs variant="unstyled" colorScheme="green">
+                <Tabs variant="unstyled" colorScheme="green" size={{ base: 'sm', md: 'md' }}>
                   <TabList gap={2}>
                     {project.projectMenu?.map((menu) => (
                       <Tab
                         rounded="lg"
                         fontWeight="bold"
-                        color="gray.700"
+                        color="gray.600"
                         key={menu.id}
                         _selected={{
                           color: project.fontColor || 'black',
@@ -106,7 +184,7 @@ export default function ProjectDetails({ project, siteMeta }: Props) {
                       </Tab>
                     ))}
                   </TabList>
-                  <TabPanels>
+                  <TabPanels mt={4}>
                     {project.projectMenu?.map((menu) => (
                       <TabPanel key={menu.id}>
                         <div className="space-y-4 leading-6 tracking-normal">

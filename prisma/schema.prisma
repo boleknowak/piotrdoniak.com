@@ -25,6 +25,8 @@ model Project {
   imageHeight      Int?      @default(64)
   bgColor          String?   @default("#ffffff")
   fontColor        String?   @default("#000000")
+  views            Int?      @default(0)
+  likes            Int?      @default(0)
   publishedAt      DateTime?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
@@ -39,7 +41,7 @@ model ProjectMenu {
   id        Int      @id @default(autoincrement())
   projectId Int      @map("project_id")
   name      String
-  slug      String?  @unique
+  slug      String
   position  Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

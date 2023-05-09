@@ -227,38 +227,38 @@ export default function ProjectDetails({ project, siteMeta }: Props) {
   );
 }
 
-export async function getStaticProps({ params }) {
-  const { slug } = params;
-  const origin = process.env.NEXT_PUBLIC_APP_URL;
-  const { project } = await fetch(`${origin}/api/projects?id=${slug}`).then((res) => res.json());
+// export async function getStaticProps({ params }) {
+//   const { slug } = params;
+//   const origin = process.env.NEXT_PUBLIC_APP_URL;
+//   const { project } = await fetch(`${origin}/api/projects?id=${slug}`).then((res) => res.json());
 
-  if (!project) return { notFound: true };
+//   if (!project) return { notFound: true };
 
-  const meta = {
-    title: `Projekt - ${project.name} - Piotr Doniak`,
-    description: project.description || '',
-    url: `https://piotrdoniak.com/projekty/${project.slug}`,
-    image: project.image,
-  };
+//   const meta = {
+//     title: `Projekt - ${project.name} - Piotr Doniak`,
+//     description: project.description || '',
+//     url: `https://piotrdoniak.com/projekty/${project.slug}`,
+//     image: project.image,
+//   };
 
-  return {
-    props: {
-      project,
-      siteMeta: meta,
-    },
-    revalidate: 1,
-  };
-}
+//   return {
+//     props: {
+//       project,
+//       siteMeta: meta,
+//     },
+//     revalidate: 1,
+//   };
+// }
 
-export async function getStaticPaths() {
-  const origin = process.env.NEXT_PUBLIC_APP_URL;
-  const { projects } = await fetch(`${origin}/api/projects`).then((res) => res.json());
-  const paths = projects.map((project: Project) => ({
-    params: { slug: project.slug },
-  }));
+// export async function getStaticPaths() {
+//   const origin = process.env.NEXT_PUBLIC_APP_URL;
+//   const { projects } = await fetch(`${origin}/api/projects`).then((res) => res.json());
+//   const paths = projects.map((project: Project) => ({
+//     params: { slug: project.slug },
+//   }));
 
-  return {
-    paths,
-    fallback: 'blocking',
-  };
-}
+//   return {
+//     paths,
+//     fallback: 'blocking',
+//   };
+// }

@@ -3,11 +3,13 @@ import Project from '@/components/Project';
 import ProjectSkeleton from '@/components/ProjectSkeleton';
 import SeoTags from '@/components/SeoTags';
 import { Grid, GridItem } from '@chakra-ui/react';
-import { Project as ProjectTypes } from '@prisma/client';
+import { Project as ProjectTypes, Image as ImageType } from '@prisma/client';
 import { useEffect, useState } from 'react';
 
+type ProjectType = ProjectTypes & { logoImage: ImageType; ogLogoImage: ImageType };
+
 export default function Projects({ siteMeta }) {
-  const [projects, setProjects] = useState<ProjectTypes[]>([]);
+  const [projects, setProjects] = useState<ProjectType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchProjects = async () => {

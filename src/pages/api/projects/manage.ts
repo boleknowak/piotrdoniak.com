@@ -88,6 +88,68 @@ export default async function handle(request: NextApiRequest, response: NextApiR
       return response.json({ project });
     }
 
+    if (request.method === 'POST') {
+      const data = (await new Promise((resolve, reject) => {
+        const form = formidable();
+
+        form.parse(request, (err, fields, files) => {
+          // eslint-disable-next-line prefer-promise-reject-errors
+          if (err) reject({ err });
+          resolve({ err, fields, files });
+        });
+      })) as unknown as {
+        err: unknown;
+        fields: {
+          name: string;
+          slug: string;
+          description: string;
+          url: string;
+          imageWidth: number | string;
+          imageHeight: number | string;
+          bgColor: string;
+          fontColor: string;
+          publishedAt: string;
+        };
+      };
+
+      if (data.err) {
+        return response.json({
+          success: false,
+          message: 'Ups! Serwer napotkał problem.',
+          error_message: 'Nie udało się przetworzyć danych.',
+        });
+      }
+
+      const { name, description, url, imageWidth, imageHeight, bgColor, fontColor, publishedAt } =
+        data.fields;
+      let { slug } = data.fields;
+
+      slug = slugify(slug, {
+        lower: true,
+        locale: 'pl',
+      });
+
+      const project = await prisma.project.create({
+        data: {
+          name,
+          slug,
+          description,
+          url,
+          imageWidth: Number(imageWidth),
+          imageHeight: Number(imageHeight),
+          bgColor,
+          fontColor,
+          publishedAt: publishedAt ? new Date(publishedAt) : null,
+        },
+      });
+
+      return response.json({
+        success: true,
+        message: 'Projekt został dodany.',
+        project,
+      });
+    }
+
     if (request.method === 'PUT') {
       const data = (await new Promise((resolve, reject) => {
         const form = formidable();
@@ -104,9 +166,13 @@ export default async function handle(request: NextApiRequest, response: NextApiR
           slug: string;
           description: string;
           url: string;
+          imageWidth: number | string;
+          imageHeight: number | string;
+          bgColor: string;
+          fontColor: string;
           publishedAt: string;
-          lockChangeLogo: string;
-          lockChangeOgImage: string;
+          stateChangeLogo: string;
+          stateChangeOgLogo: string;
         };
         files: {
           logoImage?: {
@@ -132,7 +198,18 @@ export default async function handle(request: NextApiRequest, response: NextApiR
         });
       }
 
-      const { name, description, publishedAt, lockChangeLogo, lockChangeOgImage } = data.fields;
+      const {
+        name,
+        description,
+        url,
+        imageWidth,
+        imageHeight,
+        bgColor,
+        fontColor,
+        publishedAt,
+        stateChangeLogo,
+        stateChangeOgLogo,
+      } = data.fields;
       let { slug: slugUrl } = data.fields;
 
       slugUrl = slugify(slugUrl, {
@@ -141,7 +218,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
       });
 
       let logoImageObject = {} as Image;
-      if (lockChangeLogo === 'false' && data.files?.logoImage) {
+      if (stateChangeLogo === 'true' && data.files?.logoImage) {
         const uploadLogoImage = await uploadImage({
           file: data.files.logoImage,
           s3,
@@ -161,7 +238,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
       }
 
       let ogImageObject = {} as Image;
-      if (lockChangeOgImage === 'false' && data.files?.ogImage) {
+      if (stateChangeOgLogo === 'true' && data.files?.ogImage) {
         const uploadOgImage = await uploadImage({
           file: data.files.ogImage,
           s3,
@@ -184,6 +261,11 @@ export default async function handle(request: NextApiRequest, response: NextApiR
         name,
         slug: slugUrl,
         description,
+        url,
+        imageWidth: Number(imageWidth),
+        imageHeight: Number(imageHeight),
+        bgColor,
+        fontColor,
         publishedAt: publishedAt ? new Date(publishedAt) : null,
       };
 
@@ -243,8 +325,24 @@ export default async function handle(request: NextApiRequest, response: NextApiR
       });
     }
 
+    if (request.method === 'DELETE') {
+      const project = await prisma.project.delete({
+        where: {
+          id: Number(id),
+        },
+      });
+
+      return response.json({
+        success: true,
+        message: 'Projekt został usunięty.',
+        project,
+      });
+    }
+
     return response.json({
       status: 'error',
+      message: 'Ups! Serwer napotkał problem.',
+      error_message: 'Nieobsługiwana metoda HTTP.',
     });
   } catch (error) {
     return response.json({

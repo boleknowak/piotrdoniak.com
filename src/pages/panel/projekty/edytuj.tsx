@@ -21,6 +21,7 @@ import {
   IconButton,
   Input,
   Link,
+  Switch,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
@@ -46,13 +47,16 @@ export default function PanelProjectsUpdate({ project }) {
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
   const [description, setDescription] = useState('');
+  const [url, setUrl] = useState('');
+  const [imageWidth, setImageWidth] = useState('72');
+  const [imageHeight, setImageHeight] = useState('72');
+  const [bgColor, setBgColor] = useState('#000000');
+  const [fontColor, setFontColor] = useState('#ffffff');
   const [publishAt, setPublishAt] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [lockChangeLogo, setLockChangeLogo] = useState(false);
-  const [lockChangeOgLogo, setLockChangeOgLogo] = useState(false);
-  const [lastLogoId, setLastLogoId] = useState('');
-  const [lastOgLogoId, setLastOgLogoId] = useState('');
+  const [stateChangeLogo, setStateChangeLogo] = useState(false);
+  const [stateChangeOgLogo, setStateChangeOgLogo] = useState(false);
   const {
     isOpen: isConfirmDialogOpened,
     onOpen: openConfirmDialog,
@@ -75,6 +79,11 @@ export default function PanelProjectsUpdate({ project }) {
     formData.append('name', name);
     formData.append('slug', slug);
     formData.append('description', description);
+    formData.append('url', url);
+    formData.append('imageWidth', imageWidth);
+    formData.append('imageHeight', imageHeight);
+    formData.append('bgColor', bgColor);
+    formData.append('fontColor', fontColor);
     formData.append('publishedAt', currentTime(publishAt).toISOString());
     if (logoImage) {
       formData.append('logoImage', logoImage.file);
@@ -82,8 +91,8 @@ export default function PanelProjectsUpdate({ project }) {
     if (ogLogoImage) {
       formData.append('ogImage', ogLogoImage.file);
     }
-    formData.append('lockChangeLogo', lockChangeLogo.toString());
-    formData.append('lockChangeOgImage', lockChangeOgLogo.toString());
+    formData.append('stateChangeLogo', stateChangeLogo.toString());
+    formData.append('stateChangeOgLogo', stateChangeOgLogo.toString());
 
     const response = await fetch(`/api/projects/manage?id=${project.id}`, {
       method: 'PUT',
@@ -96,6 +105,8 @@ export default function PanelProjectsUpdate({ project }) {
     const data = await response.json();
 
     setIsUpdating(false);
+    setStateChangeLogo(false);
+    setStateChangeOgLogo(false);
     toast({
       title: data.message,
       description: data.error_message || null,
@@ -135,49 +146,13 @@ export default function PanelProjectsUpdate({ project }) {
   const handleLogoUploaderInit = () => {
     if (project.logoImage?.url) {
       filepondLogoRef.current.addFile(project.logoImage.url);
-      if (filepondLogoRef.current.getFile()) {
-        setLockChangeLogo(true);
-      }
     }
+  };
 
+  const handleOgLogoUploaderInit = () => {
     if (project.ogLogoImage?.url) {
       filepondOgLogoRef.current.addFile(project.ogLogoImage.url);
-      if (filepondOgLogoRef.current.getFile()) {
-        setLockChangeOgLogo(true);
-      }
     }
-  };
-
-  const handleLogoUpdate = (file) => {
-    if (!file?.id) {
-      setLockChangeLogo(false);
-    } else if (!project.logoImage?.url) {
-      setLockChangeLogo(false);
-    } else if (lastLogoId === '') {
-      setLockChangeLogo(true);
-    } else if (file?.id === lastLogoId) {
-      setLockChangeLogo(true);
-    } else {
-      setLockChangeLogo(false);
-    }
-
-    setLastLogoId(file?.id);
-  };
-
-  const handleOgLogoUpdate = (file) => {
-    if (!file?.id) {
-      setLockChangeOgLogo(false);
-    } else if (!project.ogLogoImage?.url) {
-      setLockChangeOgLogo(false);
-    } else if (lastOgLogoId === '') {
-      setLockChangeOgLogo(true);
-    } else if (file?.id === lastOgLogoId) {
-      setLockChangeOgLogo(true);
-    } else {
-      setLockChangeOgLogo(false);
-    }
-
-    setLastOgLogoId(file?.id);
   };
 
   useEffect(() => {
@@ -185,6 +160,11 @@ export default function PanelProjectsUpdate({ project }) {
       setName(project.name);
       setSlug(project.slug);
       setDescription(project.description);
+      setUrl(project.url);
+      setImageWidth(project.imageWidth.toString());
+      setImageHeight(project.imageHeight.toString());
+      setBgColor(project.bgColor);
+      setFontColor(project.fontColor);
 
       const time = currentTime(project.publishedAt);
       time.setHours(time.getHours() + 2);
@@ -268,19 +248,6 @@ export default function PanelProjectsUpdate({ project }) {
                 onChange={(e) => setSlug(e.target.value)}
               />
             </FormControl>
-          </HStack>
-          <FormControl isRequired>
-            <FormLabel>Krótki opis</FormLabel>
-            <Input
-              type="text"
-              name="description"
-              id="description"
-              placeholder="Opisz projekt w kilku słowach"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </FormControl>
-          <HStack spacing={4}>
             <FormControl isRequired>
               <Flex justify="space-between">
                 <FormLabel>Data publikacji</FormLabel>
@@ -295,6 +262,70 @@ export default function PanelProjectsUpdate({ project }) {
                   time = time.replace('Z', '');
                   setPublishAt(time);
                 }}
+              />
+            </FormControl>
+          </HStack>
+          <FormControl isRequired>
+            <FormLabel>Krótki opis</FormLabel>
+            <Input
+              type="text"
+              name="description"
+              id="description"
+              placeholder="Opisz projekt w kilku słowach"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Link do projektu</FormLabel>
+            <Input
+              type="text"
+              name="url"
+              id="url"
+              placeholder="Link do projektu (jeśli jest), warto dodać utm"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+            />
+          </FormControl>
+          <HStack spacing={4}>
+            <FormControl isRequired>
+              <FormLabel>Kolor tła</FormLabel>
+              <Input
+                type="color"
+                name="bgColor"
+                id="bgColor"
+                value={bgColor}
+                onChange={(e) => setBgColor(e.target.value)}
+              />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Kolor czcionki</FormLabel>
+              <Input
+                type="color"
+                name="fontColor"
+                id="fontColor"
+                value={fontColor}
+                onChange={(e) => setFontColor(e.target.value)}
+              />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Szerokość obrazka</FormLabel>
+              <Input
+                type="text"
+                name="imageWidth"
+                id="imageWidth"
+                value={imageWidth}
+                onChange={(e) => setImageWidth(e.target.value)}
+              />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Wysokość obrazka</FormLabel>
+              <Input
+                type="text"
+                name="imageHeight"
+                id="imageHeight"
+                value={imageHeight}
+                onChange={(e) => setImageHeight(e.target.value)}
               />
             </FormControl>
           </HStack>
@@ -317,9 +348,19 @@ export default function PanelProjectsUpdate({ project }) {
             <Divider my={4} />
             <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={4}>
               <GridItem>
+                <FormControl display="flex" alignItems="center" mb={4}>
+                  <FormLabel htmlFor="lockChangeLogo" mb="0">
+                    Zaznacz jeśli zmieniłeś logo
+                  </FormLabel>
+                  <Switch
+                    id="lockChangeLogo"
+                    size="sm"
+                    isChecked={stateChangeLogo}
+                    onChange={(e) => setStateChangeLogo(e.target.checked)}
+                  />
+                </FormControl>
                 <FilePond
                   oninit={() => handleLogoUploaderInit()}
-                  onaddfile={(error, file) => handleLogoUpdate(file)}
                   ref={filepondLogoRef}
                   name="logo"
                   allowPaste={false}
@@ -330,9 +371,19 @@ export default function PanelProjectsUpdate({ project }) {
                 />
               </GridItem>
               <GridItem>
+                <FormControl display="flex" alignItems="center" mb={4}>
+                  <FormLabel htmlFor="lockChangeOgLogo" mb="0">
+                    Zaznacz jeśli zmieniłeś logo (og)
+                  </FormLabel>
+                  <Switch
+                    id="lockChangeOgLogo"
+                    size="sm"
+                    isChecked={stateChangeOgLogo}
+                    onChange={(e) => setStateChangeOgLogo(e.target.checked)}
+                  />
+                </FormControl>
                 <FilePond
-                  oninit={() => handleLogoUploaderInit()}
-                  onaddfile={(error, file) => handleOgLogoUpdate(file)}
+                  oninit={() => handleOgLogoUploaderInit()}
                   ref={filepondOgLogoRef}
                   name="ogLogo"
                   allowPaste={false}

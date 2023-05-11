@@ -19,9 +19,8 @@ model Project {
   slug          String    @unique
   description   String?
   url           String?
-  image         String?
-  imageWidth    Int?      @default(64)
-  imageHeight   Int?      @default(64)
+  imageWidth    Int?      @default(72)
+  imageHeight   Int?      @default(72)
   bgColor       String?   @default("#ffffff")
   fontColor     String?   @default("#000000")
   views         Int?      @default(0)

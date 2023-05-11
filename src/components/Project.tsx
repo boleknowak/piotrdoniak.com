@@ -14,11 +14,11 @@ import {
 import Image from 'next/image';
 import { FiExternalLink } from 'react-icons/fi';
 import Link from 'next/link';
-import { Project as ProjectType } from '@prisma/client';
+import { Image as ImageType, Project as ProjectType } from '@prisma/client';
 import DateComponent from './Date';
 
 type Props = {
-  project: ProjectType;
+  project: ProjectType & { logoImage: ImageType };
   source?: string;
 };
 
@@ -30,13 +30,15 @@ export default function Project({ project, source = 'other' }: Props) {
     <Card maxW="sm" border="1px" borderColor="gray.200">
       <CardBody>
         <Flex alignItems="center" gap={4}>
-          <Image
-            src={project.image}
-            alt={project.name}
-            height={64}
-            width={64}
-            className="rounded-xl"
-          />
+          {project.logoImage && (
+            <Image
+              src={project.logoImage?.url}
+              alt={project.name}
+              height={64}
+              width={64}
+              className="rounded-xl"
+            />
+          )}
           <div>
             <Heading as="h2" size="md">
               {project.name}

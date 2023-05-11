@@ -13,7 +13,7 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react';
-import { Project, ProjectMenu, ProjectMenuContent } from '@prisma/client';
+import { Project, ProjectMenu, ProjectMenuContent, Image as ImageType } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -29,6 +29,7 @@ type ProjectMenuWithContent = ProjectMenu & {
 type Props = {
   project: Project & {
     projectMenu: ProjectMenuWithContent[];
+    logoImage: ImageType;
   };
   siteMeta: {
     title: string;
@@ -110,13 +111,15 @@ export default function ProjectDetails({ project, siteMeta }: Props) {
               <div>
                 <div className="flex flex-row items-center space-x-4">
                   <div>
-                    <Image
-                      src={project.image}
-                      alt={project.name}
-                      width={project.imageWidth || 64}
-                      height={project.imageHeight || 64}
-                      className="rounded-lg"
-                    />
+                    {project.logoImage && (
+                      <Image
+                        src={project.logoImage?.url}
+                        alt={project.name}
+                        width={project.imageWidth || 64}
+                        height={project.imageHeight || 64}
+                        className="rounded-lg"
+                      />
+                    )}
                   </div>
                   <div>
                     <Heading as="h2" size="md">
@@ -238,7 +241,7 @@ export async function getStaticProps({ params }) {
     title: `Projekt - ${project.name} - Piotr Doniak`,
     description: project.description || '',
     url: `https://piotrdoniak.com/projekty/${project.slug}`,
-    image: project.image,
+    image: project.ogLogoImage?.url || project.logoImage?.url || '',
   };
 
   return {

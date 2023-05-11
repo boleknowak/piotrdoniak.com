@@ -10,6 +10,9 @@ export default async function handle(request: NextApiRequest, response: NextApiR
         orderBy: {
           publishedAt: 'desc',
         },
+        include: {
+          logoImage: true,
+        },
       });
 
       return response.json({ projects });
@@ -32,6 +35,8 @@ export default async function handle(request: NextApiRequest, response: NextApiR
             },
           },
         },
+        logoImage: true,
+        ogLogoImage: true,
       },
     });
 

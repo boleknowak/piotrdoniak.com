@@ -1,7 +1,7 @@
 import { getServerSideSitemapLegacy } from 'next-sitemap';
 import { GetServerSideProps } from 'next';
 import absoluteUrl from 'next-absolute-url';
-import { PostInterface } from '@/interfaces/PostInterface';
+import { Post } from '@prisma/client';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { origin } = absoluteUrl(ctx.req);
@@ -13,10 +13,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const fields = [];
 
-  posts.forEach((post: PostInterface) => {
+  posts.forEach((post: Post) => {
     fields.push({
       loc: `${origin}/post/${post.slug}`,
-      lastmod: new Date(post.createdAt).toISOString(),
+      lastmod: new Date(post.publishedAt).toISOString(),
     });
   });
 

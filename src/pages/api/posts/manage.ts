@@ -260,6 +260,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
           file: data.files.featuredImage,
           s3,
           alt: data.fields.featuredImageTitle,
+          folder: 'images',
         });
 
         if (uploadFeaturedImage.success) {
@@ -279,6 +280,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
           file: data.files.ogImage,
           s3,
           alt: data.fields.ogImageTitle,
+          folder: 'images',
         });
 
         if (uploadOgImage.success) {

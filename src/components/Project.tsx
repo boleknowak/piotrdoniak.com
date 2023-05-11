@@ -46,7 +46,7 @@ export default function Project({ project, source = 'other' }: Props) {
             </Text>
           </div>
         </Flex>
-        <Box mt="6">
+        <Box mt="6" w="full" minH="100px">
           <Text>{project.description}</Text>
         </Box>
       </CardBody>

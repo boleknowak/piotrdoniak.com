@@ -14,24 +14,28 @@ datasource db {
 }
 
 model Project {
-  id          Int       @id @default(autoincrement())
-  name        String
-  slug        String    @unique
-  description String?
-  url         String?
-  image       String?
-  imageWidth  Int?      @default(64)
-  imageHeight Int?      @default(64)
-  bgColor     String?   @default("#ffffff")
-  fontColor   String?   @default("#000000")
-  views       Int?      @default(0)
-  likes       Int?      @default(0)
-  publishedAt DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id            Int       @id @default(autoincrement())
+  name          String
+  slug          String    @unique
+  description   String?
+  url           String?
+  image         String?
+  imageWidth    Int?      @default(64)
+  imageHeight   Int?      @default(64)
+  bgColor       String?   @default("#ffffff")
+  fontColor     String?   @default("#000000")
+  views         Int?      @default(0)
+  likes         Int?      @default(0)
+  logoImageId   Int?
+  ogLogoImageId Int?
+  publishedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   projectMenu        ProjectMenu[]
   projectMenuContent ProjectMenuContent[]
+  logoImage          Image?               @relation("ProjectLogoImage", fields: [logoImageId], references: [id])
+  ogLogoImage        Image?               @relation("ProjectOgLogoImage", fields: [ogLogoImageId], references: [id])
 
   @@map("projects")
 }
@@ -67,16 +71,19 @@ model ProjectMenuContent {
 }
 
 model Image {
-  id           Int      @id @default(autoincrement())
-  name         String
-  title        String?
-  url          String
-  size         Int
-  type         String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  featuredPost Post[]   @relation("PostFeaturedImage")
-  ogImage      Post[]   @relation("PostOgImage")
+  id        Int      @id @default(autoincrement())
+  name      String
+  title     String?
+  url       String
+  size      Int
+  type      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  featuredPost  Post[]    @relation("PostFeaturedImage")
+  ogImage       Post[]    @relation("PostOgImage")
+  projectLogo   Project[] @relation("ProjectLogoImage")
+  projectOgLogo Project[] @relation("ProjectOgLogoImage")
 
   @@map("images")
 }

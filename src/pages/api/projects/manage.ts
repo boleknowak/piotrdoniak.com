@@ -68,18 +68,6 @@ export default async function handle(request: NextApiRequest, response: NextApiR
           OR: [{ id: Number(id) || 0 }, { slug: id as string }],
         },
         include: {
-          projectMenu: {
-            orderBy: {
-              position: 'asc',
-            },
-            include: {
-              projectMenuContent: {
-                orderBy: {
-                  position: 'asc',
-                },
-              },
-            },
-          },
           logoImage: true,
           ogLogoImage: true,
         },
@@ -140,6 +128,13 @@ export default async function handle(request: NextApiRequest, response: NextApiR
           bgColor,
           fontColor,
           publishedAt: publishedAt ? new Date(publishedAt) : null,
+          projectMenu: {
+            create: {
+              name: 'Podsumowanie',
+              slug: 'podsumowanie',
+              position: 1,
+            },
+          },
         },
       });
 

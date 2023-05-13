@@ -27,6 +27,7 @@ import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { BsFillMenuAppFill } from 'react-icons/bs';
 import { FaArrowRight, FaEye, FaHeart, FaPen, FaShare } from 'react-icons/fa';
 
 export default function PanelProjects() {
@@ -165,6 +166,20 @@ export default function PanelProjects() {
                               }}
                               icon={<FaShare />}
                             />
+                          </Tooltip>
+                          <Tooltip
+                            label="Menu i zawartość"
+                            aria-label="Menu i zawartość"
+                            placement="top"
+                          >
+                            <Link href={`/panel/projekty/edytuj-menu?id=${project.id}`}>
+                              <IconButton
+                                size="sm"
+                                colorScheme="yellow"
+                                aria-label="Edit menu"
+                                icon={<BsFillMenuAppFill />}
+                              />
+                            </Link>
                           </Tooltip>
                           <Link href={`/panel/projekty/edytuj?id=${project.id}`}>
                             <IconButton

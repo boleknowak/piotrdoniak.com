@@ -204,7 +204,7 @@ export default function ProjectDetails({ project, siteMeta }: Props) {
                       </Tab>
                     ))}
                   </TabList>
-                  <TabPanels mt={4}>
+                  <TabPanels mt={4} mx={-4}>
                     {project.projectMenu?.map((menu) => (
                       <TabPanel key={menu.id}>
                         <div className="space-y-4 leading-6 tracking-normal">

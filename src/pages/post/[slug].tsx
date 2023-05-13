@@ -130,7 +130,7 @@ export default function Post({ siteMeta, post }: Props) {
               </Heading>
               <Flex mt={4} alignItems="center" justifyContent="space-between">
                 <HStack spacing={2} className="text-sm text-gray-600">
-                  <DateComponent dateString={post.publishedAt} />
+                  <DateComponent dateString={new Date(post.publishedAt).toISOString()} />
                   <div>•</div>
                   <div>{post.readingTime} min czytania</div>
                   {/* <div>•</div>

@@ -1,24 +1,28 @@
 import Layout from '@/components/Layouts/Layout';
 import Project from '@/components/Project';
+import ProjectSkeleton from '@/components/ProjectSkeleton';
 import SeoTags from '@/components/SeoTags';
+import { Grid, GridItem } from '@chakra-ui/react';
+import { Project as ProjectTypes, Image as ImageType } from '@prisma/client';
+import { useEffect, useState } from 'react';
+
+type ProjectType = ProjectTypes & { logoImage: ImageType; ogLogoImage: ImageType };
 
 export default function Projects({ siteMeta }) {
-  const projects = [
-    {
-      id: 1,
-      title: 'znanapraca.pl',
-      description: `Portal umożliwiający przeglądanie i wyszukiwanie ofert pracy. Model B2B połączony z modelem B2C, gdzie firmy mogą publikować swoje oferty pracy i pozyskiwać nowych pracowników.`,
-      url: 'https://znanapraca.pl/?utm_source=piotrdoniak.com&utm_medium=portfolio&utm_campaign=projekty',
-      image: '/images/projects/znanapraca.png',
-    },
-    {
-      id: 2,
-      title: 'grawslowka.pl',
-      description: `Wieloosobowa gra przeglądarkowa, w której można sprawdzić swoją wiedzę o posiadanym słownictwie. Znajduje się tam również popularna gra Wordle.`,
-      url: 'https://grawslowka.pl/?utm_source=piotrdoniak.com&utm_medium=portfolio&utm_campaign=projekty',
-      image: '/images/projects/grawslowka.png',
-    },
-  ];
+  const [projects, setProjects] = useState<ProjectType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchProjects = async () => {
+    const response = await fetch('/api/projects');
+    const data = await response.json();
+
+    setProjects(data.projects);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
 
   return (
     <>
@@ -35,14 +39,29 @@ export default function Projects({ siteMeta }) {
                   staram się tworzyć rozwiązania, które mogą pomóc w rozwoju biznesu online.
                 </p>
               </div>
-              <div className="mt-10 space-y-4">
-                {projects.map((project) => (
-                  <Project key={project.id} project={project} />
-                ))}
+              <div className="mt-10">
+                <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={6}>
+                  {isLoading && (
+                    <>
+                      <GridItem mx="auto">
+                        <ProjectSkeleton />
+                      </GridItem>
+                      <GridItem mx="auto">
+                        <ProjectSkeleton />
+                      </GridItem>
+                    </>
+                  )}
+                  {!isLoading &&
+                    projects?.map((project) => (
+                      <GridItem mx="auto" key={project.id}>
+                        <Project project={project} source="projects-list" />
+                      </GridItem>
+                    ))}
+                </Grid>
               </div>
               <div className="mt-10 leading-6 tracking-normal">
                 <p>
-                  Ale wiesz co? To nie wszystko, co dla Ciebie przygotałem! Na innych podstronach
+                  Ale wiesz co? To nie wszystko, co dla Ciebie przygotowałem! Na innych podstronach
                   znajdziesz również kilka osobistych przemyśleń oraz anegdot, które mam nadzieję,
                   że Cię zainspirują.
                 </p>

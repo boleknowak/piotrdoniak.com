@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run typecheck && npm run format:fix && npm run lint:fix && npm run prisma:migrate && next build && npm run sitemap:generate",
+    "build": "npx prisma generate && npm run prisma:migrate && npm run typecheck && npm run format:fix && npm run lint:fix && next build && npm run sitemap:generate",
     "start": "next start",
     "lint": "eslint --ext .js,.cjs,.ts,.tsx .",
     "lint:fix": "eslint --ext .js,.cjs,.ts,.tsx . --fix",
@@ -65,6 +65,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "^13.4.1",
     "@tailwindcss/typography": "^0.5.9",
     "@types/node": "^18.16.3",
     "@types/nprogress": "^0.2.0",

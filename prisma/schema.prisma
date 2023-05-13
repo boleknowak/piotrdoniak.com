@@ -3,27 +3,86 @@ generator client {
   previewFeatures = ["jsonProtocol"]
 }
 
-generator erd {
-  provider = "prisma-erd-generator-markdown"
-  output   = "./ERD.md"
-}
+// generator erd {
+//   provider = "prisma-erd-generator-markdown"
+//   output   = "./ERD.md"
+// }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+model Project {
+  id            Int       @id @default(autoincrement())
+  name          String
+  slug          String    @unique
+  description   String?
+  url           String?
+  imageWidth    Int?      @default(72)
+  imageHeight   Int?      @default(72)
+  bgColor       String?   @default("#ffffff")
+  fontColor     String?   @default("#000000")
+  views         Int?      @default(0)
+  likes         Int?      @default(0)
+  logoImageId   Int?
+  ogLogoImageId Int?
+  publishedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  projectMenu        ProjectMenu[]
+  projectMenuContent ProjectMenuContent[]
+  logoImage          Image?               @relation("ProjectLogoImage", fields: [logoImageId], references: [id])
+  ogLogoImage        Image?               @relation("ProjectOgLogoImage", fields: [ogLogoImageId], references: [id])
+
+  @@map("projects")
+}
+
+model ProjectMenu {
+  id        Int      @id @default(autoincrement())
+  projectId Int      @map("project_id")
+  name      String
+  slug      String
+  position  Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project            Project              @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectMenuContent ProjectMenuContent[]
+
+  @@map("project_menus")
+}
+
+model ProjectMenuContent {
+  id            Int      @id @default(autoincrement())
+  projectId     Int      @map("project_id")
+  projectMenuId Int      @map("project_menu_id")
+  content       String
+  position      Int?     @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  project     Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectMenu ProjectMenu @relation(fields: [projectMenuId], references: [id], onDelete: Cascade)
+
+  @@map("project_menu_contents")
+}
+
 model Image {
-  id           Int      @id @default(autoincrement())
-  name         String
-  title        String?
-  url          String
-  size         Int
-  type         String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  featuredPost Post[]   @relation("PostFeaturedImage")
-  ogImage      Post[]   @relation("PostOgImage")
+  id        Int      @id @default(autoincrement())
+  name      String
+  title     String?
+  url       String
+  size      Int
+  type      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  featuredPost  Post[]    @relation("PostFeaturedImage")
+  ogImage       Post[]    @relation("PostOgImage")
+  projectLogo   Project[] @relation("ProjectLogoImage")
+  projectOgLogo Project[] @relation("ProjectOgLogoImage")
 
   @@map("images")
 }

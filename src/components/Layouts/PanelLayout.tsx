@@ -9,6 +9,7 @@ import {
   faComment,
   faEnvelope,
   faFileLines,
+  faFolder,
   faUser,
 } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -82,6 +83,15 @@ export default function PanelLayout({ children }) {
       type: 'element',
       href: '/panel/wiadomosci',
       icon: faEnvelope,
+      subtext: null,
+      authorizedRoute: true,
+    },
+    {
+      id: 'projekty',
+      name: 'Projekty',
+      type: 'element',
+      href: '/panel/projekty',
+      icon: faFolder,
       subtext: null,
       authorizedRoute: true,
     },
@@ -228,7 +238,7 @@ export default function PanelLayout({ children }) {
       <aside className="sticky top-0 hidden h-screen xl:block">
         <div className="min-h-96 m-2 hidden h-[98%] max-h-screen w-72 overflow-y-auto rounded border border-yellow-500 bg-yellow-50 xl:block">
           <div className="items-between flex h-full flex-grow flex-col">
-            <div className="mb-32 h-full p-4">
+            <div className="mb-20 h-full p-4">
               <Link href="/panel" style={{ textDecoration: 'none', cursor: 'pointer' }}>
                 <div className="text-3xl font-bold">
                   <span className={caveat.className}>Panel</span>

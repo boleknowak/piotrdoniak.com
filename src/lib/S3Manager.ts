@@ -15,6 +15,7 @@ type UploadImageProps = {
   file: FileProp;
   s3: S3;
   alt: string;
+  folder?: string;
 };
 
 type DeleteImageProps = {
@@ -22,7 +23,7 @@ type DeleteImageProps = {
   s3: S3;
 };
 
-export const uploadImage = async ({ file, s3, alt = '' }: UploadImageProps) => {
+export const uploadImage = async ({ file, s3, alt = '', folder = 'images' }: UploadImageProps) => {
   const { filepath: tempFilePath } = file;
   const name = `${slugify(alt, {
     lower: true,
@@ -32,13 +33,12 @@ export const uploadImage = async ({ file, s3, alt = '' }: UploadImageProps) => {
 
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
-    Key: `images/${name}`,
+    Key: `${folder}/${name}`,
     Body: readStream,
     ContentType: file.mimetype,
   };
 
   const command = new PutObjectCommand(params);
-  let featuredImageObject = {} as Image;
 
   try {
     const res = await s3.send(command);
@@ -48,7 +48,7 @@ export const uploadImage = async ({ file, s3, alt = '' }: UploadImageProps) => {
       throw new Error('Error uploading file');
     }
 
-    featuredImageObject = await prisma.image.create({
+    const imageObject = await prisma.image.create({
       data: {
         name,
         title: alt,
@@ -57,19 +57,18 @@ export const uploadImage = async ({ file, s3, alt = '' }: UploadImageProps) => {
         type: file.mimetype,
       },
     });
+
+    return {
+      success: true,
+      image: imageObject,
+    };
   } catch (err) {
     return {
       success: false,
       message: 'Ups! Serwer napotkał problem.',
-      error_message: 'Nie udało się przetworzyć danych.',
+      error_message: err.message || 'Nie udało się przetworzyć danych.',
     };
   }
-
-  return {
-    success: true,
-    message: 'Pomyślnie dodano obrazek.',
-    image: featuredImageObject,
-  };
 };
 
 export const deleteImage = async ({ image, s3 }: DeleteImageProps) => {

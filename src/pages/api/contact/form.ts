@@ -65,8 +65,13 @@ export default async function handle(request: NextApiRequest, response: NextApiR
 
     return response.status(200).json({ message: 'Dziękuję, odezwę się wkrótce!' });
   } catch (error) {
-    const issues = error.issues.map((issue) => ({ name: issue.path[0], code: issue.code }));
+    if (error instanceof z.ZodError) {
+      const issues = error.issues.map((issue) => ({ name: issue.path[0], code: issue.code }));
 
-    return response.status(400).json({ error: 'Podane dane są niepoprawne', issues });
+      return response.status(400).json({ error: 'Podane dane są niepoprawne', issues });
+    }
+    return response
+      .status(500)
+      .json({ error: 'Wystąpił nieoczekiwany błąd', message: error.message });
   }
 }

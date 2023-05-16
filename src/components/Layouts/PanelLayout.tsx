@@ -3,26 +3,15 @@ import Image from 'next/image';
 import Item from '@/components/Menu/Item';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faAddressCard,
-  faCalendar,
-  faComment,
-  faEnvelope,
-  faFileLines,
-  faFolder,
-  faUser,
-} from '@fortawesome/free-regular-svg-icons';
-import {
-  faBars,
-  faPersonThroughWindow,
-  faRss,
-  faSignOut,
-  faX,
-} from '@fortawesome/free-solid-svg-icons';
+import { faBars, faSignOut, faX } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { UserInterface } from '@/interfaces/UserInterface';
 import getMessages from '@/lib/getMessages';
+import { HiOutlineFolderOpen } from 'react-icons/hi';
+import { TbDoorExit } from 'react-icons/tb';
+import { BiComment, BiEnvelope, BiIdCard } from 'react-icons/bi';
+import { FiCalendar, FiRss, FiUsers } from 'react-icons/fi';
 import Unauthorized from '../Unauthorized';
 import LoadingPage from '../LoadingPage';
 
@@ -49,7 +38,7 @@ export default function PanelLayout({ children }) {
       name: 'Wyjdź z panelu',
       type: 'element',
       href: '/',
-      icon: faPersonThroughWindow,
+      icon: <TbDoorExit />,
       subtext: null,
       authorizedRoute: true,
     },
@@ -64,7 +53,7 @@ export default function PanelLayout({ children }) {
       name: 'Informacje',
       type: 'element',
       href: '/panel',
-      icon: faAddressCard,
+      icon: <BiIdCard />,
       subtext: null,
       authorizedRoute: true,
     },
@@ -73,7 +62,7 @@ export default function PanelLayout({ children }) {
       name: 'Kalendarz',
       type: 'element',
       href: '/panel/kalendarz',
-      icon: faCalendar,
+      icon: <FiCalendar />,
       subtext: null,
       authorizedRoute: true,
     },
@@ -82,7 +71,7 @@ export default function PanelLayout({ children }) {
       name: 'Wiadomości',
       type: 'element',
       href: '/panel/wiadomosci',
-      icon: faEnvelope,
+      icon: <BiEnvelope />,
       subtext: null,
       authorizedRoute: true,
     },
@@ -91,7 +80,7 @@ export default function PanelLayout({ children }) {
       name: 'Projekty',
       type: 'element',
       href: '/panel/projekty',
-      icon: faFolder,
+      icon: <HiOutlineFolderOpen />,
       subtext: null,
       authorizedRoute: true,
     },
@@ -106,7 +95,7 @@ export default function PanelLayout({ children }) {
       name: 'Wpisy',
       type: 'element',
       href: '/panel/wpisy',
-      icon: faComment,
+      icon: <BiComment />,
       subtext: null,
       authorizedRoute: true,
     },
@@ -115,16 +104,7 @@ export default function PanelLayout({ children }) {
       name: 'Newsletter',
       type: 'element',
       href: '/panel/newsletter',
-      icon: faRss,
-      subtext: null,
-      authorizedRoute: true,
-    },
-    {
-      id: 'ustawienia',
-      name: 'Ustawienia',
-      type: 'element',
-      href: '/panel/ustawienia',
-      icon: faFileLines,
+      icon: <FiRss />,
       subtext: null,
       authorizedRoute: true,
     },
@@ -133,7 +113,7 @@ export default function PanelLayout({ children }) {
       name: 'Autorzy',
       type: 'element',
       href: '/panel/autorzy',
-      icon: faUser,
+      icon: <FiUsers />,
       subtext: null,
       authorizedRoute: true,
     },
@@ -196,7 +176,7 @@ export default function PanelLayout({ children }) {
                       )}
                       {item.type !== 'category' && (
                         <Item href={item.href} subtext={item.subtext} onClick={toggleMenu}>
-                          <FontAwesomeIcon icon={item.icon} size="lg" fixedWidth className="w-5" />
+                          <div className="text-xl">{item.icon}</div>
                           <div>{item.name}</div>
                         </Item>
                       )}
@@ -255,12 +235,7 @@ export default function PanelLayout({ children }) {
                           )}
                           {item.type !== 'category' && (
                             <Item href={item.href} subtext={item.subtext}>
-                              <FontAwesomeIcon
-                                icon={item.icon}
-                                size="lg"
-                                fixedWidth
-                                className="w-5"
-                              />
+                              <div className="text-xl">{item.icon}</div>
                               <div>{item.name}</div>
                             </Item>
                           )}

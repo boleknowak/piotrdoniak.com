@@ -1,7 +1,6 @@
 import PanelLayout from '@/components/Layouts/PanelLayout';
 import LoadingPage from '@/components/LoadingPage';
 import { UserInterface } from '@/interfaces/UserInterface';
-import getMessages from '@/lib/getMessages';
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
@@ -15,18 +14,16 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Badge from '@/components/Elements/Badge';
 import { useRouter } from 'next/router';
-import toast from 'react-hot-toast';
 import StatusBadge from '@/components/Elements/StatusBadge';
 import Avatar from '@/components/Elements/Avatar';
 import DateComponent from '@/components/Date';
-import { Button, FormControl, FormLabel, Icon, Textarea } from '@chakra-ui/react';
+import { Button, FormControl, FormLabel, Icon, Textarea, useToast } from '@chakra-ui/react';
 import { BiCheck, BiSave } from 'react-icons/bi';
 
 export default function PanelMessages() {
   const [contacts, setContacts] = useState([]);
   const [draftMessage, setDraftMessage] = useState('');
   const [filteredContacts, setFilteredContacts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [selectedContact, setSelectedContact] = useState({
@@ -42,16 +39,35 @@ export default function PanelMessages() {
   });
   const { data: session, status: authed } = useSession();
   const router = useRouter();
-  const messagesData = getMessages({ onlyCount: false });
+  const toast = useToast();
+
+  const fetchData = async () => {
+    const response = await fetch('/api/contact/messages', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const result = await response.json();
+
+    if (result.error) {
+      toast({
+        title: 'Wystąpił błąd',
+        description: result.error || 'Nie udało się pobrać wiadomości',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    setContacts(result.data);
+  };
 
   useEffect(() => {
-    if (messagesData.data?.error) {
-      toast.error(messagesData.data.error);
-    } else if (messagesData.data) {
-      setContacts(messagesData.data.data);
-    }
-    setIsLoading(false);
-  }, [messagesData.data]);
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (contacts.length !== 0) {
@@ -70,7 +86,6 @@ export default function PanelMessages() {
   const updateStatus = async (ids: Array<number>, status: string, notify = true) => {
     if (status === 'closed') {
       setIsClosing(true);
-      toast.loading('Zamykanie wiadomości...');
     }
 
     const response = await fetch('/api/contact/messages/updateStatusBulk', {
@@ -87,16 +102,29 @@ export default function PanelMessages() {
     const result = await response.json();
     if (status === 'closed') {
       setIsClosing(false);
-      toast.dismiss();
     }
 
     if (result.error) {
-      toast.error(result.error);
+      toast({
+        title: 'Wystąpił błąd',
+        description: result.error || 'Nie udało się zaktualizować statusu wiadomości',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
     }
 
     if (notify && !result.error) {
-      toast.success(result.message);
+      toast({
+        title: 'Sukces',
+        description: 'Status wiadomości został zaktualizowany',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
     }
+
+    fetchData();
   };
 
   useEffect(() => {
@@ -118,10 +146,8 @@ export default function PanelMessages() {
     }
   }, [selectedContact]);
 
-  if (authed === 'loading' || messagesData.loading || isLoading) return <LoadingPage />;
+  if (authed === 'loading') return <LoadingPage />;
   const user = session?.user as UserInterface;
-
-  if (messagesData.error) return <div>Wystąpił błąd</div>;
 
   const formatName = (name: string) => {
     const nameArray = name.split(' ');
@@ -136,7 +162,6 @@ export default function PanelMessages() {
 
   const updateDraftReply = async (id: number) => {
     setIsSaving(true);
-    toast.loading('Zapisywanie...');
 
     const response = await fetch('/api/contact/messages/updateDraft', {
       method: 'POST',
@@ -152,13 +177,16 @@ export default function PanelMessages() {
     const result = await response.json();
 
     setIsSaving(false);
-    toast.dismiss();
 
-    if (result.error) {
-      toast.error(result.error);
-    } else {
-      toast.success(result.message);
-    }
+    toast({
+      title: result.error ? 'Wystąpił błąd' : 'Sukces',
+      description: result.error || result.message,
+      status: result.error ? 'error' : 'success',
+      duration: 5000,
+      isClosable: true,
+    });
+
+    fetchData();
   };
 
   const hasUnreadMessages = (contact) => {

@@ -28,13 +28,13 @@ export default async function handle(request: NextApiRequest, response: NextApiR
   const session = await getServerSession(request, response, authOptions);
 
   if (!session) {
-    return response.status(401).json({ error: 'unauthorized' });
+    return response.status(401).json({ error: 'Musisz być zalogowany!' });
   }
 
   const user = session?.user as UserInterface;
 
   if (!user?.is_authorized) {
-    return response.status(403).json({ error: 'forbidden' });
+    return response.status(403).json({ error: 'Nie masz uprawnień do tego!' });
   }
 
   let showClosed = false;

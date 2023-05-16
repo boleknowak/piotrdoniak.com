@@ -24,6 +24,7 @@ import {
   Input,
   Link,
   Select,
+  Switch,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
@@ -56,10 +57,8 @@ export default function PanelPostsUpdate({ post }) {
   const [publishAt, setPublishAt] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [lockChangeFeaturedImage, setLockChangeFeaturedImage] = useState(false);
-  const [lockChangeOgImage, setLockChangeOgImage] = useState(false);
-  const [lastFeaturedImageId, setLastFeaturedImageId] = useState('');
-  const [lastOgImageId, setLastOgImageId] = useState('');
+  const [stateChangeFeaturedImage, setStateChangeFeaturedImage] = useState(false);
+  const [stateChangeOgImage, setStateChangeOgImage] = useState(false);
   const [featuredImageTitle, setFeaturedImageTitle] = useState('');
   const [ogImageTitle, setOgImageTitle] = useState('');
   const [removeImageType, setRemoveImageType] = useState('');
@@ -124,8 +123,8 @@ export default function PanelPostsUpdate({ post }) {
     if (ogImage) {
       formData.append('ogImage', ogImage.file);
     }
-    formData.append('lockChangeFeaturedImage', lockChangeFeaturedImage.toString());
-    formData.append('lockChangeOgImage', lockChangeOgImage.toString());
+    formData.append('stateChangeFeaturedImage', stateChangeFeaturedImage.toString());
+    formData.append('stateChangeOgImage', stateChangeOgImage.toString());
 
     const response = await fetch(`/api/posts/manage?id=${post.id}`, {
       method: 'PUT',
@@ -212,53 +211,13 @@ export default function PanelPostsUpdate({ post }) {
   const handleFeaturedImageUploaderInit = () => {
     if (post.featuredImage?.url) {
       filepondFeaturedImageRef.current.addFile(post.featuredImage.url);
-      if (filepondFeaturedImageRef.current.getFile()) {
-        setLockChangeFeaturedImage(true);
-        setFeaturedImageTitle(post.featuredImage.title || '');
-      }
     }
   };
 
   const handleOgImageUploaderInit = () => {
     if (post.ogImage?.url) {
       filepondOgImageRef.current.addFile(post.ogImage.url);
-      if (filepondOgImageRef.current.getFile()) {
-        setLockChangeOgImage(true);
-        setOgImageTitle(post.ogImage.title || '');
-      }
     }
-  };
-
-  const handleFeaturedImageUpdate = (file) => {
-    if (!file?.id) {
-      setLockChangeFeaturedImage(false);
-    } else if (!post.featuredImage?.url) {
-      setLockChangeFeaturedImage(false);
-    } else if (lastFeaturedImageId === '') {
-      setLockChangeFeaturedImage(true);
-    } else if (file?.id === lastFeaturedImageId) {
-      setLockChangeFeaturedImage(true);
-    } else {
-      setLockChangeFeaturedImage(false);
-    }
-
-    setLastFeaturedImageId(file?.id);
-  };
-
-  const handleOgImageUpdate = (file) => {
-    if (!file?.id) {
-      setLockChangeOgImage(false);
-    } else if (!post.ogImage?.url) {
-      setLockChangeOgImage(false);
-    } else if (lastOgImageId === '') {
-      setLockChangeOgImage(true);
-    } else if (file?.id === lastOgImageId) {
-      setLockChangeOgImage(true);
-    } else {
-      setLockChangeOgImage(false);
-    }
-
-    setLastOgImageId(file?.id);
   };
 
   useEffect(() => {
@@ -431,9 +390,19 @@ export default function PanelPostsUpdate({ post }) {
                     onChange={(e) => setFeaturedImageTitle(e.target.value)}
                   />
                 </FormControl>
+                <FormControl display="flex" alignItems="center" mb={4}>
+                  <FormLabel htmlFor="stateChangeFeaturedLogo" mb="0">
+                    Zaznacz jeśli zmieniłeś obrazek
+                  </FormLabel>
+                  <Switch
+                    id="stateChangeFeaturedImage"
+                    size="sm"
+                    isChecked={stateChangeFeaturedImage}
+                    onChange={(e) => setStateChangeFeaturedImage(e.target.checked)}
+                  />
+                </FormControl>
                 <FilePond
                   oninit={() => handleFeaturedImageUploaderInit()}
-                  onaddfile={(error, file) => handleFeaturedImageUpdate(file)}
                   ref={filepondFeaturedImageRef}
                   name="featuredImage"
                   allowPaste={false}
@@ -468,9 +437,19 @@ export default function PanelPostsUpdate({ post }) {
                     onChange={(e) => setOgImageTitle(e.target.value)}
                   />
                 </FormControl>
+                <FormControl display="flex" alignItems="center" mb={4}>
+                  <FormLabel htmlFor="stateChangeOgLogo" mb="0">
+                    Zaznacz jeśli zmieniłeś obrazek (og)
+                  </FormLabel>
+                  <Switch
+                    id="stateChangeOgLogo"
+                    size="sm"
+                    isChecked={stateChangeOgImage}
+                    onChange={(e) => setStateChangeOgImage(e.target.checked)}
+                  />
+                </FormControl>
                 <FilePond
                   oninit={() => handleOgImageUploaderInit()}
-                  onaddfile={(error, file) => handleOgImageUpdate(file)}
                   ref={filepondOgImageRef}
                   name="ogImage"
                   allowPaste={false}

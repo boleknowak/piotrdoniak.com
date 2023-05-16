@@ -214,8 +214,8 @@ export default async function handle(request: NextApiRequest, response: NextApiR
           publishAt: string;
           featuredImageTitle: string;
           ogImageTitle: string;
-          lockChangeFeaturedImage: string;
-          lockChangeOgImage: string;
+          stateChangeFeaturedImage: string;
+          stateChangeOgImage: string;
         };
         files: {
           featuredImage?: {
@@ -248,14 +248,14 @@ export default async function handle(request: NextApiRequest, response: NextApiR
         content,
         readingTime,
         publishAt,
-        lockChangeFeaturedImage,
-        lockChangeOgImage,
+        stateChangeFeaturedImage,
+        stateChangeOgImage,
       } = data.fields;
       let { slug: slugUrl } = data.fields;
       const { id } = request.query;
 
       let featuredImageObject = {} as Image;
-      if (lockChangeFeaturedImage === 'false' && data.files?.featuredImage) {
+      if (stateChangeFeaturedImage === 'true' && data.files?.featuredImage) {
         const uploadFeaturedImage = await uploadImage({
           file: data.files.featuredImage,
           s3,
@@ -275,7 +275,7 @@ export default async function handle(request: NextApiRequest, response: NextApiR
       }
 
       let ogImageObject = {} as Image;
-      if (lockChangeOgImage === 'false' && data.files?.ogImage) {
+      if (stateChangeOgImage === 'true' && data.files?.ogImage) {
         const uploadOgImage = await uploadImage({
           file: data.files.ogImage,
           s3,

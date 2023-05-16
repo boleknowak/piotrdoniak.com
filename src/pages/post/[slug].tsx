@@ -83,6 +83,10 @@ export default function Post({ siteMeta, post }: Props) {
     }
   };
 
+  const copyLink = () => {
+    navigator.clipboard.writeText(`${siteMeta.url}`);
+  };
+
   useEffect(() => {
     updateViews();
     setLikes(post.likes);
@@ -118,7 +122,7 @@ export default function Post({ siteMeta, post }: Props) {
                   title={post.featuredImage.title || post.featuredImage.name || post.title}
                   width={600}
                   height={286}
-                  className="mb-10 rounded-lg"
+                  className="mx-auto mb-10 rounded-lg"
                   quality={75}
                   priority={true}
                 />
@@ -163,6 +167,7 @@ export default function Post({ siteMeta, post }: Props) {
                       size="sm"
                       aria-label="Udostępnij"
                       icon={<FiShare2 />}
+                      onClick={() => copyLink()}
                     />
                   </Tooltip>
                 </HStack>

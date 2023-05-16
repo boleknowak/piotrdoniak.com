@@ -6,31 +6,33 @@ import {
   Button,
   Divider,
   FormControl,
-  FormErrorMessage,
   FormLabel,
-  HStack,
   Heading,
   Icon,
   IconButton,
-  InputGroup,
   Switch,
   useToast,
 } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useEffect, useRef, useState } from 'react';
-import { FiDownload, FiFile } from 'react-icons/fi';
+import { FiDownload } from 'react-icons/fi';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
-import { BiTrashAlt } from 'react-icons/bi';
 import * as socials_items from '@/lib/socials';
+import { FilePond, registerPlugin } from 'react-filepond';
+import 'filepond/dist/filepond.min.css';
+import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+
+registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
 export default function PanelIndex() {
   const { data: session, status: authed } = useSession();
-  const [file, setFile] = useState(null);
   const [error, setError] = useState<string>('');
   const [socials, setSocials] = useState([]);
   const [isLoadingSocials, setIsLoadingSocials] = useState(true);
-  const inputRef = useRef(null);
+  const filepondResumeRef = useRef<FilePond>();
   const toast = useToast();
 
   const fetchSocial = async (id: number) => {
@@ -39,7 +41,6 @@ export default function PanelIndex() {
     });
     const data = await response.json();
 
-    // set social by id, data.social and data.ping, data.ping is dynamic
     setSocials((items) =>
       items.map((item) => {
         if (item.id === id) {
@@ -67,20 +68,18 @@ export default function PanelIndex() {
 
   const user = session?.user as UserInterface;
 
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
-  };
-
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-    if (!file) {
+    const resumeFile = filepondResumeRef.current.getFile();
+
+    if (!filepondResumeRef.current.getFile()) {
       setError('Please select a file.');
       return;
     }
 
     const formData = new FormData();
-    formData.append('pdf', file);
+    formData.append('pdf', resumeFile.file);
 
     const response = await fetch(process.env.NEXT_PUBLIC_FILE_UPLOAD_URL, {
       method: 'POST',
@@ -90,9 +89,8 @@ export default function PanelIndex() {
     const data = await response.json();
 
     if (data.status === 'success') {
-      setFile(null);
-      inputRef.current.value = '';
       setError('');
+      filepondResumeRef.current.removeFile();
       toast({
         title: 'CV zostało zaktualizowane.',
         status: 'success',
@@ -160,48 +158,22 @@ export default function PanelIndex() {
         <h1 className="text-xl font-bold">No dzień dobry, {user?.firstName}!</h1>
         <div className="mt-6">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <Box bgColor="gray.100" p={2} rounded="md">
+            <Box border="2px" borderColor="gray.200" p={4} rounded="md">
               <Heading as="h3" size="md">
                 Zarządzanie CV
               </Heading>
               <Divider my={4} />
               <div>
-                <FormControl isInvalid={!!error} isRequired>
-                  <InputGroup>
-                    <input
-                      type="file"
-                      accept="application/pdf"
-                      name="pdf"
-                      ref={inputRef}
-                      style={{ display: 'none' }}
-                      onChange={handleFileChange}
-                    />
-                    <HStack spacing={2}>
-                      <Button
-                        type="button"
-                        colorScheme="yellow"
-                        onClick={() => inputRef.current.click()}
-                        leftIcon={<Icon as={FiFile} />}
-                      >
-                        {file ? file.name : 'Wybierz'}
-                      </Button>
-                      {file && (
-                        <IconButton
-                          type="button"
-                          colorScheme="red"
-                          onClick={() => {
-                            setFile(null);
-                            inputRef.current.value = '';
-                            setError('');
-                          }}
-                          icon={<Icon as={BiTrashAlt} />}
-                          aria-label="Usuń"
-                        />
-                      )}
-                    </HStack>
-                  </InputGroup>
-                  <FormErrorMessage>{error}</FormErrorMessage>
-                </FormControl>
+                <FilePond
+                  ref={filepondResumeRef}
+                  name="pdf"
+                  allowPaste={true}
+                  dropOnPage={true}
+                  labelIdle='Przeciągnij i upuść lub <span class="filepond--label-action">wyszukaj</span>'
+                  labelFileWaitingForSize="Kalkulowanie rozmiaru"
+                  labelFileLoading="Wczytywanie"
+                />
+                {error && <div className="text-center text-red-500">{error}</div>}
                 <Divider my={4} />
                 <Box w="full">
                   <div className="flex flex-grow flex-row items-center space-x-2">
@@ -225,7 +197,7 @@ export default function PanelIndex() {
                 </Box>
               </div>
             </Box>
-            <Box bgColor="gray.100" p={2} rounded="md">
+            <Box border="2px" borderColor="gray.200" p={4} rounded="md">
               <Heading as="h3" size="md">
                 Social Ping
               </Heading>

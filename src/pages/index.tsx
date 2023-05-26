@@ -15,7 +15,7 @@ export default function Home({ siteMeta }) {
                 src="/images/homepage.png"
                 alt="To ja, Piotrek"
                 title="To ja, Piotrek"
-                width={600}
+                width={800}
                 height={286}
                 className="mb-10 rounded-lg"
                 quality={75}

@@ -40,7 +40,7 @@ export default function BlogPageMarketing({ siteMeta }) {
       <Layout>
         <div className="mb-20 flex h-full w-full items-start justify-center pt-6 md:pt-12">
           <div>
-            <div className="w-full max-w-2xl text-[#212121]">
+            <div className="animate__animated animate__fadeIn w-full max-w-2xl text-[#212121]">
               <h1 className="mb-4 text-2xl font-bold">O czym chcesz przeczytać?</h1>
               <div>
                 <p>

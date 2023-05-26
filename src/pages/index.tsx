@@ -10,7 +10,7 @@ export default function Home({ siteMeta }) {
       <Layout>
         <div className="flex h-full w-full items-center justify-center">
           <div>
-            <div className="w-full max-w-2xl text-[#212121]">
+            <div className="animate__animated animate__fadeIn w-full max-w-2xl text-[#212121]">
               <Image
                 src="/images/homepage.png"
                 alt="To ja, Piotrek"

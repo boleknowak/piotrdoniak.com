@@ -1,4 +1,5 @@
 import '@/styles/globals.scss';
+import 'animate.css';
 import dynamic from 'next/dynamic';
 import 'nprogress/nprogress.css';
 import Script from 'next/script';

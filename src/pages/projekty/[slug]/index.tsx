@@ -99,7 +99,7 @@ export default function ProjectDetails({ project, siteMeta }: Props) {
       />
       <Layout>
         <div className="mb-20 flex h-full w-full items-start pt-4 md:pt-10">
-          <div className="mx-auto w-full max-w-2xl">
+          <div className="animate__animated animate__fadeIn mx-auto w-full max-w-2xl">
             <div className="-mt-6 mb-10">
               <Link href="/projekty" passHref>
                 <Button colorScheme="gray" size="xs" leftIcon={<BsChevronLeft />}>
